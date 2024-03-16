@@ -1,8 +1,0 @@
-/home/lebron/IRattack/build/CMakeFiles/intrinsics_gen.dir
-/home/lebron/IRattack/build/CMakeFiles/omp_gen.dir
-/home/lebron/IRattack/build/CMakeFiles/acc_gen.dir
-/home/lebron/IRattack/build/CMakeFiles/edit_cache.dir
-/home/lebron/IRattack/build/CMakeFiles/rebuild_cache.dir
-/home/lebron/IRattack/build/src/CMakeFiles/BasicBlockCountPass.dir
-/home/lebron/IRattack/build/src/CMakeFiles/edit_cache.dir
-/home/lebron/IRattack/build/src/CMakeFiles/rebuild_cache.dir
