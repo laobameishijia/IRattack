@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -shared  -o ../lib/libBasicBlockCountPass.so CMakeFiles/BasicBlockCountPass.dir/BasicBlockCount.cpp.o CMakeFiles/BasicBlockCountPass.dir/OutputHandler.cpp.o   -L/usr/lib/llvm-14/lib 
