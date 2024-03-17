@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "OutputHandler.h"
+#include "OutputHandler.hpp"
 
 using namespace llvm;
 using namespace std;
@@ -16,10 +16,12 @@ static cl::opt<std::string> OutputPrefix("output-prefix", cl::desc("Specify pref
 class BasicBlockCountPass : public FunctionPass {
 public:
     static char ID;
-    BasicBlockCountPass() : FunctionPass(ID) {}
+    OutputHandler handler;
+    BasicBlockCountPass() : FunctionPass(ID),handler(OutputPrefix.getValue()) {
+        
+    }
 
     bool runOnFunction(Function &F) override {
-        OutputHandler handler(OutputPrefix.getValue());
 
         unsigned int BBCounter = 0;
         for (auto &B : F) {
