@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
 
 
 using namespace std;
@@ -16,17 +18,19 @@ struct InsertPostion
     vector<int> asmInsruction_id;
 };
 
+
 class AsmInstruction{
 
 public:
-
+    AsmInstruction(){}
+    ~AsmInstruction(){}
 // NOP指令集
 /*
 针对x86 32位写的，64位虽说也能兼容这些指令。
   1. 但是pushfd这种指令不知道64位下面能不能兼容？
   2. 单个“NOP”指令还可以有很大的变化。譬如增加+1 -1的次数，这种变化是否有意义？
 */
-vector<string> asmStringArray = {
+vector<string> asmInsructionArray = {
     "nop\n", 
     "sub eax,0\n",
     "add eax,0\n",
@@ -99,17 +103,21 @@ vector<InsertPostion> readAndParseFile(const string& fileName) {
     return result;
 }
 
-}
+};
 
 int main() {
-    std::string fileName = "BasicBlock.txt";
-    auto parsedData = readAndParseFile(fileName);
+    AsmInstruction test = AsmInstruction();
+   
+    std::string fileName = "/home/lebron/IRattack/test/BasicBlock.txt";
+    auto parsedData = test.readAndParseFile(fileName);
 
     // 输出解析结果
     for (const auto& data : parsedData) {
         std::cout << "Function Name: " << data.functionName << std::endl;
+        std::cout << "BasicBlockID: " << data.block_id << std::endl;
+
         std::cout << "Numbers: ";
-        for (const auto& num : data.numbers) {
+        for (const auto& num : data.asmInsruction_id) {
             std::cout << num << " ";
         }
         std::cout << std::endl;
