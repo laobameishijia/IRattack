@@ -8,7 +8,7 @@ public:
     explicit OutputHandler(const std::string& prefix);
     ~OutputHandler();
 
-    void writeBasicBlockInfo(const llvm::Function &F, unsigned int BBCounter);
+    void writeBasicBlockInfo(const llvm::Function &F, unsigned int BBCounter,unsigned int InstCounter);
 
 private:
     std::string outputFileName;

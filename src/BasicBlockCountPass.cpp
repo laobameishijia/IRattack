@@ -22,10 +22,16 @@ public:
     }
 
     bool runOnFunction(Function &F) override {
-
-        unsigned int BBCounter = 0;
+        
+        unsigned int BBCounter = 0;  // Count the basic blocks
         for (auto &B : F) {
-            handler.writeBasicBlockInfo(F, BBCounter);
+            unsigned int InstCounter = 0; // Count the instructions in each basic block
+
+            for (auto &I : B) {
+                InstCounter++;
+            }
+
+            handler.writeBasicBlockInfo(F, BBCounter, InstCounter);
             BBCounter++;
         }
 

@@ -19,9 +19,9 @@ OutputHandler::~OutputHandler() {
     }
 }
 
-void OutputHandler::writeBasicBlockInfo(const Function &F, unsigned int BBCounter) {
+void OutputHandler::writeBasicBlockInfo(const Function &F, unsigned int BBCounter, unsigned int InstCounter) {
     if (outFile.is_open()) {
-        outFile << F.getName().str() + "#" << BBCounter << ": " << "\n";
+        outFile << F.getName().str() + "#" << BBCounter << "&" << InstCounter << ": " << "\n";
     } else {
         errs() << "Error: Output file is not open for writing\n";
     }
