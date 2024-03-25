@@ -5,6 +5,7 @@ class AsmInstruction:
         self.num_instruction = 0  # 指令数量，初始设为0
         self.num_insertion = 0  # 用其插入基本块的次数，初始设为0
         self.insert_positions = []  # 存储插入位置的列表 _Z9ncfution1i#0 基本块的名字
+        self.stats_num_instruction()
 
     def add_insert_position(self, insert_position):
         # 将新的插入位置添加到列表中，并增加插入次数

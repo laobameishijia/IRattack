@@ -1,5 +1,4 @@
 from custom_class.irfile import IRFile
-from custom_class.irblock import IRBlock
 from custom_class.asminstruction import AsmInstruction
 
 
@@ -56,3 +55,6 @@ class Attack:
                 asm_instruction = self.asm_instruction_list[num] # AsmInstruction类
                 asm_instruction.add_insert_position(insert_position=block.name)
 
+if __name__ == "__main__":
+    attack = Attack("/home/lebron/IRattack/test/BasicBlock.txt")
+    print("Test")

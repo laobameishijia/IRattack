@@ -1,4 +1,4 @@
-from irblock import IRBlock
+from custom_class.irblock import IRBlock
 
 
 import sys
@@ -20,6 +20,7 @@ class IRFile:
     def __init__(self, name):
         self.name = name
         self.block_list = []
+        self.read_and_parse_file(filename=name)
 
     def read_and_parse_file(self, filename):
         """_summary_:
@@ -43,7 +44,7 @@ class IRFile:
                         
                         blocks_and_asminstructions = parts[1]
                         if len(blocks_and_asminstructions) > 1:
-                            asm_nums = blocks_and_asminstructions[1].split('+') # [' ','1','2','3','4\n']
+                            asm_nums = blocks_and_asminstructions.split('+') # [' ','1','2','3','4\n']
                             asm_nums = clean_strlist2intlist(asm_nums) # ['1','2','3','4']
                             for num in asm_nums:
                                 block.add_asm_instruction(int(num))
@@ -57,6 +58,6 @@ class IRFile:
 
 if __name__ == "__main__":
     # 使用示例
-    ir_file = IRFile("example")
-    ir_file.read_and_parse_file("/home/lebron/IRattack/test/BasicBlock.txt")
+    ir_file = IRFile("/home/lebron/IRattack/test/BasicBlock.txt")
+    # ir_file.read_and_parse_file("/home/lebron/IRattack/test/BasicBlock.txt")
     print("Test")
