@@ -39,7 +39,7 @@ class IRFile:
                     if '#' in line:
                         parts = line.split(':')# parts[0]:_Z9ncfution1i#0&5 | parts[1]: +1+2+3+4\n
                         blockName = parts[0].split('&')[0] # _Z9ncfution1i#0
-                        inst_nums = parts[0].split('&')[1] # 5
+                        inst_nums = int(parts[0].split('&')[1]) # 5
                         block = IRBlock(blockName, inst_nums)
                         
                         blocks_and_asminstructions = parts[1]

@@ -1,6 +1,6 @@
 from custom_class.irfile import IRFile
 from custom_class.asminstruction import AsmInstruction
-
+from actor_critic import CFGEnvironment,ActorCritic,train
 
 class Attack:
     
@@ -45,8 +45,6 @@ class Attack:
         """_summary_:
             根据IRFile文件对应的basicblock.txt初始化汇编指令类, 
             计算得到每个汇编指令插入的位置(函数名),以及插入的次数。
-            
-            使用函数名是因为，单个基本
 
         """
         # 初始化asm_instruction_list
@@ -55,6 +53,29 @@ class Attack:
                 asm_instruction = self.asm_instruction_list[num] # AsmInstruction类
                 asm_instruction.add_insert_position(insert_position=block.name)
 
+
 if __name__ == "__main__":
-    attack = Attack("/home/lebron/IRattack/test/BasicBlock.txt")
+    
+    
+    attack = Attack("/home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/BasicBlock.txt")
+
+    basic_blocks_info = dict()
+    for block in attack.ir_file.block_list:
+        inst_nums = block.inst_nums
+        nops_insert_count = {i: 0 for i in range(27)}
+        for nop_id in block.asm_instructions:
+            nops_insert_count[nop_id] += 1
+        basic_blocks_info[block.name]  = {
+            "inst_nums":inst_nums,
+            "nops_insert_count":nops_insert_count
+        }
+    
+    all_nops_insert_count = {i: 0 for i in range(27)}
+    
+    for nop_id, nop_asm in enumerate(attack.asm_instruction_list):
+        all_nops_insert_count[nop_id] += nop_asm.num_insertion
+        
+    train(basic_blocks_info=basic_blocks_info, nop_lists=all_nops_insert_count)
     print("Test")
+    
+    
