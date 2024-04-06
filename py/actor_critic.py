@@ -3,6 +3,11 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+import sys
+from model.src.dataset_construct import run_disassemble
+from model.src.dataset_construct import run_extract_cfg
+from model.src.gnn import run_measure
+
 def dict_to_vector(basic_blocks_info):
     # 找出指令数量和NOP使用次数的最大值
     max_instructions = max(block['inst_nums'] for block in basic_blocks_info.values())
@@ -33,10 +38,12 @@ def dict_to_vector(basic_blocks_info):
 
 def run_bash(script_path, args:list):
     import subprocess
+    print(f"Now run {script_path} \n")
     # 运行脚本
-    result = subprocess.run([script_path] + args, capture_output=True, text=True)
-    # 打印脚本的输出
-    print(result.stdout)
+    result = subprocess.run([script_path] + args, text=True)
+    # 等待子进程结束  打印脚本的输出
+    # result.wait()
+    print(f"exit {script_path} \n")
 
 def read_result_file():
     filename = "/home/lebron/disassemble/attack/result.txt"
@@ -55,6 +62,26 @@ def read_result_file():
         except ValueError as e:
             print(f"Error converting to integer: {e}")
 
+def disassemble():
+    dataset_dir="/home/lebron/disassemble/attack"
+    dir_path = f"{dataset_dir}/rawdata"
+    output_dir = f"{dataset_dir}/asm"
+    log_path = f"{dataset_dir}/disassemble.log"
+    run_disassemble.run(dir_path=dir_path,output_dir=output_dir,log_path=log_path)
+
+def extract_cfg():
+    dataset_dir= "/home/lebron/disassemble/attack"
+    data_dir = f"{dataset_dir}/asm"
+    store_dir = f"{dataset_dir}/cfg"
+    file_format = "json"
+    log_file = f"{dataset_dir}/extract_cfg.log"
+    run_extract_cfg.run(data_dir=data_dir,store_dir=store_dir,file_format=file_format,log_file=log_file)
+
+def measure():
+    data_dir ="/home/lebron/disassemble/attack"
+    result = run_measure.measure(data_dir=data_dir)
+    return result
+    
 """
 1. 优先选择没有插过的基本块
 2. 优先选择没有插入过的asm
@@ -69,6 +96,7 @@ class CFGEnvironment:
         self.visited_blocks = set()                 # 记录访问过的基本块
         self.used_nops = set()                      # 记录已使用的NOP
         self.blocks_keys_list = list(basic_blocks_info.keys())
+        self.previous_probability_0 = 0
 
     def select_action(self):
         best_score = -float('inf')
@@ -131,13 +159,19 @@ class CFGEnvironment:
                  args=[self.blocks_keys_list[block_id], str(nop_id)])
         
         # 反汇编提取cfg + 模型预测
-        run_bash(script_path="/home/lebron/MCFG_GNN/src/dataset_construct/attack.sh",
-            args=[])
+        # run_bash(script_path="/home/lebron/MCFG_GNN/src/dataset_construct/attack.sh",
+        #     args=[])
+
+        disassemble()
+        extract_cfg()
+        result, prediction = measure() # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
+        result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
+        probability_0 = result.tolist()[0][0] # 暂时先是一个样本
+        if probability_0 > self.previous_probability_0: # 如果良性的概率增加，也可以增加reward
+            self.previous_probability_0 = probability_0
+            reward += 20
         
-        # 读取结果
-        prediction_result = read_result_file() # 0是良性 1是恶意  目前要把恶意转为良性
-        
-        if prediction_result == 0:
+        if prediction == 0:
             reward += 100
             exit()
         else:
