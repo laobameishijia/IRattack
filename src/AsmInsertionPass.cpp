@@ -7,6 +7,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include <vector>
 #include <string>
+#include <iostream>
 
 using namespace llvm;
 using namespace std;
@@ -117,6 +118,8 @@ public:
     string functionname = functionnamestr.substr(0, pos);
     string BBnumber_str = functionnamestr.substr(pos + 1);
     int BBnumber = stoi(BBnumber_str);
+    // std::cout << "函数名为: " << functionname << "\n";
+    // std::cout << "基本块序号为: " << BBnumber_str << "\n";
 
     unsigned int BBCounter = 0; // Count the basic blocks
     for (BasicBlock &BB : F)
@@ -141,8 +144,10 @@ public:
           );
 
           CallInst::Create(customAsm, "", firstInst);
+          // std::cout << "成功插入 " << "\n";
         }
       }
+      BBCounter ++;
     }
     return true; // Function has been modified
   }
