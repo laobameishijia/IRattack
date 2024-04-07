@@ -1,6 +1,7 @@
+import torch
 from custom_class.irfile import IRFile
 from custom_class.asminstruction import AsmInstruction
-from actor_critic import CFGEnvironment,ActorCritic,train
+from actor_critic import CFGEnvironment,ActorCritic
 
 class Attack:
     
@@ -75,7 +76,15 @@ if __name__ == "__main__":
     for nop_id, nop_asm in enumerate(attack.asm_instruction_list):
         all_nops_insert_count[nop_id] += nop_asm.num_insertion
         
-    train(basic_blocks_info=basic_blocks_info, nop_lists=all_nops_insert_count)
+    # train(basic_blocks_info=basic_blocks_info, nop_lists=all_nops_insert_count)
+    actor_lr = 1e-3
+    critic_lr = 1e-2
+    num_episodes = 1000
+    gamma = 0.98
+    device = torch.device("cpu")
+
+    Test = ActorCritic(basic_blocks_info,all_nops_insert_count, actor_lr,critic_lr,gamma,device)
+    Test.train(num_episodes)
     print("Test")
     
     

@@ -65,7 +65,7 @@ def measure(data_dir):
         print(f"label: {labels}")
     result_file.close()
     
-    return out,predictions
+    return data,out,predictions
 
 if __name__ == '__main__':
 
