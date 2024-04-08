@@ -1,0 +1,1652 @@
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+Function: main
+  Block #0, Count: 43, Asm Indices: 
+  Block #1, Count: 3, Asm Indices: 
+  Block #2, Count: 6, Asm Indices: 
+  Block #3, Count: 3, Asm Indices: 
+  Block #4, Count: 8, Asm Indices: 
+  Block #5, Count: 3, Asm Indices: 
+  Block #6, Count: 6, Asm Indices: 
+  Block #7, Count: 1, Asm Indices: 
+  Block #8, Count: 3, Asm Indices: 
+  Block #9, Count: 4, Asm Indices: 
+  Block #10, Count: 7, Asm Indices: 
+  Block #11, Count: 4, Asm Indices: 
+  Block #12, Count: 1, Asm Indices: 
+  Block #13, Count: 24, Asm Indices: 
+  Block #14, Count: 2, Asm Indices: 
+  Block #15, Count: 13, Asm Indices: 
+  Block #16, Count: 8, Asm Indices: 
+  Block #17, Count: 1, Asm Indices: 
+  Block #18, Count: 5, Asm Indices: 
+  Block #19, Count: 6, Asm Indices: 
+  Block #20, Count: 7, Asm Indices: 
+  Block #21, Count: 1, Asm Indices: 
+  Block #22, Count: 6, Asm Indices: 
+  Block #23, Count: 1, Asm Indices: 
+  Block #24, Count: 2, Asm Indices: 
+  Block #25, Count: 2, Asm Indices: 
+Folder already exists: /home/lebron/IRFuzz/Linux.Apachebd/in
+Folder already exists: /home/lebron/IRFuzz/Linux.Apachebd/out
+Folder already exists: /home/lebron/IRFuzz/Linux.Apachebd/rawdata
+Folder already exists: /home/lebron/IRFuzz/Linux.Apachebd/asm
+Folder already exists: /home/lebron/IRFuzz/Linux.Apachebd/cfg
+Folder already exists: /home/lebron/IRFuzz/Linux.Apachebd/cfg_magic_test
+Folder already exists: /home/lebron/IRFuzz/Linux.Apachebd/temp
+文件已成功复制到：/home/lebron/IRFuzz/Linux.Apachebd/in/BasicBlock.txt
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.016603000462055206  probability_1:0.9833970069885254
+Selected - Function: main, Block: 16, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.03677099943161011  probability_1:0.9632290005683899
+save functions to /home/lebron/IRFuzz/Linux.Apachebd/out/1
+Selected - Function: main, Block: 19, asmIndex: 21
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.01584799960255623  probability_1:0.9841520190238953
+Selected - Function: main, Block: 24, asmIndex: 12
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.02668599970638752  probability_1:0.9733139872550964
+save functions to /home/lebron/IRFuzz/Linux.Apachebd/out/2
+Selected - Function: main, Block: 24, asmIndex: 12
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.024983000010252  probability_1:0.9750170111656189
+save functions to /home/lebron/IRFuzz/Linux.Apachebd/out/3
+Selected - Function: main, Block: 9, asmIndex: 18
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.007891999557614326  probability_1:0.9921079874038696
+Selected - Function: main, Block: 15, asmIndex: 12
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.011975999921560287  probability_1:0.9880239963531494
+Selected - Function: main, Block: 2, asmIndex: 25
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.009274999611079693  probability_1:0.9907249808311462
+Selected - Function: main, Block: 20, asmIndex: 18
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0047519998624920845  probability_1:0.995248019695282
+Selected - Function: main, Block: 24, asmIndex: 17
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.004383999854326248  probability_1:0.9956160187721252
+Selected - Function: main, Block: 6, asmIndex: 5
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.004548999946564436  probability_1:0.9954509735107422
+Selected - Function: main, Block: 15, asmIndex: 5
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.004310999996960163  probability_1:0.9956889748573303
+Selected - Function: main, Block: 11, asmIndex: 26
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.006258000154048204  probability_1:0.9937419891357422
+Selected - Function: main, Block: 4, asmIndex: 15
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.005259000230580568  probability_1:0.9947410225868225
+Selected - Function: main, Block: 0, asmIndex: 17
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.004528000019490719  probability_1:0.9954720139503479
+Selected - Function: main, Block: 12, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0036059999838471413  probability_1:0.9963939785957336
+Selected - Function: main, Block: 21, asmIndex: 26
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0029929999727755785  probability_1:0.9970070123672485
+Selected - Function: main, Block: 19, asmIndex: 20
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0024429999757558107  probability_1:0.9975569844245911
+Selected - Function: main, Block: 23, asmIndex: 4
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0023479999508708715  probability_1:0.997651994228363
+Selected - Function: main, Block: 5, asmIndex: 13
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0016740000573918223  probability_1:0.9983260035514832
+Selected - Function: main, Block: 17, asmIndex: 26
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0016659999964758754  probability_1:0.9983339905738831
+Selected - Function: main, Block: 14, asmIndex: 13
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.001386999967508018  probability_1:0.9986129999160767
+Selected - Function: main, Block: 8, asmIndex: 17
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0009340000106021762  probability_1:0.9990659952163696
+Selected - Function: main, Block: 12, asmIndex: 19
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0008299999753944576  probability_1:0.9991700053215027
+Selected - Function: main, Block: 4, asmIndex: 15
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0006549999816343188  probability_1:0.9993450045585632
+Selected - Function: main, Block: 11, asmIndex: 10
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0007140000234358013  probability_1:0.9992859959602356
+Selected - Function: main, Block: 5, asmIndex: 7
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0006259999936446548  probability_1:0.9993739724159241
+Selected - Function: main, Block: 17, asmIndex: 12
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0005740000051446259  probability_1:0.999426007270813
+Selected - Function: main, Block: 25, asmIndex: 1
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0005750000127591193  probability_1:0.9994249939918518
+Selected - Function: main, Block: 3, asmIndex: 24
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0005380000220611691  probability_1:0.9994620084762573
+Selected - Function: main, Block: 25, asmIndex: 22
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0005230000242590904  probability_1:0.9994770288467407
+Selected - Function: main, Block: 19, asmIndex: 0
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0004910000134259462  probability_1:0.9995089769363403
+Selected - Function: main, Block: 17, asmIndex: 12
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00046400001156143844  probability_1:0.9995369911193848
+Selected - Function: main, Block: 9, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0003859999997075647  probability_1:0.9996140003204346
+Selected - Function: main, Block: 14, asmIndex: 6
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0003659999929368496  probability_1:0.9996340274810791
+Selected - Function: main, Block: 17, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00036199999158270657  probability_1:0.999638020992279
+Selected - Function: main, Block: 4, asmIndex: 9
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0003549999964889139  probability_1:0.9996449947357178
+Selected - Function: main, Block: 21, asmIndex: 25
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0003279999946244061  probability_1:0.999671995639801
+Selected - Function: main, Block: 13, asmIndex: 22
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00028700000257231295  probability_1:0.9997130036354065
+Selected - Function: main, Block: 15, asmIndex: 21
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00027799999224953353  probability_1:0.9997220039367676
+Selected - Function: main, Block: 10, asmIndex: 11
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00020900000527035445  probability_1:0.9997910261154175
+Selected - Function: main, Block: 13, asmIndex: 14
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00022000000171829015  probability_1:0.999779999256134
+Selected - Function: main, Block: 4, asmIndex: 5
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00020799999765586108  probability_1:0.9997919797897339
+Selected - Function: main, Block: 1, asmIndex: 19
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.000195999993593432  probability_1:0.9998040199279785
+Selected - Function: main, Block: 0, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00021100000594742596  probability_1:0.9997889995574951
+Selected - Function: main, Block: 22, asmIndex: 19
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0002280000044265762  probability_1:0.9997720122337341
+Selected - Function: main, Block: 17, asmIndex: 22
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00021100000594742596  probability_1:0.9997900128364563
+Selected - Function: main, Block: 9, asmIndex: 26
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00020500000391621143  probability_1:0.9997950196266174
+Selected - Function: main, Block: 9, asmIndex: 17
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00020500000391621143  probability_1:0.9997950196266174
+Selected - Function: main, Block: 6, asmIndex: 24
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00022600000374950469  probability_1:0.9997739791870117
+Selected - Function: main, Block: 2, asmIndex: 12
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0002280000044265762  probability_1:0.9997720122337341
+Selected - Function: main, Block: 7, asmIndex: 3
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0003429999924264848  probability_1:0.9996569752693176
+Selected - Function: main, Block: 4, asmIndex: 25
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0003319999959785491  probability_1:0.9996680021286011
+Selected - Function: main, Block: 1, asmIndex: 5
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0003279999946244061  probability_1:0.999671995639801
+Selected - Function: main, Block: 16, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0002730000123847276  probability_1:0.9997270107269287
+Selected - Function: main, Block: 19, asmIndex: 13
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001849999971454963  probability_1:0.9998149871826172
+Selected - Function: main, Block: 20, asmIndex: 26
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001939999929163605  probability_1:0.9998059868812561
+Selected - Function: main, Block: 7, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00026199998683296144  probability_1:0.9997379779815674
+Selected - Function: main, Block: 10, asmIndex: 12
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0002640000020619482  probability_1:0.9997360110282898
+Selected - Function: main, Block: 20, asmIndex: 3
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00022699999681208283  probability_1:0.9997730255126953
+Selected - Function: main, Block: 13, asmIndex: 24
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00020300000323913991  probability_1:0.999796986579895
+Selected - Function: main, Block: 22, asmIndex: 3
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00018899999849963933  probability_1:0.9998109936714172
+Selected - Function: main, Block: 4, asmIndex: 17
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001849999971454963  probability_1:0.9998149871826172
+Selected - Function: main, Block: 20, asmIndex: 16
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015999999595806003  probability_1:0.9998400211334229
+Selected - Function: main, Block: 4, asmIndex: 24
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00016599999798927456  probability_1:0.9998340010643005
+Selected - Function: main, Block: 13, asmIndex: 16
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00018600000475998968  probability_1:0.999813973903656
+Selected - Function: main, Block: 19, asmIndex: 7
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00016799999866634607  probability_1:0.9998319745063782
+Selected - Function: main, Block: 9, asmIndex: 16
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00013600000238511711  probability_1:0.9998639822006226
+Selected - Function: main, Block: 16, asmIndex: 11
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001539999939268455  probability_1:0.9998459815979004
+Selected - Function: main, Block: 24, asmIndex: 24
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015199999324977398  probability_1:0.9998480081558228
+Selected - Function: main, Block: 1, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015300000086426735  probability_1:0.9998469948768616
+Selected - Function: main, Block: 24, asmIndex: 12
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015199999324977398  probability_1:0.9998480081558228
+Selected - Function: main, Block: 13, asmIndex: 26
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001630000042496249  probability_1:0.9998369812965393
+Selected - Function: main, Block: 11, asmIndex: 0
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015900000289548188  probability_1:0.9998409748077393
+Selected - Function: main, Block: 17, asmIndex: 20
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.000155999994603917  probability_1:0.9998440146446228
+Selected - Function: main, Block: 25, asmIndex: 11
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015500000154133886  probability_1:0.999845027923584
+Selected - Function: main, Block: 0, asmIndex: 19
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001849999971454963  probability_1:0.9998149871826172
+Selected - Function: main, Block: 20, asmIndex: 18
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00016599999798927456  probability_1:0.9998340010643005
+Selected - Function: main, Block: 5, asmIndex: 13
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00016399999731220305  probability_1:0.9998360276222229
+Selected - Function: main, Block: 7, asmIndex: 15
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001610000035725534  probability_1:0.9998379945755005
+Selected - Function: main, Block: 5, asmIndex: 23
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001630000042496249  probability_1:0.9998369812965393
+Selected - Function: main, Block: 9, asmIndex: 10
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00016599999798927456  probability_1:0.9998340010643005
+Selected - Function: main, Block: 9, asmIndex: 7
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.000155999994603917  probability_1:0.9998440146446228
+Selected - Function: main, Block: 24, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015999999595806003  probability_1:0.9998400211334229
+Selected - Function: main, Block: 9, asmIndex: 3
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015300000086426735  probability_1:0.9998469948768616
+Selected - Function: main, Block: 17, asmIndex: 5
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00014899999951012433  probability_1:0.9998509883880615
+Selected - Function: main, Block: 11, asmIndex: 2
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001500000071246177  probability_1:0.9998499751091003
+Selected - Function: main, Block: 10, asmIndex: 24
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001500000071246177  probability_1:0.9998490214347839
+Selected - Function: main, Block: 22, asmIndex: 8
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00014699999883305281  probability_1:0.9998530149459839
+Selected - Function: main, Block: 2, asmIndex: 12
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00014699999883305281  probability_1:0.9998530149459839
+Selected - Function: main, Block: 14, asmIndex: 0
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.0001449999981559813  probability_1:0.9998549818992615
+Selected - Function: main, Block: 12, asmIndex: 26
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015199999324977398  probability_1:0.9998480081558228
+Selected - Function: main, Block: 18, asmIndex: 14
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00015799999528098851  probability_1:0.9998419880867004
+Selected - Function: main, Block: 0, asmIndex: 10
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+source_dir is /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack
+fuzz_dir is /home/lebron/IRFuzz/Linux.Apachebd
+basicblockfilepath is /home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock
+ /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/Linux.Apachebd_simple.ll 文件存在
+/home/lebron/IRFuzz/Linux.Apachebd/temp/.basicblock 文件存在
+insert asm done!
+output elf success!
+copy elf to dir /home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple!
+predictions: [1]
+label: [0]
+probability_0: 0.00014099999680183828  probability_1:0.9998589754104614
+Selected - Function: main, Block: 13, asmIndex: 10
+Now run /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+exit /home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh
+/home/lebron/IRFuzz/Linux.Apachebd/rawdata/Linux.Apachebd_simple
+目录 '/home/lebron/IRFuzz/Linux.Apachebd/cfg' 已存在。
+1/1 File: Linux.Apachebd_simple.asm. Info: Success.
+predictions: [1]
+label: [0]
+probability_0: 0.00014000000373926014  probability_1:0.9998599886894226

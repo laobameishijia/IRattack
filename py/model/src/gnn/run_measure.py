@@ -57,7 +57,7 @@ def measure(data_dir):
     for data in tqdm.tqdm(val_loader):
         data = data.to(device)
         out = model(data)
-        print(out)
+        # print(out)
         predictions.extend(out.argmax(dim=1).tolist())
         labels.extend(data.y.tolist())
         print(f"predictions: {predictions}")

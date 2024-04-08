@@ -17,8 +17,8 @@ def run(dir_path, output_dir, log_path):
         cmd = '{0} -L{1} -c -A -S"{2} {3} {4}" {5}'\
             .format(ida64_path, log_path, script_path, output_dir, file_name, file_path)
         result = subprocess.run(cmd, shell=True, capture_output=True,text=True)
-        print("STDOUT", result.stdout)
-        print("STDERR", result.stderr)
+        # print("STDOUT", result.stdout)
+        # print("STDERR", result.stderr)
         # p = subprocess.Popen(cmd)
         # p.wait()
 
