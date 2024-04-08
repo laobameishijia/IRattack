@@ -13,6 +13,11 @@ add_library(AsmInsertionPass
   AsmInsertionPass.cpp
 )
 
+add_library(AsmInsertionPassFuzz
+  MODULE
+  AsmInsertionPassFuzz.cpp
+)
+
 # 这里假设LLVM库已经在根目录的CMakeLists.txt中找到和链接
 # 可能需要根据实际情况链接到特定的LLVM库
 target_link_libraries(BasicBlockCountPass
@@ -22,7 +27,12 @@ target_link_libraries(BasicBlockCountPass
 target_link_libraries(AsmInsertionPass
     ${LLVM_LIBRARIES}
 )
+target_link_libraries(AsmInsertionPassFuzz
+    ${LLVM_LIBRARIES}
+)
 
 # 设置C++标准
 set_property(TARGET BasicBlockCountPass PROPERTY CXX_STANDARD 14)
 set_property(TARGET AsmInsertionPass PROPERTY CXX_STANDARD 14)
+set_property(TARGET AsmInsertionPassFuzz PROPERTY CXX_STANDARD 14)
+
