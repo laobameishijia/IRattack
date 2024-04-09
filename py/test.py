@@ -217,7 +217,7 @@ predictions=[]
 
 data = data.to(device)
 modify_data = remove_edges_by_indices(data,[4,13])
-result = model(modify_data)
+result,top_k_indices = model(modify_data)
 predictions.extend(result.argmax(dim=1).tolist())
 print(f"predictions: {predictions}")
 result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax

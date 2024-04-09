@@ -56,7 +56,7 @@ def measure(data_dir):
     labels = []
     for data in tqdm.tqdm(val_loader):
         data = data.to(device)
-        out = model(data)
+        out,top_k_indices = model(data)
         # print(out)
         predictions.extend(out.argmax(dim=1).tolist())
         labels.extend(data.y.tolist())
@@ -64,8 +64,8 @@ def measure(data_dir):
         result_file.write(f"predictions: {out.argmax(dim=1).tolist()[0]}\n")
         print(f"label: {labels}")
     result_file.close()
-    
-    return data,out,predictions
+
+    return data,out,predictions,top_k_indices
 
 if __name__ == '__main__':
     data_dir="/home/lebron/disassemble/attack/"

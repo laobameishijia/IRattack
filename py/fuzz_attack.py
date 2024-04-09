@@ -225,7 +225,7 @@ def main():
                 # 提取cfg
                 extract_cfg(fuzz_dir=fuzz_dir)
                 # 模型预测
-                next_state, result, prediction = measure(fuzz_dir) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
+                next_state, result, prediction, top_k_indices = measure(fuzz_dir) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
                 result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
                 formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
                 probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
@@ -247,7 +247,7 @@ def main():
                 # 提取cfg
                 extract_cfg(fuzz_dir=fuzz_dir)
                 # 模型预测
-                next_state, result, prediction = measure(fuzz_dir) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
+                next_state, result, prediction ,top_k_indices= measure(fuzz_dir) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
                 result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
                 formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
 

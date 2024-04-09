@@ -11,7 +11,7 @@ from torch import nn
 from torch.nn import Conv1d, MaxPool1d, Linear, Sequential, Dropout, ReLU, BatchNorm1d as BN
 from torch_geometric.nn import GCNConv, global_sort_pool, GINConv, global_mean_pool, JumpingKnowledge
 from torch_geometric.utils import remove_self_loops
-from torch_geometric.nn.aggr import SortAggregation
+from model.src.gnn.sortaggregation.CustomSortAggregation import SortAggregation
 import torch_geometric
 
 class DGCNN(nn.Module):
@@ -50,7 +50,7 @@ class DGCNN(nn.Module):
         x_4 = torch.tanh(self.conv4(x_3, edge_index))
         x = torch.cat([x_1, x_2, x_3, x_4], dim=-1) # (462, 256)
         # x = global_sort_pool(x, batch, k=self.k) # (1, 16384)
-        x = SortAggregation(k=self.k)(x, batch,) # (1, 16384)
+        x,top_k_indices = SortAggregation(k=self.k)(x, batch,) # (1, 16384)
         x = x.view(x.size(0), 1, x.size(-1)) # (1,1,16384)
         x = self.relu(self.conv5(x)) # (1,16,64)
         x = self.pool(x) # (1,16,32)
@@ -68,7 +68,7 @@ class DGCNN(nn.Module):
         # After max pool : torch.Size([20, 16, 32])
         # After conv1d 2: torch.Size([20, 32, 28])
         # before linear: torch.Size([20, 896])
-        return classes
+        return classes,top_k_indices
 
 
 class GIN0(torch.nn.Module):
