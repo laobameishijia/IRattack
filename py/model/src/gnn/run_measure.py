@@ -68,8 +68,9 @@ def measure(data_dir):
     return data,out,predictions
 
 if __name__ == '__main__':
-
-
+    data_dir="/home/lebron/disassemble/attack/"
+    measure(data_dir)
+    exit()
     # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     device = torch.device("cpu")
     parser = argparse.ArgumentParser()

@@ -11,7 +11,8 @@ from torch import nn
 from torch.nn import Conv1d, MaxPool1d, Linear, Sequential, Dropout, ReLU, BatchNorm1d as BN
 from torch_geometric.nn import GCNConv, global_sort_pool, GINConv, global_mean_pool, JumpingKnowledge
 from torch_geometric.utils import remove_self_loops
-
+from torch_geometric.nn.aggr import SortAggregation
+import torch_geometric
 
 class DGCNN(nn.Module):
     ''' DGCNN '''
@@ -37,17 +38,24 @@ class DGCNN(nn.Module):
         x, edge_index, batch = data.x, data.edge_index, data.batch
 
         # dgcnn
+        # x             torch.size(462,20)
+        # edge_index    torch.size(2, 670)
+        # x_1           torch.size(462,128) 
+        # x_2           torch.size(462,64) 
+        # x_3           torch.size(462,32) 
+        # x_4           torch.size(462,32) 
         x_1 = torch.tanh(self.conv1(x, edge_index))
         x_2 = torch.tanh(self.conv2(x_1, edge_index))
         x_3 = torch.tanh(self.conv3(x_2, edge_index))
         x_4 = torch.tanh(self.conv4(x_3, edge_index))
-        x = torch.cat([x_1, x_2, x_3, x_4], dim=-1)
-        x = global_sort_pool(x, batch, k=self.k)
-        x = x.view(x.size(0), 1, x.size(-1))
-        x = self.relu(self.conv5(x))
-        x = self.pool(x)
-        x = self.relu(self.conv6(x))
-        x = x.view(x.size(0), -1)
+        x = torch.cat([x_1, x_2, x_3, x_4], dim=-1) # (462, 256)
+        # x = global_sort_pool(x, batch, k=self.k) # (1, 16384)
+        x = SortAggregation(k=self.k)(x, batch,) # (1, 16384)
+        x = x.view(x.size(0), 1, x.size(-1)) # (1,1,16384)
+        x = self.relu(self.conv5(x)) # (1,16,64)
+        x = self.pool(x) # (1,16,32)
+        x = self.relu(self.conv6(x)) #(1,32,28)
+        x = x.view(x.size(0), -1) #（1,896）
         out = self.relu(self.classifier_1(x))
         out = self.drop_out(out)
         classes = F.log_softmax(self.classifier_2(out), dim=-1)

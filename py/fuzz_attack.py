@@ -178,8 +178,14 @@ def add_random_asmIndex(functions, changes_log):
     # return functionName
 
 def main():
-    file_path = "/home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/BasicBlock.txt"
-    output_path = "/home/lebron/IRattack/xuange"
+    
+    # source_dir="/home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack"
+    source_dir="/home/lebron/disassemble/attack/sourcecode/Linux.Phide/attack"
+    fuzz_dir="/home/lebron/IRFuzz/Linux.Phide"
+    bash_sh = "/home/lebron/disassemble/attack/sourcecode/Linux.Phide/attack/fuzz_insertasminstruction.sh"
+    temp_bb_file_path = f"{fuzz_dir}/temp/.basicblock"
+    
+    file_path = f"{source_dir}/BasicBlock.txt"
     functions = parse_file(file_path)
     
     # 示例输出
@@ -191,11 +197,6 @@ def main():
     # 输出到文件
     # output_file(functions, output_path)
     
-    source_dir="/home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack"
-    fuzz_dir="/home/lebron/IRFuzz/Linux.Apachebd"
-    bash_sh = "/home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh"
-    temp_bb_file_path = f"{fuzz_dir}/temp/.basicblock"
-   
     build_fuzz_directories(fuzz_dir)
     copy_file_to_folder(source_file=f"{source_dir}/BasicBlock.txt",target_folder=f"{fuzz_dir}/in")
     

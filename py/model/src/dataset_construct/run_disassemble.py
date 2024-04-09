@@ -25,22 +25,22 @@ def run(dir_path, output_dir, log_path):
 
 if __name__ == '__main__':
     
-    parser = argparse.ArgumentParser()
+    # parser = argparse.ArgumentParser()
     
-    parser.add_argument('-d', '--data_dir', type=str, required=True, help='data dir')
-    parser.add_argument('-s', '--store_dir', type=str, required=True, help='store cfg')
-    parser.add_argument('-l', '--log_file', type=str, required=True, help='log file')
+    # parser.add_argument('-d', '--data_dir', type=str, required=True, help='data dir')
+    # parser.add_argument('-s', '--store_dir', type=str, required=True, help='store cfg')
+    # parser.add_argument('-l', '--log_file', type=str, required=True, help='log file')
     
-    args = parser.parse_args()
-    dir_path = args.data_dir
-    output_dir = args.store_dir
-    log_path = args.log_file
-    run(dir_path=dir_path,output_dir=output_dir,log_path=log_path)
+    # args = parser.parse_args()
+    # dir_path = args.data_dir
+    # output_dir = args.store_dir
+    # log_path = args.log_file
+    # run(dir_path=dir_path,output_dir=output_dir,log_path=log_path)
     
-# dir_path = r"E:\dataset\begnin"
-# output_dir = r"E:\dataset\begnin_disassemble"
-# log_path = r"E:\dataset\begnin_disassemble.log"
-# run()
+    dir_path = r"/home/lebron/disassemble/attack/rawdata"
+    output_dir = r"/home/lebron/disassemble/attack/asm"
+    log_path = r"/home/lebron/disassemble/attack/disassemble.log"
+    run(dir_path,output_dir,log_path)
 
 # dir_path = r"E:\dataset\malware"
 # output_dir = r"E:\dataset\malware_disassemble"
