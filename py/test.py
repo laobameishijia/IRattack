@@ -1,4 +1,5 @@
 import copy
+import json
 import os
 import torch
 from model.src.gnn import run_measure
@@ -97,7 +98,7 @@ def collect_probability_changes(data, model,file_path):
     original_data = copy.deepcopy(data)
     
     # 初始化模型并计算原始概率
-    out_init = model(original_data)
+    out_init,_ = model(original_data)
     out_init = torch.exp(out_init)  # 将模型输出的log_softmax转换为softmax
     init_prob_0 = out_init[0][0].item()
     edge_remover = remove_edges_sequentially(data)
@@ -105,7 +106,7 @@ def collect_probability_changes(data, model,file_path):
     for i, edge in enumerate(original_edges):
         # 移除边并计算概率
         data_modified = next(edge_remover)
-        out = model(data_modified)
+        out,_ = model(data_modified)
         out = torch.exp(out)  # 转换为softmax
         current_prob_0 = out[0][0].item()
         
@@ -139,7 +140,7 @@ def collect_probability_changes_for_multiple_edges(data, model, num_edges_to_rem
 
     model.eval()
     with torch.no_grad():
-        out_init = model(data)
+        out_init,_ = model(data)
         out_init = torch.exp(out_init)
         init_prob_0 = out_init[0][0].item()
     changes_with_edges=[]
@@ -148,7 +149,7 @@ def collect_probability_changes_for_multiple_edges(data, model, num_edges_to_rem
         copy_data = copy.deepcopy(data)
         data_modified, removed_edges = remove_random_edges(copy_data, num_edges_to_remove)
         with torch.no_grad():
-            out_modified = model(data_modified)
+            out_modified,_ = model(data_modified)
             out_modified = torch.exp(out_modified)
             modified_prob_0 = out_modified[0][0].item()
             prob_change_0= modified_prob_0 - init_prob_0
@@ -170,9 +171,6 @@ def save_changes_with_mutiedge_info(init_prob_0, changes_with_edges, file_path):
             removed_edges_str = ", ".join(f"{start} -> {end}" for start, end in removed_edges)
             file.write(f"Removed Edges: {removed_edges_str}\n")
             file.write(f"Class 0 Probability Change: {prob_change:.6f}\n\n")
-
-import torch
-from torch_geometric.data import Data
 
 def remove_edges_by_indices(data, indices_to_remove):
     """
@@ -202,7 +200,55 @@ def remove_edges_by_indices(data, indices_to_remove):
 
     return new_data
 
+def zero_out_feature_sequentially(data, index):
+    """
+    将data.x中指定基本块的特征置零。
+    
+    参数:
+    - data: 包含x成员的图数据对象，其中x是一个张量，形状为(基本块数量, 特征维度)。
+    - index: 要置零的基本块的索引。
+    
+    返回:
+    - 更新后的图数据对象。
+    """
+    # 直接修改data对象，因为每次调用都是在deepcopy的基础上
+    data.x[index] = torch.zeros(data.x.shape[1])
+    return data
 
+def collect_feature_impact_on_prediction(data, model, file_path):
+    """
+    逐个将data.x中的基本块特征依次置零，观察模型预测结果（只保存良性概率），并输出到文件中。
+    
+    参数:
+    - data: 包含x成员的图数据对象。
+    - model: 要评估的模型。
+    - file_path: 保存结果的文件路径。
+    """
+    model.eval()
+    changes = []
+
+    # 原始模型预测
+    with torch.no_grad():
+        out_init,_ = model(data)
+        out_init = torch.exp(out_init)
+        init_probs = out_init.tolist()  # 将tensor转换为list，便于写入文件
+
+    # 逐个特征置零并评估影响
+    for i in range(data.x.size(0)):
+        data_copy = copy.deepcopy(data)
+        zero_out_feature_sequentially(data_copy, i)
+        with torch.no_grad():
+            out_modified,_ = model(data_copy)
+            out_modified = torch.exp(out_modified)
+            modified_probs = out_modified.tolist()
+            changes.append((i, modified_probs[0][0]))  # 存储每次变化的结果,只保存0类别的
+    # 将变化写入文件
+    changes.sort(key=lambda x: x[1], reverse=True)
+    with open(file_path, 'w') as f:
+        f.write(f"Init probability probabilities: {init_probs}\n")
+        for index, probs in changes:
+            f.write(f"Feature {index} zeroed out, probabilities: {probs}\n")
+            
 device = torch.device("cpu")
 model = DGCNN(num_features=20, num_classes=2)
 model.load_state_dict(
@@ -211,11 +257,83 @@ model = model.to(device)
 model.eval()
 
 
-record_file_path = "/home/lebron/IRattack/log/record_file.txt"
+
+fullpath_json = "/home/lebron/disassemble/attack/cfg/phide.json"
+
+with open(fullpath_json, 'r') as f:
+    cfg = json.load(f)
+
+addr_to_id = dict() # {str: int}
+id_to_addr = dict() # {int: str}
+current_node_id = -1
+
+x = list() # node attributes
+for addr, block in cfg.items():
+    current_node_id += 1
+    addr_to_id[addr] = current_node_id
+    id_to_addr[current_node_id] = addr
+# server
+# Feature 28 zeroed out, probabilities: 0.10793108493089676
+# Feature 41 zeroed out, probabilities: 0.09884382039308548
+# Feature 446 zeroed out, probabilities: 0.09808796644210815
+# Feature 453 zeroed out, probabilities: 0.09574857354164124
+# Feature 147 zeroed out, probabilities: 0.09157665073871613
+# 10401
+# 10783
+# 27828
+# 28091
+# 13940
+# print(id_to_addr[28])
+# print(id_to_addr[41])
+# print(id_to_addr[446])
+# print(id_to_addr[453])
+# print(id_to_addr[147])
+
+# cub3
+# Feature 320 zeroed out, probabilities: 0.39796650409698486
+# Feature 278 zeroed out, probabilities: 0.39626380801200867
+# Feature 294 zeroed out, probabilities: 0.39626380801200867
+# Feature 318 zeroed out, probabilities: 0.3652283847332001
+# Feature 321 zeroed out, probabilities: 0.3499668538570404
+# Feature 8 zeroed out, probabilities: 0.2180614173412323
+# 4864
+# 11299
+# 11229
+# 10566
+# 10065
+# print(id_to_addr[8])
+# print(id_to_addr[321])
+# print(id_to_addr[318])
+# print(id_to_addr[294])
+# print(id_to_addr[278])
+
+# phide
+# Feature 4 zeroed out, probabilities: 0.5364363193511963
+# Feature 13 zeroed out, probabilities: 0.2822541296482086
+# Feature 0 zeroed out, probabilities: 0.125185027718544
+# Feature 19 zeroed out, probabilities: 0.08413860201835632
+# Feature 17 zeroed out, probabilities: 0.07876712828874588
+# 4448
+# 4585
+# 4352
+# 4744
+# 4707
+print(id_to_addr[4])
+print(id_to_addr[13])
+print(id_to_addr[0])
+print(id_to_addr[19])
+print(id_to_addr[17])
+
+exit()
+
+record_file_path = "/home/lebron/IRattack/log/record_file_feature.txt"
 data = torch.load("/home/lebron/disassemble/attack/cfg_magic_test/data_{}_{}.pt".format(1, "server"))
 predictions=[]
-
 data = data.to(device)
+# 删除基本块的
+collect_feature_impact_on_prediction(data,model,record_file_path)
+exit()
+# 删除边的
 modify_data = remove_edges_by_indices(data,[4,13])
 result,top_k_indices = model(modify_data)
 predictions.extend(result.argmax(dim=1).tolist())
@@ -232,7 +350,18 @@ collect_probability_changes_for_multiple_edges(data=data,model=model,\
                                                 file_path=record_file_path,episode=2000,num_edges_to_remove=20)
 exit()
 
+# 对单个目录做测试
+data_dir="/home/lebron/disassemble/attack/"
+disassemble(fuzz_dir=data_dir)
+extract_cfg(fuzz_dir=data_dir)
+data, result, predictions, _= measure(fuzz_dir=data_dir)
+result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
+formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
 
+probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
+probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本
+
+exit()
 
 data_dir="/home/lebron/disassemble/attack/"
 # disassemble(fuzz_dir=data_dir)

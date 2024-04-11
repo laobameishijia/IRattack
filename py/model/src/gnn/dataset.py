@@ -61,8 +61,14 @@ class CFGDataset(Dataset):
                 if row[0] == 'Id':
                     continue
                 self.labels[row[0]] = int(row[1])
-
+        # file_names
+        self.raw_file_names_list = []
+        self.processed_file_names_list = []
         super(CFGDataset, self).__init__(root, transform=None, pre_transform=None)
+    
+    @property
+    def processed_dir(self):
+        return os.path.join(self.root, 'cfg_magic_test')
     
     @property
     def num_classes(self):
@@ -74,12 +80,14 @@ class CFGDataset(Dataset):
     
     @property
     def raw_file_names(self):
+        self.raw_file_names_list = os.listdir(self.raw_dir)
         return os.listdir(self.raw_dir)
     
     @property
     def processed_file_names(self):
         file_names = ['data_{}_{}.pt'.format(
             i, filename.split('.')[0]) for i, filename in enumerate(self.raw_file_names)]
+        self.processed_file_names_list = file_names
         return file_names
     
     def raw_file_name_lookup(self, idx):
@@ -122,7 +130,8 @@ class CFGDataset(Dataset):
         return len(self.processed_file_names)
 
     def process(self):
-        raise NotImplementedError
+        pass
+        # raise NotImplementedError
     
     def get(self, idx):
         # raw_file_name = self.raw_file_name_lookup(idx).split('.')[0]

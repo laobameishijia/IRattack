@@ -50,7 +50,7 @@ class DGCNN(nn.Module):
         x_4 = torch.tanh(self.conv4(x_3, edge_index))
         x = torch.cat([x_1, x_2, x_3, x_4], dim=-1) # (462, 256)
         # x = global_sort_pool(x, batch, k=self.k) # (1, 16384)
-        x,top_k_indices = SortAggregation(k=self.k)(x, batch,) # (1, 16384)
+        x,top_k_indices = SortAggregation(k=self.k)(x, batch) # (1, 16384)
         x = x.view(x.size(0), 1, x.size(-1)) # (1,1,16384)
         x = self.relu(self.conv5(x)) # (1,16,64)
         x = self.pool(x) # (1,16,32)
