@@ -82,7 +82,7 @@ def collect_feature_impact_on_prediction(data, model, label, top_k=5):
     top_k_index_list = []
     for index, probs in changes:
         top_k -= 1
-        impact_str += f"Feature {index} zeroed out, probabilities: {probs}\n"
+        impact_str += f"Feature {index} zeroed out, label:{label} probabilities: {probs}\n"
         top_k_index_list.append(index)
         if top_k == 0:
             break

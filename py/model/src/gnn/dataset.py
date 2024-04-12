@@ -928,6 +928,114 @@ class CFGDataset_MAGIC_Test(CFGDataset):
 
         return [numericCnts, stringCnts]
 
+class CFGDataset_Semantics_Preseving(CFGDataset):
+    
+    def __init__(self, root='/home/wubolun/data/malware/big2015/further'):
+
+        # type of operators
+        self.opcodeTypes = {'trans': 0, 'call': 1, 'math': 2, 'cmp': 3,
+            'crypto': 4, 'mov': 5, 'term': 6, 'def': 7, 'other': 8}
+
+        self.number_of_classes = 2
+        super(CFGDataset, self).__init__(root, transform=None, pre_transform=None)
+    
+    @property
+    def processed_dir(self):
+        return os.path.join(self.root, 'cfg_semantics_preseving')
+    
+    def process(self):
+        ''' process raw JSON CFGs '''
+        idx = 0
+        for raw_path in tqdm.tqdm(self.raw_file_names):
+            fullpath = os.path.join(self.raw_dir, raw_path)
+            with open(fullpath, 'r') as f:
+                cfg = json.load(f)
+
+            # label
+            # y = int(self.labels[raw_path.split('.')[0]]) - 1
+            # y = int(self.labels[raw_path[:-5]])
+            y = 0 # 无所谓，给0也行。0是良性、1是恶意
+
+            addr_to_id = dict() # {str: int}
+            current_node_id = -1
+
+            x = list() # node attributes
+            for addr, block in cfg.items():
+                current_node_id += 1
+                addr_to_id[addr] = current_node_id
+
+                block_attr = self.get_block_attributes(block).tolist()
+                x.append(block_attr)
+
+            # get sparse adjacent matrix
+            edge_index = list()
+            for addr, block in cfg.items(): # addr is `str`
+                start_nid = addr_to_id[addr]
+                for out_edge in block['out_edge_list']:
+                    end_nid = addr_to_id[str(out_edge)]
+
+                    ## edge_index
+                    edge_index.append([start_nid, end_nid])
+
+            # Data
+            x = torch.tensor(x)
+            y = torch.tensor(y, dtype=torch.long).unsqueeze(0)
+            edge_index = torch.tensor(edge_index, dtype=torch.long).t()
+            data = Data(x=x, edge_index=edge_index, y=y)
+
+            # save
+            assert(self.raw_file_name_lookup(idx) == raw_path)
+            save_path = 'data_{}_{}.pt'.format(idx, raw_path[:-5])
+            save_path = os.path.join(self.processed_dir, save_path)
+            torch.save(data, save_path)
+
+            idx += 1
+            
+    def get_block_attributes(self, block):
+        ''' extract basic block attributes '''
+        instAttr = np.zeros((1, self.ins_dim))
+        for insn in block['insn_list']:
+            attr = self.get_insn_attributes(insn)
+            instAttr += np.array(attr) # 是累加，不是拼接，拼接的话，每个基本块最终产生的向量会因为指令数量的不同而产生差异
+
+        return instAttr
+    
+    def get_insn_attributes(self, insn):    
+        features_opcode = self._insn_opcode_features(insn)
+        return features_opcode    
+    
+    def _insn_opcode_features(self, insn):
+
+        features = [0] * len(self.opcodeTypes)
+        opcode = insn['opcode']
+
+        if opcode in CallingInstList:
+            features[self.opcodeTypes['call']] += 1
+        elif opcode in ConditionalJumpInstList:
+            features[self.opcodeTypes['trans']] += 1
+        elif opcode in UnconditionalJumpInstList:
+            features[self.opcodeTypes['trans']] += 1
+        elif opcode in EndHereInstList:
+            features[self.opcodeTypes['term']] += 1
+        elif opcode in RepeatInstList:
+            features[self.opcodeTypes['trans']] += 1
+            if insn['operands'] != []: # rep 没有operands
+                nested_features = self._insn_opcode_features({'opcode': insn['operands'][0]})
+                features = [x + y for (x, y) in zip(features, nested_features)]
+        elif opcode in MathInstList:
+            features[self.opcodeTypes['math']] += 1
+        elif opcode in CmpInstList:
+            features[self.opcodeTypes['cmp']] += 1
+        elif opcode in MovInstList:
+            features[self.opcodeTypes['mov']] += 1
+        elif opcode in DataInstList:
+            features[self.opcodeTypes['def']] += 1
+        else:
+            features[self.opcodeTypes['other']] += 1
+        
+        return features
+        
+        
 if __name__ == '__main__':
 
     # dataset = CFGDataset_Normalized_After_BERT(
