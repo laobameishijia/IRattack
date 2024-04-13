@@ -9,7 +9,7 @@ from torch_geometric.data import DataLoader
 
 
 from model.src.gnn.model import GIN0WithJK, GIN0, DGCNN
-from model.src.gnn.dataset import CFGDataset_Normalized_After_BERT, CFGDataset_MAGIC,CFGDataset_MAGIC_Test
+from model.src.gnn.dataset import CFGDataset_Semantics_Preseving, CFGDataset_MAGIC,CFGDataset_MAGIC_Test
 
 
 def split_pred_label(predictions, labels):
@@ -33,22 +33,26 @@ def split_pred_label(predictions, labels):
     return sliced_predictions, sliced_labels
 
 
-def measure(data_dir):
+def measure(data_dir, model):
     device = torch.device("cpu")
     result_file_path = data_dir + "/result.txt"
     result_file = open(result_file_path, 'w')
     
-    # big2015_dataset = CFGDataset_Normalized_After_BERT(
-    #     root='/home/wubolun/data/malware/big2015/further',
-    #     vocab_path='/home/wubolun/data/malware/big2015/further/set_0.5_pair_30/normal.vocab',
-    #     seq_len=64)
-
-    # dataset = CFGDataset_MAGIC_Test(root='/home/lebron/disassemble')
-    dataset = CFGDataset_MAGIC_Test(root= data_dir)
+    if model == "semantics_dgcnn":
+        dataset = CFGDataset_Semantics_Preseving(root= data_dir)
+        model = DGCNN(num_features=9, num_classes=dataset.num_classes)
+        model.load_state_dict(
+            torch.load("/home/lebron/IRattack/py/model/record/semantics_dgcnn_2.pth", map_location=device))
+    elif model == "dgcnn":
+        dataset = CFGDataset_MAGIC_Test(root= data_dir)
+        model = DGCNN(num_features=20, num_classes=dataset.num_classes)
+        model.load_state_dict(
+            torch.load("/home/lebron/IRattack/py/model/record/dgcnn_2.pth", map_location=device))
+    else:
+        print(f"Model: {model} is not exist!")
+        raise NotImplementedError
+    
     val_loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=5)
-    model = DGCNN(num_features=20, num_classes=dataset.num_classes)
-    model.load_state_dict(
-        torch.load("/home/lebron/IRattack/py/model/record/dgcnn_2.pth", map_location=device))
     model = model.to(device)
     model.eval()
     

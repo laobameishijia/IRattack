@@ -142,9 +142,9 @@ def extract_cfg(fuzz_dir):
     log_file = f"{dataset_dir}/extract_cfg.log"
     run_extract_cfg.run(data_dir=data_dir,store_dir=store_dir,file_format=file_format,log_file=log_file)
 
-def measure(fuzz_dir):
+def measure(fuzz_dir, model="dgcnn"):
     data_dir = fuzz_dir
-    result = run_measure.measure(data_dir=data_dir)
+    result = run_measure.measure(data_dir=data_dir, model=model)
     return result
 
 def add_random_asmIndex(functions, changes_log):
@@ -175,30 +175,12 @@ def add_random_asmIndex(functions, changes_log):
         functions[functionName].blocks[blockNum].asm_indices.append(asmIndex)
         return {"functionName": functionName, "blockNum": blockNum, "asmIndex": asmIndex}
 
-    # # 返回更新后的functions
-    # return functionName
-
 def add_random_asmIndex_to_all_blocks(functions, changes_log, discarded_changes_log):
     
-    max_log_prob = 0.8
-    log_len = len(changes_log)
-    # 计算从changes_log中挑选的概率，但不超过max_log_prob
-    prob = min(log_len / (log_len + 26), max_log_prob)
-    # 判断是否从changes_log中挑选
-    # if random.random() < prob and changes_log is not []:
-    #     # 从changes_log中随机选择一个变更
-    #     change = random.choice(changes_log)
-    #     asmIndex = change["asmIndex"]
-    #     return_asmIndex = {}
-    # else:
-        # 生成一个范围在0-26之间的随机asmIndex
-        # 但不能是discarded_changes_log里面的
     valid_range = set(range(27))  # 创建一个从0到26的集合
     valid_numbers = list(valid_range - set(discarded_changes_log)- set(changes_log))  # 移除被排除的数字，暂时也把changes_log的也移除
     asmIndex = random.choice(valid_numbers)  # 随机选择一个有效的数字
     return_asmIndex = {"asmIndex": asmIndex}
-    
-    return_asmIndex = {"asmIndex": asmIndex}    
     # 对每个函数进行遍历
     for functionName, function in functions.items():
         # 对该函数下的每个基本块进行遍历
@@ -208,7 +190,6 @@ def add_random_asmIndex_to_all_blocks(functions, changes_log, discarded_changes_
             print(f"Added - ALL Function ALL Block asmIndex: {asmIndex}")
     
     return return_asmIndex, asmIndex
-
 
 def file_hash(filename):
     with open(filename, "rb") as f:
@@ -255,7 +236,18 @@ def parse_hash_file(dir):
     else:
         return {}
 
-
+class FuzzLog:
+    
+    def __init__(self, fuzz_dir):
+        self.fuzz_log_file = open(f"{fuzz_dir}/log", mode="w")
+    
+    def write(self, writestr, color="white"):
+        self.fuzz_log_file.write(writestr)
+        print(colored(writestr, color))
+    
+    def flush(self):
+        self.fuzz_log_file.flush()
+        
 def main():
     
     # source_dir="/home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack"
@@ -263,24 +255,22 @@ def main():
     fuzz_dir="/home/lebron/IRFuzz/Linux.Phide"
     bash_sh = "/home/lebron/disassemble/attack/sourcecode/Linux.Phide/attack/fuzz_insertasminstruction.sh"
     temp_bb_file_path = f"{fuzz_dir}/temp/.basicblock"
+    model = "semantics_dgcnn"   # dgcnn
+    # semantics_dgcnn 是论文中的 9维基本块特征, 每个维度是基本块指令出现的次数
+    # dgcnn  是20维特征
     
     file_path = f"{source_dir}/BasicBlock.txt"
     functions = parse_file(file_path)
-    fuzz_log = open(f"{fuzz_dir}/log", mode="w")
-    
+    fuzz_log = FuzzLog(fuzz_dir)
     # 示例输出
     for functionName, functionInfo in functions.items():
         print(f"Function: {functionName}")
         for blockNum, blockInfo in functionInfo.blocks.items():
             print(f"  Block #{blockNum}, Count: {blockInfo.count}, Asm Indices: {' '.join(map(str, blockInfo.asm_indices))}")
 
-    # 输出到文件
-    # output_file(functions, output_path)
     
     build_fuzz_directories(fuzz_dir)
     copy_file_to_folder(source_file=f"{source_dir}/BasicBlock.txt",target_folder=f"{fuzz_dir}/in")
-    # copy_file_to_folder(source_file=f"{source_dir}/BasicBlock.txt",target_folder=f"{fuzz_dir}/out")
-    
     file_hashes = parse_hash_file(f"{fuzz_dir}/out")
     seed_list = list_txt_files(directory=f"{fuzz_dir}/out")
     
@@ -296,7 +286,6 @@ def main():
         if not choices:
             selected_files = []
             choices = seed_list[:]
-            print(colored(f"攻击失败！", 'red'))
             fuzz_log.write(f"攻击失败！^@^\n")
             exit()
         basicblockfile = random.choice(choices)
@@ -310,69 +299,40 @@ def main():
         changes_log = [] # 保留之前让文件良性概率增加的操作
         discarded_changes_log = [] # 抛弃那些添加操作之后，反而使良性概率降低的操作
         while num_episodes >= 0:
-            print("*************")
             fuzz_log.write("******************")
             fuzz_log.write(f"num_episodes is {num_episodes}\n")
             fuzz_log.write(f"changes_log is {changes_log}\n")
             fuzz_log.write(f"discarded_changes_log is {discarded_changes_log}\n")
             
-            print(colored(f"num_episodes: {num_episodes}", 'green'))
-            print(colored(f"changes_log: {changes_log}", 'green'))
-            print(colored(f"discarded_changes_log: {discarded_changes_log}", 'green'))
-            # 第一次进来,先不变异.为了获取初始恶意类别的分类概率
-            if num_episodes == 27:
-                num_episodes -= 1
-                output_file(functions, temp_bb_file_path)
-                # 插入+链接
-                run_bash(script_path= bash_sh,
-                        args=[source_dir, fuzz_dir, temp_bb_file_path])
-                # 返汇编
-                disassemble(fuzz_dir=fuzz_dir)
-                # 提取cfg
-                extract_cfg(fuzz_dir=fuzz_dir)
-                # 模型预测
-                next_state, result, prediction, top_k_indices = measure(fuzz_dir) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
-                result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
-                formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
-                probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
-                probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本
-                previous_probability_0 = probability_0 # 保留初始的概率
-                previous_probability_1 = probability_1 # 保留初始的概率
-                print(colored(f"probability_0: {probability_0}  probability_1:{probability_1}", 'green'))
-                fuzz_log.write(f"probability_0 is {probability_0} probability_1:{probability_1} \n\n ")
-                if probability_0 > probability_1:
-                    print(f"Now running basicblockfile: {basicblockfile}")
-                    attack_success = True
-                
+            num_episodes -= 1
+            # change = add_random_asmIndex(functions,changes_log) #增加随机变异,用change保留下来
+            if len(discarded_changes_log) == 26:
+                num_episodes = -1 # 终止这次循环
+                fuzz_log.write(f"Terminate this mutation because there is no operation that can improve the probability", 'red')
                 continue
-            else:  
-                num_episodes -= 1
-                # change = add_random_asmIndex(functions,changes_log) #增加随机变异,用change保留下来
-                if len(discarded_changes_log) == 26:
-                    num_episodes = -1 # 终止这次循环
-                    print(colored(f"Terminate this mutation because there is no operation that can improve the probability", 'red'))
-                    continue
-               
-                change,asmIndex = add_random_asmIndex_to_all_blocks(functions, changes_log, discarded_changes_log) #增加随机变异,用change保留下来
-                fuzz_log.write(f"chang is {asmIndex}\n")
+            
+            # change,asmIndex = add_random_asmIndex_to_all_blocks(functions, changes_log, discarded_changes_log) #增加随机变异,用change保留下来
+            change = add_random_asmIndex(functions, changes_log) #增加随机变异,用change保留下来
+            fuzz_log.write(f"chang is {change}\n")
 
-                output_file(functions, temp_bb_file_path)
-                # 插入+链接
-                run_bash(script_path= bash_sh,
-                        args=[source_dir, fuzz_dir, temp_bb_file_path])
-                # 返汇编
-                disassemble(fuzz_dir=fuzz_dir)
-                # 提取cfg
-                extract_cfg(fuzz_dir=fuzz_dir)
-                # 模型预测
-                next_state, result, prediction ,top_k_indices= measure(fuzz_dir) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
-                result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
-                formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
+            output_file(functions, temp_bb_file_path)
+            # 插入+链接
+            run_bash(script_path= bash_sh,
+                    args=[source_dir, fuzz_dir, temp_bb_file_path])
+            # 返汇编
+            disassemble(fuzz_dir=fuzz_dir)
+            # 提取cfg
+            extract_cfg(fuzz_dir=fuzz_dir)
+            # 模型预测
+            next_state, result, prediction, top_k_indices = measure(fuzz_dir, model=model) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
+            result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
+            formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
 
-                probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
-                probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本
-                print(colored(f"probability_0: {probability_0}  probability_1:{probability_1}", 'green'))
-                fuzz_log.write(f"probability_0 is {probability_0} probability_1:{probability_1} \n\n ")
+            probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
+            probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本
+            fuzz_log.write(f"probability_0 is {probability_0} probability_1:{probability_1} \n\n ", "green")
+            # 第一次进来,先不变异.为了获取初始恶意类别的分类概率
+            if num_episodes != 26:
                 # 如果良性的概率增加,将当前变异策略输出到out目录当中
                 if  probability_0 > previous_probability_0: 
                     # 刚开始只要比最初始的概率大，就保存。
@@ -382,29 +342,31 @@ def main():
                     # 检查文件是否重复
                     if not is_file_duplicate(seed_order=seed_count, fuzz_dir=fuzz_dir, file_hashes=file_hashes):
                         output_file(functions, f"{fuzz_dir}/out/{seed_count}.txt")
-                        print(colored(f"save functions to {fuzz_dir}/out/{seed_count}.txt", 'green'))
                         fuzz_log.write(f"save functions to {fuzz_dir}/out/{seed_count}.txt \n")
                         
                         seed_count += 1
                     else:
-                        print(colored(f"the seed file is duplicate", 'blue'))
+                        fuzz_log.write(f"the seed file is duplicate","green")
                         
                     # 如果返回的操作不为空，将其保存在changes_log中
                     if change is not {}: 
-                        # changes_log.append(change)
-                        changes_log.append(asmIndex)
+                        changes_log.append(change)
+                        # changes_log.append(asmIndex)
                         
                 # 如果没有这种变化,就舍弃当前给出的随机变化,重新将functions设置为原始
                 # 此外，保存这个change，从此不再使用这个变化
+                # TODO: discarded_changes_log 目前只在add_random_asmIndex_to_all_blocks中发挥作用
                 else:
                     functions= copy.deepcopy(copy_functions) 
-                    discarded_changes_log.append(asmIndex) # 抛弃那些添加操作之后，反而使良性概率降低的操作
-                
-                if probability_0 > probability_1:
-                    attack_success = True
-                    print(f"Now running basicblockfile: {basicblockfile}")
-                
-            fuzz_log.flush()  # 强制将缓冲区内容写入文件，但不关闭文件
+                    # discarded_changes_log.append(asmIndex) # 抛弃那些添加操作之后，反而使良性概率降低的操作
+                    discarded_changes_log.append(change) # 抛弃那些添加操作之后，反而使良性概率降低的操作
+                    
+            
+            if probability_0 > probability_1:
+                attack_success = True
+                print(f"Now running basicblockfile: {basicblockfile}")
+            
+        fuzz_log.flush()  # 强制将缓冲区内容写入文件，但不关闭文件
 
         # 重新加载文件夹中的种子内容
         seed_list = list_txt_files(directory=f"{fuzz_dir}/out")

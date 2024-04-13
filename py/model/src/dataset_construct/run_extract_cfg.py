@@ -5,6 +5,8 @@
 import argparse
 import datetime
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 
 from model.src.dataset_construct.asm import *
 

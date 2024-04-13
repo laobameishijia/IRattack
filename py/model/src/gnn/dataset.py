@@ -13,7 +13,9 @@ import torch
 import tqdm
 # 这里是名字的问题，之前叫dataset可能跟什么包冲突了，改成dataset_construct没有问题
 from dataset_construct.constant import CallingInstList, CmpInstList, ConditionalJumpInstList, EndHereInstList, MathInstList, MovInstList, RepeatInstList, UnconditionalJumpInstList, DataInstList
-from torch_geometric.data import Data, DataLoader, Dataset
+from torch_geometric.data import Data, Dataset
+from torch_geometric.loader import DataLoader
+
 from transformers import BertConfig
 
 # sys.path.append('../bert_tidy/')
@@ -49,18 +51,21 @@ class BBSDataset(torch.utils.data.Dataset):
 
 
 class CFGDataset(Dataset):
-    def __init__(self, root):
+    def __init__(self, root, is_train=False):
         self.number_of_classes = 2
-        self.label_path = os.path.join(root, 'trainLabels.csv')
+        self.is_train = is_train
         
-        # labels
-        self.labels = {}
-        with open(self.label_path, 'r') as f:
-            data = csv.reader(f)
-            for row in data:
-                if row[0] == 'Id':
-                    continue
-                self.labels[row[0]] = int(row[1])
+        if self.is_train:
+            self.label_path = os.path.join(root, 'trainLabels.csv')
+            # labels
+            self.labels = {}
+            with open(self.label_path, 'r') as f:
+                data = csv.reader(f)
+                for row in data:
+                    if row[0] == 'Id':
+                        continue
+                    self.labels[row[0]] = int(row[1])
+            self.is_train = True
         # file_names
         self.raw_file_names_list = []
         self.processed_file_names_list = []
@@ -103,8 +108,11 @@ class CFGDataset(Dataset):
         for filename in self.raw_file_names:
             # label = self.labels[filename.split('.')[0]]
             label = self.labels[filename[:-5]]
-            label_list.append(int(label))
-
+            if self.is_train:
+                label_list.append(int(label))
+            else:
+                label_list.append(int(0)) # 不训练的情况下，就默认是0
+                
         groups = [[] for _ in range(self.number_of_classes)]
         for i, label in enumerate(label_list):
             # groups[label-1].append(i)
@@ -781,7 +789,7 @@ class CFGDataset_MAGIC_Test(CFGDataset):
         self.block_dim = self.ins_dim + len(self.vertexTypes)
 
         self.number_of_classes = 2
-        super(CFGDataset, self).__init__(root, transform=None, pre_transform=None)
+        super(CFGDataset_MAGIC_Test, self).__init__(root)
 
     @property
     def processed_dir(self):
@@ -930,14 +938,18 @@ class CFGDataset_MAGIC_Test(CFGDataset):
 
 class CFGDataset_Semantics_Preseving(CFGDataset):
     
-    def __init__(self, root='/home/wubolun/data/malware/big2015/further'):
+    def __init__(self, root, is_train=False):
 
         # type of operators
         self.opcodeTypes = {'trans': 0, 'call': 1, 'math': 2, 'cmp': 3,
             'crypto': 4, 'mov': 5, 'term': 6, 'def': 7, 'other': 8}
 
         self.number_of_classes = 2
-        super(CFGDataset, self).__init__(root, transform=None, pre_transform=None)
+        
+        # instruction attributes length
+        self.ins_dim = len(self.opcodeTypes)
+            
+        super(CFGDataset_Semantics_Preseving, self).__init__(root, is_train)
     
     @property
     def processed_dir(self):
@@ -953,8 +965,9 @@ class CFGDataset_Semantics_Preseving(CFGDataset):
 
             # label
             # y = int(self.labels[raw_path.split('.')[0]]) - 1
-            # y = int(self.labels[raw_path[:-5]])
-            y = 0 # 无所谓，给0也行。0是良性、1是恶意
+            if self.is_train : y = int(self.labels[raw_path[:-5]])
+            else: y = 0
+            # y = 0 # 无所谓，给0也行。0是良性、1是恶意
 
             addr_to_id = dict() # {str: int}
             current_node_id = -1
@@ -998,7 +1011,7 @@ class CFGDataset_Semantics_Preseving(CFGDataset):
             attr = self.get_insn_attributes(insn)
             instAttr += np.array(attr) # 是累加，不是拼接，拼接的话，每个基本块最终产生的向量会因为指令数量的不同而产生差异
 
-        return instAttr
+        return np.concatenate(instAttr, axis=None)
     
     def get_insn_attributes(self, insn):    
         features_opcode = self._insn_opcode_features(insn)
@@ -1042,14 +1055,14 @@ if __name__ == '__main__':
     #     root='/home/wubolun/data/malware/big2015/further',
     #     vocab_path='/home/wubolun/data/malware/big2015/further/set_0.5_pair_30/normal.vocab',
     #     seq_len=64)
-    dataset = CFGDataset_MAGIC(root=r'F:\研二上\论文\dataset')
+    dataset = CFGDataset_Semantics_Preseving(root=r'/home/lebron/disassemble')
     print(len(dataset))
 
     for k in range(5):
         train_idx, val_idx = dataset.train_val_split(k)
         print('{}: train_len {}, val_len {}'.format(k, len(train_idx), len(val_idx)))
 
-    dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
     for data in dataloader:
         print(data)
         print(data.x)

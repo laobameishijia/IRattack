@@ -91,16 +91,28 @@ def collect_feature_impact_on_prediction(data, model, label, top_k=5):
 
 def build_output_dir(dir):
     
+    # 定义 bb_impact 文件夹及其子文件夹 0 和 1 的路径
     folder_path = os.path.join(dir, "bb_impact")
-    print(folder_path)
-    # 检查文件夹是否存在
-    if not os.path.exists(folder_path):
-        # 文件夹不存在，创建它
-        os.makedirs(folder_path)
-        print(f"Created folder: {folder_path}")
+    zero_folder_path = os.path.join(folder_path, "0")
+    one_folder_path = os.path.join(folder_path, "1")
+
+    # 检查 0 文件夹是否存在
+    if not os.path.exists(zero_folder_path):
+        # 0 文件夹不存在，创建它
+        os.makedirs(zero_folder_path)
+        print(f"Created folder: {zero_folder_path}")
     else:
-        # 文件夹已存在
-        print(f"Folder already exists: {folder_path}")
+        # 0 文件夹已存在
+        print(f"Folder already exists: {zero_folder_path}")
+
+    # 检查 1 文件夹是否存在
+    if not os.path.exists(one_folder_path):
+        # 1 文件夹不存在，创建它
+        os.makedirs(one_folder_path)
+        print(f"Created folder: {one_folder_path}")
+    else:
+        # 1 文件夹已存在
+        print(f"Folder already exists: {one_folder_path}")
 
 def output_file(all_str, output_path):
     """按照原始文件格式输出内容到文件"""
@@ -132,7 +144,8 @@ for data in tqdm.tqdm(data_loader):
     feature_impact_str, top_k_index = collect_feature_impact_on_prediction(data, model, predictions)
     asm_str = format_asm(cfg=cfg, block_k_index=top_k_index)
     
-    output_file(feature_impact_str+asm_str, f"{bb_impact_dir}/{cfg_name[:-5]}")
+    output_file(feature_impact_str+asm_str, f"{bb_impact_dir}/{predictions}/{cfg_name[:-5]}")
+    print(f"save {bb_impact_dir}/{predictions}/{cfg_name[:-5]}")
     
     idx += 1
 
