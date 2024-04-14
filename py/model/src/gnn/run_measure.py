@@ -35,8 +35,6 @@ def split_pred_label(predictions, labels):
 
 def measure(data_dir, model):
     device = torch.device("cpu")
-    result_file_path = data_dir + "/result.txt"
-    result_file = open(result_file_path, 'w')
     
     if model == "semantics_dgcnn":
         dataset = CFGDataset_Semantics_Preseving(root= data_dir)
@@ -65,9 +63,7 @@ def measure(data_dir, model):
         predictions.extend(out.argmax(dim=1).tolist())
         labels.extend(data.y.tolist())
         print(f"predictions: {predictions}")
-        result_file.write(f"predictions: {out.argmax(dim=1).tolist()[0]}\n")
         print(f"label: {labels}")
-    result_file.close()
 
     return data,out,predictions,top_k_indices
 
