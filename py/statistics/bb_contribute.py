@@ -121,13 +121,13 @@ def output_file(all_str, output_path):
     file.close()
 
 device = torch.device("cpu")
-model = DGCNN(num_features=20, num_classes=2)
+model = DGCNN(num_features=9, num_classes=2)
 model.load_state_dict(
-    torch.load("/home/lebron/IRattack/py/model/record/dgcnn_2.pth", map_location=device))
+    torch.load("/home/lebron/IRattack/py/model/record/semantics_dgcnn_2.pth", map_location=device))
 model = model.to(device)
 model.eval()
 
-data_dir = "/home/lebron/disassemble"
+data_dir = "/home/lebron/disassemble/attack"
 cfg_dir = f"{data_dir}/cfg"
 dataset = CFGDataset(root=data_dir)
 data_loader = DataLoader(dataset, batch_size=1)

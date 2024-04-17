@@ -5,7 +5,7 @@ import tqdm
 import numpy as np
 
 from sklearn import metrics
-from torch_geometric.data import DataLoader
+from torch_geometric.loader import DataLoader
 
 
 from model.src.gnn.model import GIN0WithJK, GIN0, DGCNN
@@ -60,6 +60,12 @@ def measure(data_dir, model):
         data = data.to(device)
         out,top_k_indices = model(data)
         # print(out)
+        result = torch.exp(out) # 将模型输出的logsoftmax转换为softmax
+        formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
+        probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
+        probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本
+        print(f"probability_0: {probability_0}, probability_1: {probability_1}")
+        
         predictions.extend(out.argmax(dim=1).tolist())
         labels.extend(data.y.tolist())
         print(f"predictions: {predictions}")
