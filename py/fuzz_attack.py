@@ -65,7 +65,7 @@ def run_bash(script_path, args:list):
     
 def build_fuzz_directories(fuzz_dir):
     # 要检查和创建的文件夹列表
-    folders = ["in", "out_random_block", "out_all_block" ,"rawdata", "asm", "cfg", "cfg_magic_test","temp"]
+    folders = ["in", "out", "out/random_block", "out/all_block" ,"rawdata", "asm", "cfg", "cfg_magic_test","temp"]
 
     for folder in folders:
         # 构造完整的文件夹路径
@@ -80,7 +80,7 @@ def build_fuzz_directories(fuzz_dir):
             # 文件夹已存在
             print(f"Folder already exists: {folder_path}")
 
-def list_txt_files(directory):
+def list_seed_files(directory):
     """
     列出指定目录下所有的.txt文件的完整路径。
 
@@ -273,7 +273,7 @@ class Fuzz:
         build_fuzz_directories(self.fuzz_dir)
         # copy_file_to_folder(source_file=f"{self.source_dir}/BasicBlock.txt",target_folder=f"{self.fuzz_dir}/out")
         # self.file_hashes = parse_hash_file(f"{self.fuzz_dir}/out")
-        # self.seed_list = list_txt_files(directory=f"{self.fuzz_dir}/out")
+        # self.seed_list = list_seed_files(directory=f"{self.fuzz_dir}/out")
         
         # 示例输出,获取初始概率
         self.fuzz_log.write(f"初始概率为:", "green")
@@ -284,17 +284,19 @@ class Fuzz:
     def run(self, mutate):
         
         if mutate == "ALL BLOCK":
-            copy_file_to_folder(source_file=f"{self.source_dir}/BasicBlock.txt",target_folder=f"{self.fuzz_dir}/out_all_block")
-            self.file_hashes = parse_hash_file(f"{self.fuzz_dir}/out_all_block")
-            self.seed_list = list_txt_files(directory=f"{self.fuzz_dir}/out_all_block")
-            
+            copy_file_to_folder(source_file=f"{self.source_dir}/BasicBlock.txt",target_folder=f"{self.fuzz_dir}/out/all_block")
+            self.file_hashes = parse_hash_file(f"{self.fuzz_dir}/out/all_block")
+            self.seed_list = list_seed_files(directory=f"{self.fuzz_dir}/out/all_block")
+            self.seed_count = len(self.seed_list) - 1
+            self.fuzz_log.write(f"there is {self.seed_count} seed files","green")
             self.run_all_block()
             
         elif mutate == "RANDOM BLOCK":
-            copy_file_to_folder(source_file=f"{self.source_dir}/BasicBlock.txt",target_folder=f"{self.fuzz_dir}/out_random_block")
-            self.file_hashes = parse_hash_file(f"{self.fuzz_dir}/out_random_block")
-            self.seed_list = list_txt_files(directory=f"{self.fuzz_dir}/out_random_block")
-            
+            copy_file_to_folder(source_file=f"{self.source_dir}/BasicBlock.txt",target_folder=f"{self.fuzz_dir}/out/random_block")
+            self.file_hashes = parse_hash_file(f"{self.fuzz_dir}/out/random_block")
+            self.seed_list = list_seed_files(directory=f"{self.fuzz_dir}/out/random_block")
+            self.seed_count = len(self.seed_list) - 1
+            self.fuzz_log.write(f"there is {self.seed_count} seed files","green")
             self.run_random_block()
         else:
             raise NotImplementedError
@@ -302,7 +304,7 @@ class Fuzz:
     def run_all_block(self):
         self.fuzz_log.write(f"**All block mutator** \n","red")
         previous_probability_0 = self.init_probability_0
-        self.seed_count = 0
+        # self.seed_count = 0
         attack_success = False
         selected_files = []
 
@@ -347,8 +349,8 @@ class Fuzz:
                 if  probability_0 > previous_probability_0:
                     # 检查文件是否重复
                     if not is_file_duplicate(seed_order=self.seed_count, fuzz_dir=self.fuzz_dir, file_hashes=self.file_hashes):
-                        output_file(functions, f"{self.fuzz_dir}/out_all_block/{self.seed_count}.txt")
-                        self.fuzz_log.write(f"save functions to {self.fuzz_dir}/out_all_block/{self.seed_count}.txt \n\n")
+                        output_file(functions, f"{self.fuzz_dir}/out/all_block/{self.seed_count}.txt")
+                        self.fuzz_log.write(f"save functions to {self.fuzz_dir}/out/all_block/{self.seed_count}.txt \n\n")
                         self.seed_count += 1
                     else:
                         self.fuzz_log.write(f"the seed file is duplicate","green")
@@ -365,7 +367,7 @@ class Fuzz:
                     # 每次都设置成最开始进入循环的样子
                     discarded_changes_log.append(asmIndex) # 抛弃那些添加操作之后，反而使良性概率降低的操作
                     
-                functions= copy.deepcopy(copy_functions)
+                # functions= copy.deepcopy(copy_functions)
                 
                 if probability_0 > probability_1:
                     attack_success = True
@@ -379,12 +381,12 @@ class Fuzz:
             self.fuzz_log.flush()  # 强制将缓冲区内容写入文件，但不关闭文件
 
             # 重新加载文件夹中的种子内容
-            self.seed_list = list_txt_files(directory=f"{self.fuzz_dir}/out_all_block")
+            self.seed_list = list_seed_files(directory=f"{self.fuzz_dir}/all_block")
             
     def run_random_block(self):
         self.fuzz_log.write(f"**Random block mutator** \n","red")
         previous_probability_0 = self.init_probability_0
-        self.seed_count = 0
+        # self.seed_count = 0
         attack_success = False
         selected_files = []
         
@@ -395,19 +397,19 @@ class Fuzz:
             if not choices:
                 selected_files = []
                 choices = self.seed_list[:]
-                self.fuzz_log.write(f"攻击失败！^@^\n")
-                exit()
+                # self.fuzz_log.write(f"攻击失败！^@^\n")
+                # exit()
             basicblockfile = random.choice(choices)
             # 将选择的文件添加到已选择列表中
             selected_files.append(basicblockfile)   
             
             self.fuzz_log.write(f"Now is {basicblockfile}\n")
-            num_episodes = 26 # 一个文件，我们变异26次
+            num_episodes = 27 # 一个文件，我们变异26次
             functions = parse_file(basicblockfile) # 解析文件
             copy_functions = copy.deepcopy(functions) # 保存原有副本
             changes_log = [] # 保留之前让文件良性概率增加的操作
             discarded_changes_log = [] # 抛弃那些添加操作之后，反而使良性概率降低的操作
-            while num_episodes >= 0 and not attack_success :
+            while num_episodes > 0 and not attack_success :
                 num_episodes -= 1
                 self.fuzz_log.write("******************")
                 self.fuzz_log.write(f"num_episodes is {num_episodes}\n")
@@ -424,14 +426,11 @@ class Fuzz:
                 # 如果良性的概率增加,将当前变异策略输出到out目录当中
                 # 最开始为提高随机性，只要大于0都保存
                 if  probability_0 > previous_probability_0:
-                    # 刚开始只要比最初始的概率大，就保存。
-                    # 当changes_logs到达50个的时候，无法提高原始init_probability_0的操作不保存。
-                    if len(changes_log) > 50:
-                        previous_probability_0 = self.init_probability_0
+                    previous_probability_0 = probability_0
                     # 检查文件是否重复
                     if not is_file_duplicate(seed_order=self.seed_count, fuzz_dir=self.fuzz_dir, file_hashes=self.file_hashes):
-                        output_file(functions, f"{self.fuzz_dir}/out_random_block/{self.seed_count}.txt")
-                        self.fuzz_log.write(f"save functions to {self.fuzz_dir}/out_random_block/{self.seed_count}.txt \n\n")
+                        output_file(functions, f"{self.fuzz_dir}/out/random_block/{self.seed_count}.txt")
+                        self.fuzz_log.write(f"save functions to {self.fuzz_dir}/out/random_block/{self.seed_count}.txt \n\n")
                         self.seed_count += 1
                     else:
                         self.fuzz_log.write(f"the seed file is duplicate","green")
@@ -450,7 +449,8 @@ class Fuzz:
                 # 还是说，回到变异操作应用之前，去尝试更多的变异操作
                 else:
                     # functions= copy.deepcopy(copy_functions) 
-                    functions = previous_functions
+                    # functions = previous_functions
+                    pass
                 
                 if probability_0 > probability_1:
                     attack_success = True
@@ -462,7 +462,7 @@ class Fuzz:
             self.fuzz_log.flush()  # 强制将缓冲区内容写入文件，但不关闭文件
 
             # 重新加载文件夹中的种子内容
-            self.seed_list = list_txt_files(directory=f"{self.fuzz_dir}/out")
+            self.seed_list = list_seed_files(directory=f"{self.fuzz_dir}/out/random_block")
                        
     def get_probability(self):
         
@@ -497,9 +497,9 @@ if __name__ == "__main__":
     fuzz_dir="/home/lebron/IRFuzz/Linux.Apachebd"
     bash_sh = "/home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh"
     # temp_bb_file_path = f"{fuzz_dir}/temp/.basicblock"
-    model = "semantics_dgcnn"   # dgcnn
+    model = "semantics_dgcnn"   # dgcnn  semantics_dgcnn
     fuzz = Fuzz(source_dir,fuzz_dir,bash_sh,model)
-    fuzz.run(mutate="ALL BLOCK")
+    # fuzz.run(mutate="ALL BLOCK")
     fuzz.run(mutate="RANDOM BLOCK")
     
     exit()
@@ -531,7 +531,7 @@ def main():
     build_fuzz_directories(fuzz_dir)
     copy_file_to_folder(source_file=f"{source_dir}/BasicBlock.txt",target_folder=f"{fuzz_dir}/out")
     file_hashes = parse_hash_file(f"{fuzz_dir}/out")
-    seed_list = list_txt_files(directory=f"{fuzz_dir}/out")
+    seed_list = list_seed_files(directory=f"{fuzz_dir}/out")
     
     previous_probability_0 = 0
     seed_count = 0
@@ -628,6 +628,6 @@ def main():
         fuzz_log.flush()  # 强制将缓冲区内容写入文件，但不关闭文件
 
         # 重新加载文件夹中的种子内容
-        seed_list = list_txt_files(directory=f"{fuzz_dir}/out")
+        seed_list = list_seed_files(directory=f"{fuzz_dir}/out")
 
        
