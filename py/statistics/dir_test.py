@@ -25,7 +25,7 @@ device = torch.device("cpu")
 data_dir="/home/lebron/disassemble/attack/"
 # disassemble(fuzz_dir=data_dir)
 # extract_cfg(fuzz_dir=data_dir)
-data, result, predictions, _= measure(fuzz_dir=data_dir, model="semantics_dgcnn")
+data, result, predictions, _= measure(fuzz_dir=data_dir, model="dgcnn")
 result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
 formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
 
@@ -40,6 +40,9 @@ dgcnn:
 
     check_bcf_O0
     probability_0: 0.0, probability_1: 1.0
+    
+    check_fla
+    probability_0: 0.9913820028305054, probability_1: 0.008617999963462353
 
 
 semantics_dgcnn:
@@ -49,6 +52,9 @@ semantics_dgcnn:
 
     check_bcf_O0
     probability_0: 0.006519999820739031, probability_1: 0.9934800267219543
+    
+    check_fla
+    probability_0: 0.9880070090293884, probability_1: 0.011993000283837318
 
 
 """
