@@ -46,13 +46,15 @@ static const primeTy primes[] = {
     1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583,
     1597, 1601, 1607, 1609, 1613, 1619, 1621};
 
-static cl::opt<int> BCFRate(
-    "bcf_rate", cl::init(30),
-    cl::desc("The probability that each basic block will be obfuscated. (default=30, max=100)"));
+// static cl::opt<int> BCFRate(
+//     "bcf_rate", cl::init(30),
+//     cl::desc("The probability that each basic block will be obfuscated. (default=30, max=100)"));
 
-BogusControlFlow::BogusControlFlow() {
+BogusControlFlow::BogusControlFlow(int bcf_rate) {
     // init random numeral generator
     rng = std::mt19937(std::random_device{}());
+    this->BCFRate = bcf_rate;
+
 }
 
 bool BogusControlFlow::doBogusControlFlow(Function &F) {
@@ -350,8 +352,9 @@ bool BogusControlFlowPass::runOnFunction(Function &F) {
 }
 
 char BogusControlFlowPass::ID = 0;
-static RegisterPass<BogusControlFlowPass> X("bcf", "bogus control flow");
+// static RegisterPass<BogusControlFlowPass> X("bcf", "bogus control flow");
 
-Pass *llvm::createBogusControlFlow(bool flag) {
-    return new BogusControlFlowPass(flag);
+// Pass *llvm::createBogusControlFlow(bool flag, int bcf_rate) {
+FunctionPass *llvm::createBogusControlFlow(bool flag, int bcf_rate) {
+    return new BogusControlFlowPass(flag, bcf_rate);
 }

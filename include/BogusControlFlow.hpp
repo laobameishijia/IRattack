@@ -18,7 +18,7 @@ typedef uint32_t primeTy;
 
 class BogusControlFlow {
 public:
-    BogusControlFlow();
+    BogusControlFlow(int bcf_rate);
 
     bool doBogusControlFlow(Function &F);
 
@@ -26,6 +26,7 @@ protected:
     std::mt19937 rng;
     std::vector<Value *> usableVars;
     bool firstObf;
+    int BCFRate;
 
     void collectUsableVars(std::vector<BasicBlock *> &useful);
     void buildBCF(BasicBlock *src, BasicBlock *dst,
@@ -36,15 +37,15 @@ protected:
 
 class BogusControlFlowPass : public FunctionPass {
 public:
-    static char ID;
+    static char ID ;
     bool flag;
 
-    BogusControlFlowPass() : FunctionPass(ID) {
-        bogusControlFlow = new BogusControlFlow();
+    BogusControlFlowPass(int bcf_rate) : FunctionPass(ID) {
+        bogusControlFlow = new BogusControlFlow(bcf_rate);
         flag = true;
     }
-    BogusControlFlowPass(bool flag) : FunctionPass(ID) {
-        bogusControlFlow = new BogusControlFlow();
+    BogusControlFlowPass(bool flag, int bcf_rate) : FunctionPass(ID) {
+        bogusControlFlow = new BogusControlFlow(bcf_rate);
         this->flag = flag;
     }
 

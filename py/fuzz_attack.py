@@ -319,6 +319,13 @@ class Fuzz:
             self.seed_count = len(self.seed_list) - 1
             self.fuzz_log.write(f"there is {self.seed_count} seed files","green")
             self.run_random_block()
+        elif mutate == "flatten":
+
+            pass
+        
+        elif mutate == "bogus":
+            
+            pass 
         else:
             raise NotImplementedError
     

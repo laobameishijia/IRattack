@@ -59,14 +59,20 @@ class FlatPlusPass : public FunctionPass {
 public:
     static char ID;
     bool flag;
+    bool DontFlaInvoke;
+    int FlaCnt;
 
-    FlatPlusPass() : FunctionPass(ID) {
+    FlatPlusPass(bool dont_fla_invoke=false, int fla_cnt=1) : FunctionPass(ID) {
         flatPlus = new FlatPlus();
         flag = true;
+        DontFlaInvoke = dont_fla_invoke;
+        FlaCnt = fla_cnt;
     }
-    FlatPlusPass(bool flag) : FunctionPass(ID) {
+    FlatPlusPass(bool flag, bool dont_fla_invoke=false, int fla_cnt=1) : FunctionPass(ID) {
         flatPlus = new FlatPlus();
         this->flag = flag;
+        DontFlaInvoke = dont_fla_invoke;
+        FlaCnt = fla_cnt;
     }
 
     bool runOnFunction(Function &F) override;

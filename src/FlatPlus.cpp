@@ -14,13 +14,13 @@
 #define MAX_FLA_CNT (3)
 #define MAX_FLA_CNT_STR "3"
 
-static cl::opt<bool> DontFlaInvoke(
-    "dont_fla_invoke", cl::init(false),
-    cl::desc("Don't flat this function if find InvokeInst inside"));
+// static cl::opt<bool> DontFlaInvoke(
+//     "dont_fla_invoke", cl::init(false),
+//     cl::desc("Don't flat this function if find InvokeInst inside"));
 
-static cl::opt<int> FlaCnt(
-    "fla_cnt", cl::init(1),
-    cl::desc("do flatten X times (default=1, max=" MAX_FLA_CNT_STR ")"));
+// static cl::opt<int> FlaCnt(
+//     "fla_cnt", cl::init(1),
+//     cl::desc("do flatten X times (default=1, max=" MAX_FLA_CNT_STR ")"));
 
 FlatPlus::FlatPlus() {
     // init random numeral generator
@@ -452,8 +452,9 @@ bool FlatPlusPass::runOnFunction(Function &F) {
 }
 
 char FlatPlusPass::ID = 0;
-static RegisterPass<FlatPlusPass> X("fla_plus", "cfg flatten plus");
+// static RegisterPass<FlatPlusPass> X("fla_plus", "cfg flatten plus");
 
-Pass *llvm::createFlatPlus(bool flag) {
-    return new FlatPlusPass(flag);
+// Pass *llvm::createFlatPlus(bool flag, bool dont_fla_invoke, int fla_cnt) {
+FunctionPass *llvm::createFlatPlus(bool flag, bool dont_fla_invoke, int fla_cnt) {    
+    return new FlatPlusPass(flag, dont_fla_invoke, fla_cnt);
 }
