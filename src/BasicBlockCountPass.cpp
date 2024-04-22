@@ -12,17 +12,18 @@ using namespace std;
 
 static cl::opt<std::string> OutputPrefix("output-prefix", cl::desc("Specify prefix for output files"), cl::value_desc("prefix"));
 
-// 定义LLVM pass
 class BasicBlockCountPass : public FunctionPass {
 public:
     static char ID;
     OutputHandler handler;
-    BasicBlockCountPass() : FunctionPass(ID),handler(OutputPrefix.getValue()) {
-        
-    }
+    int flattenLevel;  // Example variable for flatten level
+    int bcfRate;       // Example variable for BCF rate
+
+    BasicBlockCountPass() : FunctionPass(ID), handler(OutputPrefix.getValue()), flattenLevel(0), bcfRate(0) {}
 
     bool runOnFunction(Function &F) override {
-        
+        handler.writeHeader(F, flattenLevel, bcfRate);  // Write function header with new format
+
         unsigned int BBCounter = 0;  // Count the basic blocks
         for (auto &B : F) {
             unsigned int InstCounter = 0; // Count the instructions in each basic block

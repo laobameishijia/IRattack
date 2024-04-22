@@ -11,49 +11,68 @@ from model.src.gnn import run_measure
 import hashlib
 
 class BlockInfo:
-    def __init__(self, count=0, asm_indices=None):
+    def __init__(self, count, asm_indices):
         self.count = count
-        self.asm_indices = asm_indices if asm_indices is not None else []
+        self.asm_indices = asm_indices
 
 class FunctionInfo:
-    def __init__(self):
+    def __init__(self, flatten_level=0, bcf_rate=0):
+        self.flatten_level = flatten_level # 平坦化多少次
+        self.bcf_rate = bcf_rate # 基本块作虚拟控制流的概率
         self.blocks = {}
 
-def parse_asm_indices(line):
-    """解析字符串中所有+号后面的数字，并添加到列表中"""
-    return [int(num) for num in line.split('+')[1:]]
+
+def parse_asm_indices(indices_str):
+    """解析汇编指令索引字符串，返回索引列表"""
+    return [int(idx) for idx in indices_str.split('+') if idx.strip()]
 
 def parse_file(file_path):
-    """解析文件并填充包含多个函数信息的字典"""
+    """解析文件并填充包含多个函数信息的字典，现在包括Flatten层级和BCF比例"""
     functions = {}
+    current_function = None
+
     with open(file_path, 'r') as file:
         for line in file:
             line = line.strip()
-            functionName, rest = line.split('#')
-            blockNum_str, asmPart = rest.split('&')
-            blockNum = int(blockNum_str)
-            count_str, _, asmIndices_str = asmPart.partition(': ')
-            count = int(count_str.strip(': '))  # 修改此处，确保从字符串提取整数前去除了冒号和空格
-            
-            asmIndices = []
-            if asmIndices_str.strip():  # 确保不是空字符串
-                asmIndices = parse_asm_indices(asmIndices_str)
-            
-            if functionName not in functions:
-                functions[functionName] = FunctionInfo()
-            functions[functionName].blocks[blockNum] = BlockInfo(count, asmIndices)
+            if line.startswith('['):  # 新函数开始
+                header = line.strip('[]')
+                function_name, settings = header.split('@')
+                flatten_level, bcf_rate = map(int, settings.split(','))
+                current_function = function_name
+                functions[current_function] = FunctionInfo(flatten_level, bcf_rate)
+            else:
+                function_name, rest = line.split('#')
+                block_num_str, asm_part = rest.split('&')
+                block_num = int(block_num_str)
+                count_str, _, asm_indices_str = asm_part.partition(': ')
+                count = int(count_str.strip(': '))  # 修改此处，确保从字符串提取整数前去除了冒号和空格
+
+                asm_indices = []
+                if asm_indices_str.strip():  # 确保不是空字符串
+                    asm_indices = parse_asm_indices(asm_indices_str)
+
+                if function_name not in functions:
+                    functions[function_name] = FunctionInfo()
+                functions[function_name].blocks[block_num] = BlockInfo(count, asm_indices)
+
     return functions
 
 def output_file(functions, output_path):
-    """按照原始文件格式输出内容到文件"""
+    """按照扩展文件格式输出内容到文件, 包括函数的 Flatten 级别和 BCF 比例"""
     with open(output_path, 'w') as file:
         for functionName, functionInfo in functions.items():
+            # 写入函数级别的配置信息
+            file.write(f"[{functionName}@{functionInfo.flatten_level},{functionInfo.bcf_rate}]\n")
+            
             for blockNum, blockInfo in functionInfo.blocks.items():
-                line = f"{functionName}#{blockNum}&{blockInfo.count}: "
+                line = f"{functionName}#{blockNum}&{blockInfo.count}:" # :后面别加空格
                 if blockInfo.asm_indices:
                     line += '+' + '+'.join(map(str, blockInfo.asm_indices))
                 file.write(line + '\n')
-
+            # 每个函数信息之后添加一个空行以增加可读性
+            file.write('\n')
+    file.close()
+    
 def run_bash(script_path, args:list):
     import subprocess
     print(f"Now run {script_path}")
@@ -237,10 +256,12 @@ def parse_hash_file(dir):
         return {}
 
 def print_functions(functions):
+    """打印函数及其基本块的详细信息，包括 Flatten 级别和 BCF 比例"""
     for functionName, functionInfo in functions.items():
-        print(f"Function: {functionName}")
+        print(f"Function: {functionName} (Flatten Level: {functionInfo.flatten_level}, BCF Rate: {functionInfo.bcf_rate})")
         for blockNum, blockInfo in functionInfo.blocks.items():
-            print(f"  Block #{blockNum}, Count: {blockInfo.count}, Asm Indices: {' '.join(map(str, blockInfo.asm_indices))}")
+            asm_indices_str = ' '.join(map(str, blockInfo.asm_indices)) if blockInfo.asm_indices else "None"
+            print(f"  Block #{blockNum}, Count: {blockInfo.count}, Asm Indices: {asm_indices_str}")
 
     
 class FuzzLog:

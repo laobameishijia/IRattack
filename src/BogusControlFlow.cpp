@@ -244,7 +244,7 @@ void BogusControlFlow::buildBCF(
     BasicBlock *fakeDst = nullptr;
     do {
         fakeDst = jumpTarget[rng() % jumpTarget.size()];
-    } while (fakeDst == dst && jumpTarget.size() == 1);
+    } while (fakeDst == dst && jumpTarget.size() == 1);//这里不会是无限循环
     if (firstObf) {
         BasicBlock *junk = buildJunk(F);
         if (junk) {

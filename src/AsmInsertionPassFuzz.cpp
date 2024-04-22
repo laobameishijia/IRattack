@@ -15,52 +15,91 @@
 using namespace llvm;
 using namespace std;
 
-struct BlockInfo {
-    int count;  // 基本块个数
-    std::vector<int> asmIndices;  // 汇编指令序数列表
+struct BlockMutationInfo {
+    std::vector<int> asmInstructionsIndices;
 };
 
-struct FunctionInfo {
-    std::unordered_map<int, BlockInfo> blocks;  // 使用基本块序数作为键
+struct FunctionMutationInfo {
+    int flattenLevel;
+    int bcfRate;
+    std::unordered_map<int, BlockMutationInfo> blockInfos;  // key: block index
 };
 
-// 解析字符串中的所有+号后面的数字，并添加到向量中
-void parseAsmIndices(const std::string& str, std::vector<int>& indices) {
-    std::istringstream stream(str);
-    char ch;
-    int num;
-    while (stream >> ch >> num) {
-        if (ch == '+') {
-            indices.push_back(num);
-        }
-    }
-}
+using MutationInfo = std::unordered_map<std::string, FunctionMutationInfo>;  // key: function name
 
-// 解析文件并填充包含多个函数信息的map
-void parseFile(const std::string& filePath, std::unordered_map<std::string, FunctionInfo>& functionsmap) {
-    std::ifstream file(filePath);
+MutationInfo parseMutationFile(const std::string& filename) {
+    MutationInfo mutations;
+    std::ifstream file(filename);
     std::string line;
 
-    while (getline(file, line)) {
-        std::istringstream iss(line);
-        std::string functionName, blockPart, asmPart;
-        getline(iss, functionName, '#');
+    std::string currentFunction;
+    int currentFlattenLevel = 0, currentBCFRate = 0;
 
-        getline(iss, blockPart, '&');
-        int blockNum = stoi(blockPart);  // 基本块序数
-
-        getline(iss, asmPart, ':');
-        int count = stoi(asmPart);  // 基本块个数
-
-        std::vector<int> asmIndices;
-        if (getline(iss, asmPart)) {
-            parseAsmIndices(asmPart, asmIndices);  // 解析汇编指令序数
+    while (std::getline(file, line)) {
+        if (line.empty() || line[0] == ';') continue;  // Skip comments and empty lines
+        
+        if (line[0] == '[') {  // New function settings
+            auto endPos = line.find(']');
+            auto atPos = line.find('@');
+            auto commaPos = line.find(',', atPos);
+            currentFunction = line.substr(1, atPos - 1);
+            currentFlattenLevel = std::stoi(line.substr(atPos + 1, commaPos - atPos - 1));
+            currentBCFRate = std::stoi(line.substr(commaPos + 1, endPos - commaPos - 1));
+            continue;
         }
 
-        // 存储解析结果
-        functionsmap[functionName].blocks[blockNum] = {count, asmIndices};
+        auto hashPos = line.find('#');
+        auto andPos = line.find('&');
+        auto colonPos = line.find(':');
+
+        int blockIndex = std::stoi(line.substr(hashPos + 1, andPos - hashPos - 1));
+        
+        BlockMutationInfo blockInfo;
+
+        if (colonPos != std::string::npos) {  // There are assembly instructions to insert
+            std::stringstream ss(line.substr(colonPos + 1));  // Skip ":"
+            std::string token;
+            while (std::getline(ss, token, '+')) {
+                if (!token.empty()) {
+                    blockInfo.asmInstructionsIndices.push_back(std::stoi(token));
+                }
+            }
+        }
+
+        mutations[currentFunction].flattenLevel = currentFlattenLevel;
+        mutations[currentFunction].bcfRate = currentBCFRate;
+        mutations[currentFunction].blockInfos[blockIndex] = std::move(blockInfo);
+    }
+
+    return mutations;
+}
+
+void printModuleMutationInfo(const MutationInfo& moduleInfo) {
+    for (const auto& functionPair : moduleInfo) {
+        const auto& functionName = functionPair.first;
+        const auto& functionInfo = functionPair.second;
+
+        // 输出函数级别的变异配置
+        std::cout << "[" << functionName << "@" << functionInfo.flattenLevel 
+                  << "," << functionInfo.bcfRate << "]" << std::endl;
+
+        for (const auto& blockPair : functionInfo.blockInfos) {
+            const auto& blockIndex = blockPair.first;
+            const auto& blockInfo = blockPair.second;
+
+            // 输出基本块级别的变异信息
+            std::cout << functionName << "#" << blockIndex << "&" 
+                      << blockInfo.asmInstructionsIndices.size() << ":";
+
+            for (size_t i = 0; i < blockInfo.asmInstructionsIndices.size(); ++i) {
+                std::cout << "+" << blockInfo.asmInstructionsIndices[i];
+            }
+
+            std::cout << std::endl;
+        }
     }
 }
+
 
 static cl::opt<string> Basicblockfilepath("Basicblockfilepath", cl::desc("the path of Basicblockfile"), cl::value_desc("string"));
 
@@ -68,7 +107,7 @@ class CustomAsmInsertionPass : public FunctionPass
 {
 public:
   static char ID;
-  std::unordered_map<std::string, FunctionInfo> functionsmap;
+  MutationInfo functionsmap;
 
   std::vector<std::string> asm_instruction_array = {
     "nop\n",
@@ -98,37 +137,36 @@ public:
     "popq %rbx\n movq %rax, %rbx\n addq 1, %rax\n movq %rbx, %rax\n popq %rbx\n",
     "pushq %rax\n incq %rax\n decq %rax\n decq %rax\n popq %rax\n",
     "pushq %rbx\n movq %rax, %rbx\n cmpq %rax, %rax\n setg %al\n movzbq %al, %rax\n movq %rbx, %rax\n popq %rbx\n", // setg指令根据比较结果设置条件标志
+    // 28 对应  flatten-1,   --- 函数级别的--函数中全部基本块都做变换
+    // 29 对应  flatten-2,
+    // 30 对应  flatten-3,
+    // 31 对应  bcf_rate  0-100,
 };
 
   CustomAsmInsertionPass() : FunctionPass(ID) {
     string basicblockpath = Basicblockfilepath.getValue();
-    parseFile(basicblockpath, functionsmap);
-    // 示例输出
-    // 文件解析输出没有问题
-    // for (const auto& func : functionsmap) {
-    //     std::cout << "Function: " << func.first << std::endl;
-    //     for (const auto& block : func.second.blocks) {
-    //         std::cout << "  Block #" << block.first << ", Count: " << block.second.count << ", Asm Indices: ";
-    //         for (int index : block.second.asmIndices) {
-    //             std::cout << index << " ";
-    //         }
-    //         std::cout << std::endl;
-    //     }
-    // }
+    functionsmap = parseMutationFile(basicblockpath);
+    // printModuleMutationInfo(functionsmap);
   }
 
   bool runOnFunction(Function &F) override {
-    std::string functionName = F.getName().str();
-    // 检查这个函数是否在我们的映射中
-    // std::cout <<  "进入插件\n";
-    if (functionsmap.find(functionName) != functionsmap.end()) {
-      // std::cout <<  "找到函数\n" << functionName << std::endl;
-      unsigned int BBCounter = 0;
-      for (BasicBlock &BB : F) {
-        // 检查每个基本块是否应该插入汇编指令
-        if (functionsmap[functionName].blocks.find(BBCounter) != functionsmap[functionName].blocks.end()) {
-          // std::cout <<  "找到基本块\n" << BBCounter << std::endl;
-          for (int asmIndex : functionsmap[functionName].blocks[BBCounter].asmIndices) {
+
+    if (functionsmap.find(F.getName().str()) != functionsmap.end()) {
+      //输出函数名
+      // std::cout <<  F.getName().str() << std::endl;
+
+      auto& funcInfo = functionsmap[F.getName().str()];
+      // 根据 funcInfo.flattenLevel 和 funcInfo.bcfRate 应用其他变异策略
+
+      int index = 0; // 基本块的索引
+      for (auto& BB : F) {
+        if (funcInfo.blockInfos.find(index) != funcInfo.blockInfos.end()) {
+          //输出基本块索引
+          // std::cout <<  index << std::endl;
+          
+          auto& blockInfo = funcInfo.blockInfos[index];
+          // 使用 blockInfo.asmInstructionsIndices 插入汇编指令
+          for (int asmIndex : blockInfo.asmInstructionsIndices) {
             // 插入汇编指令
             if (!BB.empty()) {
               Instruction *firstInst = &BB.front();
@@ -145,9 +183,10 @@ public:
             // std::cout <<  "成功插入\n" << std::endl;
           }
         }
-        BBCounter++;
+        index += 1;
       }
     }
+
     return true;
   }
 };
