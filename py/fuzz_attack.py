@@ -44,8 +44,8 @@ def parse_file(file_path):
                 function_name, rest = line.split('#')
                 block_num_str, asm_part = rest.split('&')
                 block_num = int(block_num_str)
-                count_str, _, asm_indices_str = asm_part.partition(': ')
-                count = int(count_str.strip(': '))  # 修改此处，确保从字符串提取整数前去除了冒号和空格
+                count_str, _, asm_indices_str = asm_part.partition(':')
+                count = int(count_str.strip(':'))  # 修改此处，确保从字符串提取整数前去除了冒号和空格
 
                 asm_indices = []
                 if asm_indices_str.strip():  # 确保不是空字符串
@@ -350,12 +350,12 @@ class Fuzz:
             selected_files.append(basicblockfile)   
             
             self.fuzz_log.write(f"Now is {basicblockfile}\n")
-            num_episodes = 26 # 一个文件，我们变异26次
+            num_episodes = 27 # 一个文件，我们变异27次
             functions = parse_file(basicblockfile) # 解析文件
             copy_functions = copy.deepcopy(functions) # 保存原有副本
             changes_log = [] # 保留之前让文件良性概率增加的操作
             discarded_changes_log = [] # 抛弃那些添加操作之后，反而使良性概率降低的操作
-            while num_episodes >= 0 and not attack_success:
+            while num_episodes > 0 and not attack_success:
                 self.fuzz_log.write("******************")
                 self.fuzz_log.write(f"num_episodes is {num_episodes}\n")
                 self.fuzz_log.write(f"changes_log is {changes_log}\n")
