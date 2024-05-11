@@ -22,9 +22,9 @@ device = torch.device("cpu")
 # model.eval()
 
 # 对单个目录做测试
-data_dir="/home/lebron/disassemble/attack/"
-# disassemble(fuzz_dir=data_dir)
-# extract_cfg(fuzz_dir=data_dir)
+data_dir="/home/lebron/IRFuzz/ELF/350"
+disassemble(fuzz_dir=data_dir)
+extract_cfg(fuzz_dir=data_dir)
 data, result, predictions, _= measure(fuzz_dir=data_dir, model="dgcnn")
 result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
 formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)

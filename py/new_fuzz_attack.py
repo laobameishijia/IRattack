@@ -1,5 +1,6 @@
 import os
 import random
+import re
 import shutil
 import copy
 import torch
@@ -115,7 +116,7 @@ def run_bash(script_path, args:list):
     
 def build_fuzz_directories(fuzz_dir):
     # 要检查和创建的文件夹列表
-    folders = ["in", "out", "out/random_block", "out/all_block" ,"rawdata", "asm", "cfg", "cfg_magic_test","temp"]
+    folders = ["in", "out","rawdata", "asm", "cfg","temp"]
 
     for folder in folders:
         # 构造完整的文件夹路径
@@ -129,7 +130,13 @@ def build_fuzz_directories(fuzz_dir):
         else:
             # 文件夹已存在
             print(f"Folder already exists: {folder_path}")
-
+    
+    # 复制 basicblockcount.sh 和 fuzz_compile.sh到fuzz_dir目录下面
+    shutil.copy("/home/lebron/IRFuzz/bash/basicblockcount.sh", fuzz_dir)
+    shutil.copy("/home/lebron/IRFuzz/bash/fuzz_compile.sh", fuzz_dir)
+    # 运行basicblockcount.sh 输出basicblock.txt
+    run_bash(f"{fuzz_dir}/basicblockcount.sh", args=[])
+    
 def list_seed_files(directory):
     """
     列出指定目录下所有的.txt文件的完整路径。
@@ -211,7 +218,7 @@ def is_file_duplicate(seed_order, fuzz_dir, file_hashes):
         重复   返回 True
     """
     temp_dir = f"{fuzz_dir}/temp"
-    store_dir = f"{fuzz_dir}/out"
+    store_dir = f"{fuzz_dir}/in"
     
     file_path = f"{temp_dir}/.basicblock"
     content_hash = file_hash(file_path)
@@ -242,6 +249,24 @@ def parse_hash_file(dir):
     else:
         return {}
 
+def read_bash_variables(file_path):
+    # 正则表达式用于匹配变量赋值，考虑了可能的空格和使用双引号
+    pattern = r'^\s*(LDFLAGS|CFLAGS)\s*=\s*"([^"]*)"'
+    variables = {'LDFLAGS': None, 'CFLAGS': None}
+    
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                match = re.match(pattern, line)
+                if match:
+                    variables[match.group(1)] = match.group(2)
+    except FileNotFoundError:
+        print(f"Error: The file {file_path} does not exist.")
+    except IOError:
+        print(f"Error: An error occurred while reading the file {file_path}.")
+    
+    return (variables["LDFLAGS"],variables["CFLAGS"])
+
 def print_functions(functions):
     """打印函数及其基本块的详细信息，包括 Flatten 级别和 BCF 比例"""
     for functionName, functionInfo in functions.items():
@@ -265,19 +290,20 @@ class FuzzLog:
 
 class Fuzz:
     
-    def __init__(self, source_dir, fuzz_dir, bash_sh, model):
+    def __init__(self, source_dir, fuzz_dir, model):
         
         self.source_dir = source_dir
         self.fuzz_dir = fuzz_dir
-        self.bash_sh = f"{source_dir}/fuzz_insertasminstruction.sh"
+        self.bash_sh = f"{source_dir}/fuzz_compile.sh"
         self.temp_bb_file_path = f"{fuzz_dir}/temp/.basicblock"
         self.model = model
+        self.LDFLAGS, self.CFLAGS= read_bash_variables(f"{source_dir}/compile.sh")
+        
+        build_fuzz_directories(self.fuzz_dir)
         
         self.bb_file_path =  f"{source_dir}/BasicBlock.txt"
         self.fuzz_log = FuzzLog(fuzz_dir)
         self.functions = parse_file(self.bb_file_path)
-
-        build_fuzz_directories(self.fuzz_dir)
         
         # 示例输出,获取初始概率
         self.fuzz_log.write(f"初始概率为:", "green")
@@ -295,14 +321,14 @@ class Fuzz:
         # 最大迭代次数
         MAX_ITERATIONS=1000
         # 随机选择变异器
-        # mutators = ["random_block", "all_block", "flatten", "bcf"]
-        mutators = ["random_block"]
+        mutators = ["random_block", "all_block", "flatten", "bcf"]
+        # mutators = ["random_block"]
         
         
         iteration = 0
-        copy_file_to_folder(source_file=f"{self.source_dir}/BasicBlock.txt",target_folder=f"{self.fuzz_dir}/out")
-        self.file_hashes = parse_hash_file(f"{self.fuzz_dir}/out")
-        self.seed_list = [SeedFile(f) for f in list_seed_files(directory=f"{self.fuzz_dir}/out")]
+        copy_file_to_folder(source_file=f"{self.source_dir}/BasicBlock.txt",target_folder=f"{self.fuzz_dir}/in")
+        self.file_hashes = parse_hash_file(f"{self.fuzz_dir}/in")
+        self.seed_list = [SeedFile(f) for f in list_seed_files(directory=f"{self.fuzz_dir}/in")]
         self.seed_count = len(self.seed_list) - 1
         self.fuzz_log.write(f"there is {self.seed_count} seed files","green")
         
@@ -343,7 +369,7 @@ class Fuzz:
                     # 判断是否保存变异结果
                     if abs(adversarial_probability - previous_adv_probability) > 0.05:  # 概率变化大于5%
                         if not is_file_duplicate(seed_order=self.seed_count, fuzz_dir=self.fuzz_dir, file_hashes=self.file_hashes):
-                            seed_out_path = f"{self.fuzz_dir}/out/{self.seed_count}_{chosen_mutator}.txt"
+                            seed_out_path = f"{self.fuzz_dir}/in/{self.seed_count}_{chosen_mutator}.txt"
                             output_file(functions, seed_out_path)
                             self.fuzz_log.write(f"save functions to {seed_out_path} \n\n")
                             self.seed_count += 1  
@@ -355,6 +381,9 @@ class Fuzz:
                         # 判断是否攻击成功，结束循环 当对抗标签的概率超过0.5即攻击成功
                         if adversarial_probability > 0.5:
                             attack_success = True
+                            # 把当前攻击成功的种子文件保存起来，后面还要分析
+                            seed_out_path = f"{fuzz_dir}/out/success_{self.model}.txt"
+                            output_file(functions, seed_out_path)
                             self.fuzz_log.write(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
                             self.fuzz_log.write(f"Now running seedfile: {seed_file.path}\n")
                             self.fuzz_log.write(f"attack susccess mutate_file is {self.seed_count}.txt \n\n")
@@ -372,7 +401,7 @@ class Fuzz:
     def get_probability(self):
         # 插入+链接
         run_bash(script_path= self.bash_sh,
-                args=[self.source_dir, self.fuzz_dir, self.temp_bb_file_path])
+                args=[self.source_dir, self.fuzz_dir, self.temp_bb_file_path, self.LDFLAGS, self.CFLAGS])
         # 返汇编
         disassemble(fuzz_dir=self.fuzz_dir)
         # 提取cfg
@@ -419,10 +448,22 @@ class Fuzz:
 
 if __name__ == "__main__":
 
-    source_dir="/home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack"
-    fuzz_dir="/home/lebron/IRFuzz/Linux.Apachebd"
-    bash_sh = "/home/lebron/disassemble/attack/sourcecode/Linux.Apachebd/attack/fuzz_insertasminstruction.sh"
-    model = "semantics_dgcnn"   # dgcnn  semantics_dgcnn
-    fuzz = Fuzz(source_dir,fuzz_dir,bash_sh,model)
-    fuzz.run()
-    exit()
+    # source_dir="/home/lebron/MalwareSourceCode-2/真正用C写的/Pass_Mirai-Iot-BotNet/IRattack/loader"
+    # fuzz_dir="/home/lebron/IRFuzz/Test"
+    # bash_sh = "/home/lebron/MalwareSourceCode-2/真正用C写的/Pass_Mirai-Iot-BotNet/IRattack/loader/fuzz_compile.sh"
+    # model = "semantics_dgcnn"   # dgcnn  semantics_dgcnn
+    # fuzz = Fuzz(source_dir,fuzz_dir,bash_sh,model)
+    # fuzz.run()
+    model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]
+    
+    malware_store_path = "/home/lebron/IRFuzz/ELF"
+    malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
+
+    for malware_dir in malware_full_paths:
+        source_dir= malware_dir
+        fuzz_dir=  malware_dir
+        model = "semantics_dgcnn"   # dgcnn  semantics_dgcnn
+        fuzz = Fuzz(source_dir,fuzz_dir,model)
+        fuzz.run()
+        exit()
+    # /home/lebron/MalwareSourceCode-2/真正用C写的/Pass_Mirai-Iot-BotNet/IRattack/loader

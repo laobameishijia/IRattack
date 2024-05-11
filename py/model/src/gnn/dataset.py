@@ -763,7 +763,7 @@ class CFGDataset_MAGIC(CFGDataset):
 
         return [numericCnts, stringCnts]
 
-class CFGDataset_MAGIC_Test(CFGDataset):
+class CFGDataset_MAGIC_Attack(CFGDataset):
     def __init__(self, root='/home/wubolun/data/malware/big2015/further'):
 
         # type of operators
@@ -789,11 +789,11 @@ class CFGDataset_MAGIC_Test(CFGDataset):
         self.block_dim = self.ins_dim + len(self.vertexTypes)
 
         self.number_of_classes = 2
-        super(CFGDataset_MAGIC_Test, self).__init__(root)
+        super(CFGDataset_MAGIC_Attack, self).__init__(root)
 
     @property
     def processed_dir(self):
-        return os.path.join(self.root, 'cfg_magic_test')
+        return os.path.join(self.root, 'cfg_magic_attack')
 
     def process(self):
         ''' process raw JSON CFGs '''

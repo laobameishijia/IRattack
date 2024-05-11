@@ -9,7 +9,7 @@ from torch_geometric.loader import DataLoader
 
 
 from model.src.gnn.model import GIN0WithJK, GIN0, DGCNN
-from model.src.gnn.dataset import CFGDataset_Semantics_Preseving, CFGDataset_MAGIC,CFGDataset_MAGIC_Test
+from model.src.gnn.dataset import CFGDataset_Semantics_Preseving, CFGDataset_MAGIC,CFGDataset_MAGIC_Attack
 
 
 def split_pred_label(predictions, labels):
@@ -33,22 +33,29 @@ def split_pred_label(predictions, labels):
     return sliced_predictions, sliced_labels
 
 
-def measure(data_dir, model):
+def measure(data_dir, model_name):
     device = torch.device("cpu")
-    
-    if model == "semantics_dgcnn":
+    feature_size = model_name.spilt("_")[1]
+    model_type = model_name.spilt("_")[0]
+    if feature_size == '9':
         dataset = CFGDataset_Semantics_Preseving(root= data_dir)
-        model = DGCNN(num_features=9, num_classes=dataset.num_classes)
-        model.load_state_dict(
-            torch.load("/home/lebron/IRattack/py/model/record/semantics_dgcnn_2.pth", map_location=device))
-    elif model == "dgcnn":
-        dataset = CFGDataset_MAGIC_Test(root= data_dir)
-        model = DGCNN(num_features=20, num_classes=dataset.num_classes)
-        model.load_state_dict(
-            torch.load("/home/lebron/IRattack/py/model/record/dgcnn_2.pth", map_location=device))
-    else:
-        print(f"Model: {model} is not exist!")
+    elif feature_size == '20':
+        dataset = CFGDataset_MAGIC_Attack(root= data_dir)
+    else: 
         raise NotImplementedError
+    
+    if model_type == "DGCNN":
+        model = DGCNN(num_features=int(feature_size), num_classes=dataset.num_classes)
+    elif model_type == "GIN0":
+        model = GIN0(num_features=int(feature_size), num_layers=4, hidden=64,num_classes=dataset.num_classes)
+    elif model_type == "GIN0WithJK":
+        model = GIN0WithJK(num_features=int(feature_size), num_layers=4, hidden=64,num_classes=dataset.num_classes)
+    else:
+        print(f"Model: {model_type} is not exist!")
+        raise NotImplementedError
+    
+    model.load_state_dict(
+        torch.load(f"/home/lebron/IRattack/py/model/record/{model_name}.pth", map_location=device))
     
     val_loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=5)
     model = model.to(device)
@@ -92,8 +99,8 @@ if __name__ == '__main__':
     #     vocab_path='/home/wubolun/data/malware/big2015/further/set_0.5_pair_30/normal.vocab',
     #     seq_len=64)
 
-    # dataset = CFGDataset_MAGIC_Test(root='/home/lebron/disassemble')
-    dataset = CFGDataset_MAGIC_Test(root= data_dir)
+    # dataset = CFGDataset_MAGIC_Attack(root='/home/lebron/disassemble')
+    dataset = CFGDataset_MAGIC_Attack(root= data_dir)
     val_loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=5)
     model = DGCNN(num_features=20, num_classes=dataset.num_classes)
     model.load_state_dict(
