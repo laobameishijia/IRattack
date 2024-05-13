@@ -35,8 +35,8 @@ def split_pred_label(predictions, labels):
 
 def measure(data_dir, model_name):
     device = torch.device("cpu")
-    feature_size = model_name.spilt("_")[1]
-    model_type = model_name.spilt("_")[0]
+    feature_size = model_name.split("_")[1]
+    model_type = model_name.split("_")[0]
     if feature_size == '9':
         dataset = CFGDataset_Semantics_Preseving(root= data_dir)
     elif feature_size == '20':

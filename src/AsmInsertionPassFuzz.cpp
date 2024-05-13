@@ -157,26 +157,8 @@ public:
     if (functionsmap.find(F.getName().str()) != functionsmap.end()) {
       //输出函数名
       // std::cout <<  F.getName().str() << std::endl;
-
       auto& funcInfo = functionsmap[F.getName().str()];
-      // 根据 funcInfo.flattenLevel 和 funcInfo.bcfRate 应用其他变异策略
-
-      // 启动 BogusControlFlow 或 FlatPlus
-      if (funcInfo.flattenLevel != 0){
-        createFlatPlus(true, false, funcInfo.flattenLevel)->runOnFunction(F);
-        return true;
-      }
-
-      if (funcInfo.bcfRate != 0){
-        createBogusControlFlow(true, funcInfo.bcfRate)->runOnFunction(F);
-        return true;
-      }
-      // createBogusControlFlow(flag=true, bcf_rate=funcInfo.bcfRate)->runOnFunction(F);
-      // createFlatPlus(flag=true, dont_fla_invoke=false, fla_cnt=funcInfo.flattenLevel)->runOnFunction(F)
-
-      // createFlatPlus(true, false, funcInfo.flattenLevel) -> runOnFunction(F);
-      // return true;
-
+      
       int index = 0; // 基本块的索引
       for (auto& BB : F) {
         if (funcInfo.blockInfos.find(index) != funcInfo.blockInfos.end()) {
@@ -204,6 +186,26 @@ public:
         }
         index += 1;
       }
+      
+      // 根据 funcInfo.flattenLevel 和 funcInfo.bcfRate 应用其他变异策略
+
+      // 启动 BogusControlFlow 或 FlatPlus
+      if (funcInfo.flattenLevel != 0){
+        createFlatPlus(true, false, funcInfo.flattenLevel)->runOnFunction(F);
+        return true;
+      }
+
+      if (funcInfo.bcfRate != 0){
+        createBogusControlFlow(true, funcInfo.bcfRate)->runOnFunction(F);
+        return true;
+      }
+      // createBogusControlFlow(flag=true, bcf_rate=funcInfo.bcfRate)->runOnFunction(F);
+      // createFlatPlus(flag=true, dont_fla_invoke=false, fla_cnt=funcInfo.flattenLevel)->runOnFunction(F)
+
+      // createFlatPlus(true, false, funcInfo.flattenLevel) -> runOnFunction(F);
+      // return true;
+
+
     }
 
     return true;

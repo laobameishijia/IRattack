@@ -34,9 +34,9 @@ class SeedFile:
     def update_energy(self, probability_adversarial_label, iteration):
         # 基于概率接近0.5的程度，以及变异操作次数计算能量
         distance = abs(0.5 - probability_adversarial_label)
-        base_energy = (0.5 - distance) * 100  # 距离越近，能量越大
-        time_factor = max(0.1, 1 - (iteration / 1000))  # 随时间减少分配给距离较远的种子的能量
-        self.energy = base_energy * time_factor - (self.asm_insert_count + self.flatten_count * 2 + self.bcf_count * 2)
+        base_energy = (0.5 - distance) * MAX_ITERATIONS  # 距离越近，能量越大
+        time_factor = max(0.1, 1 - (iteration / MAX_ITERATIONS))  # 随时间减少分配给距离较远的种子的能量
+        self.energy = base_energy * time_factor - (self.asm_insert_count + self.flatten_count * 2 + self.bcf_count)
             
     def load_and_parse(self):
         functions = parse_file(self.path)
@@ -201,7 +201,7 @@ def extract_cfg(fuzz_dir):
 
 def measure(fuzz_dir, model="dgcnn"):
     data_dir = fuzz_dir
-    result = run_measure.measure(data_dir=data_dir, model=model)
+    result = run_measure.measure(data_dir=data_dir, model_name=model)
     return result
 
 def file_hash(filename):
@@ -298,11 +298,12 @@ class Fuzz:
         self.temp_bb_file_path = f"{fuzz_dir}/temp/.basicblock"
         self.model = model
         self.LDFLAGS, self.CFLAGS= read_bash_variables(f"{source_dir}/compile.sh")
+        self.fuzz_log = FuzzLog(fuzz_dir)
+        self.fuzz_log.write(f"Model:{self.model}\n", "blue")
         
         build_fuzz_directories(self.fuzz_dir)
         
         self.bb_file_path =  f"{source_dir}/BasicBlock.txt"
-        self.fuzz_log = FuzzLog(fuzz_dir)
         self.functions = parse_file(self.bb_file_path)
         
         # 示例输出,获取初始概率
@@ -312,31 +313,31 @@ class Fuzz:
         output_file(self.temp_functions, self.temp_bb_file_path)
         self.init_probability_0, self.init_probability_1 = self.get_probability()
         self.adversarial_label = 0 if self.init_probability_0 < self.init_probability_1 else 1 # 哪个概率小，哪个就是对抗样本标签
-        self.fuzz_log.write(f"对抗样本label标签为:{self.adversarial_label}", "green")
+        self.fuzz_log.write(f"对抗样本label标签为:{self.adversarial_label}\n", "green")
         print(self.init_probability_0, self.init_probability_1)
         print_functions(self.temp_functions)
     
     
     def run(self):
-        # 最大迭代次数
-        MAX_ITERATIONS=1000
+
         # 随机选择变异器
-        mutators = ["random_block", "all_block", "flatten", "bcf"]
-        # mutators = ["random_block"]
+        # mutators = ["random_block", "all_block", "flatten", "bcf"]
+        mutators = ["random_block", "all_block", "flatten"]
         
-        
-        iteration = 0
         copy_file_to_folder(source_file=f"{self.source_dir}/BasicBlock.txt",target_folder=f"{self.fuzz_dir}/in")
         self.file_hashes = parse_hash_file(f"{self.fuzz_dir}/in")
         self.seed_list = [SeedFile(f) for f in list_seed_files(directory=f"{self.fuzz_dir}/in")]
         self.seed_count = len(self.seed_list) - 1
-        self.fuzz_log.write(f"there is {self.seed_count} seed files","green")
+        self.fuzz_log.write(f"there is {self.seed_count} seed files\n","green")
         
-        while True:
+        attack_success = False
+        iteration = 0
+        
+        while not attack_success and iteration < MAX_ITERATIONS:
             # 顺序执行种子
             for seed_file in self.seed_list:
                 
-                self.fuzz_log.write(f"Selected seed file: {seed_file.path} with energy {seed_file.energy}", "blue")
+                self.fuzz_log.write(f"Selected seed file: {seed_file.path} with energy {seed_file.energy}\n", "blue")
                 # 计算变异次数，基于能量值，能量越高变异次数越多
                 num_mutations = max(1, int(seed_file.energy))       # 基础能量就代表变异的次数，至少一次
                 functions = parse_file(seed_file.path)              # 解析原函数文件
@@ -345,11 +346,10 @@ class Fuzz:
                 previous_adv_probability = self.init_probability_0 if self.adversarial_label == 0 else self.init_probability_1 
                 mutation_queued = self.seed_count # 暂时拥有的种子数
                 
-                # for _ in range(num_mutations):
                 i = 0
                 while i <  num_mutations:
                     chosen_mutator = random.choice(mutators)
-                    self.fuzz_log.write(f"Chosen mutator: {chosen_mutator}", "yellow")
+                    self.fuzz_log.write(f"Chosen mutator: {chosen_mutator}\n", "yellow")
 
                     if chosen_mutator == "random_block":
                         self.mutate_random_block(functions)
@@ -380,7 +380,7 @@ class Fuzz:
                             self.fuzz_log.write(f"New seed file created with energy {new_seed_file.energy}", "green")
                         # 判断是否攻击成功，结束循环 当对抗标签的概率超过0.5即攻击成功
                         if adversarial_probability > 0.5:
-                            attack_success = True
+                            attack_success = True # 攻击成功
                             # 把当前攻击成功的种子文件保存起来，后面还要分析
                             seed_out_path = f"{fuzz_dir}/out/success_{self.model}.txt"
                             output_file(functions, seed_out_path)
@@ -388,15 +388,19 @@ class Fuzz:
                             self.fuzz_log.write(f"Now running seedfile: {seed_file.path}\n")
                             self.fuzz_log.write(f"attack susccess mutate_file is {self.seed_count}.txt \n\n")
                             self.fuzz_log.write(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
-                            exit()
+                            ATTACK_SUCCESS_MAP[self.model].append(self.source_dir.split('/')[-1])
+                            break
                     if mutation_queued != self.seed_count:          # 如果在这个种子变异的过程中发现了新的种子
                         seed_file.energy = seed_file.energy * 1.5   # 将种子能量变大1.5倍
                         num_mutations = int(seed_file.energy)       # 重新设置变异次数
                         self.fuzz_log.write(f"Updated seed file energy: {seed_file.energy}", "red")
-
-            iteration += 1
-            if iteration >= MAX_ITERATIONS:
-                break
+                    
+                    iteration += 1
+                    if iteration >= MAX_ITERATIONS:
+                        break                   
+                
+                if iteration >= MAX_ITERATIONS:
+                    break  
                     
     def get_probability(self):
         # 插入+链接
@@ -412,7 +416,7 @@ class Fuzz:
         formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
         probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
         probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本
-        self.fuzz_log.write(f"probability_0 is {probability_0} probability_1:{probability_1} \n", "green")
+        self.fuzz_log.write(f"probability_0 is {probability_0} probability_1:{probability_1} \n\n", "green")
 
         return probability_0,  probability_1
 
@@ -422,7 +426,7 @@ class Fuzz:
         blockNum = random.choice(list(functions[functionName].blocks.keys()))
         asmIndex = random.randint(0, 26)
         functions[functionName].blocks[blockNum].asm_indices.append(asmIndex)
-        self.fuzz_log.write(f"Mutated {functionName} at block {blockNum} with new asmIndex {asmIndex}", "magenta")
+        self.fuzz_log.write(f"Mutated {functionName} at block {blockNum} with new asmIndex {asmIndex} \n", "magenta")
 
     def mutate_all_block(self, functions):
         # 对所有块添加同一随机 asmIndex
@@ -430,13 +434,16 @@ class Fuzz:
         for functionName, function in functions.items():
             for blockNum in function.blocks:
                 functions[functionName].blocks[blockNum].asm_indices.append(asmIndex)
-        self.fuzz_log.write("Mutated all blocks with asmIndex " + str(asmIndex), "magenta")
+        self.fuzz_log.write(f"Mutated all blocks with asmIndex {str(asmIndex)} \n", "magenta")
 
     def mutate_flatten(self, functions):
         # 随机选择函数并增加 flatten 次数
         functionName = random.choice(list(functions.keys()))
-        functions[functionName].flatten_level += 1
-        self.fuzz_log.write(f"Increased flatten level for {functionName} to {functions[functionName].flatten_level}", "magenta")
+        if functions[functionName].flatten_level == 3:
+            pass
+        else:
+            functions[functionName].flatten_level += 1
+        self.fuzz_log.write(f"Increased flatten level for {functionName} to {functions[functionName].flatten_level}\n", "magenta")
 
     def mutate_bcf(self, functions):
         # 随机选择函数并增加 bcf 概率
@@ -455,15 +462,33 @@ if __name__ == "__main__":
     # fuzz = Fuzz(source_dir,fuzz_dir,bash_sh,model)
     # fuzz.run()
     model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]
+    ATTACK_SUCCESS_MAP = {
+        "DGCNN_9":[],
+        "DGCNN_20":[],
+        "GIN0_9":[],
+        "GIN0_20":[],
+        "GIN0WithJK_9":[],
+        "GIN0WithJK_20":[]
+    }
+    ATTACK_SUCCESS_RATE = dict()
+    MAX_ITERATIONS=30 # 最大迭代次数
     
     malware_store_path = "/home/lebron/IRFuzz/ELF"
     malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
 
-    for malware_dir in malware_full_paths:
-        source_dir= malware_dir
-        fuzz_dir=  malware_dir
-        model = "semantics_dgcnn"   # dgcnn  semantics_dgcnn
-        fuzz = Fuzz(source_dir,fuzz_dir,model)
-        fuzz.run()
-        exit()
+    for model in model_list:
+        for malware_dir in malware_full_paths:
+            source_dir= malware_dir
+            fuzz_dir=  malware_dir
+            model = model
+            fuzz = Fuzz(source_dir,fuzz_dir,model)
+            fuzz.run()
+    
+    for key in ATTACK_SUCCESS_MAP:
+        ATTACK_SUCCESS_RATE[key] = len(ATTACK_SUCCESS_MAP[key]) / len(malware_full_paths)
+   
+    with open('/home/lebron/IRFuzz/attack_success_rate.txt', 'w') as file:
+        for key, value in ATTACK_SUCCESS_RATE.items():
+            file.write(f'{key}: {value:.4f}\n')  # 输出格式化的浮点数
+    exit()
     # /home/lebron/MalwareSourceCode-2/真正用C写的/Pass_Mirai-Iot-BotNet/IRattack/loader
