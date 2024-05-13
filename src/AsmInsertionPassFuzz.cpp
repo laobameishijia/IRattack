@@ -170,7 +170,11 @@ public:
           for (int asmIndex : blockInfo.asmInstructionsIndices) {
             // 插入汇编指令
             if (!BB.empty()) {
-              Instruction *firstInst = &BB.front();
+              // 找到插入位置，即最后一个PHINode之后的第一个位置
+              Instruction *insertionPoint = &BB.front();
+              while (isa<PHINode>(insertionPoint))
+                  insertionPoint = insertionPoint->getNextNode();
+
               LLVMContext &Ctx = F.getContext();
               InlineAsm *customAsm = InlineAsm::get(
                 FunctionType::get(Type::getVoidTy(Ctx), false),
@@ -179,7 +183,7 @@ public:
                 true, // HasSideEffects
                 false // IsAlignStack
               );
-              CallInst::Create(customAsm, "", firstInst);
+              CallInst::Create(customAsm, "", insertionPoint);
             }
             // std::cout <<  "成功插入\n" << std::endl;
           }
@@ -190,15 +194,15 @@ public:
       // 根据 funcInfo.flattenLevel 和 funcInfo.bcfRate 应用其他变异策略
 
       // 启动 BogusControlFlow 或 FlatPlus
-      if (funcInfo.flattenLevel != 0){
-        createFlatPlus(true, false, funcInfo.flattenLevel)->runOnFunction(F);
-        return true;
-      }
+      // if (funcInfo.flattenLevel != 0){
+      //   createFlatPlus(true, false, funcInfo.flattenLevel)->runOnFunction(F);
+      //   return true;
+      // }
 
-      if (funcInfo.bcfRate != 0){
-        createBogusControlFlow(true, funcInfo.bcfRate)->runOnFunction(F);
-        return true;
-      }
+      // if (funcInfo.bcfRate != 0){
+      //   createBogusControlFlow(true, funcInfo.bcfRate)->runOnFunction(F);
+      //   return true;
+      // }
       // createBogusControlFlow(flag=true, bcf_rate=funcInfo.bcfRate)->runOnFunction(F);
       // createFlatPlus(flag=true, dont_fla_invoke=false, fla_cnt=funcInfo.flattenLevel)->runOnFunction(F)
 
