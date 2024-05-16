@@ -25,7 +25,7 @@ device = torch.device("cpu")
 data_dir="/home/lebron/IRFuzz/ELF/350"
 disassemble(fuzz_dir=data_dir)
 extract_cfg(fuzz_dir=data_dir)
-data, result, predictions, _= measure(fuzz_dir=data_dir, model="dgcnn")
+data, result, predictions, _= measure(fuzz_dir=data_dir, model="DGCNN_9")
 result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
 formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
 

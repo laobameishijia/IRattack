@@ -73,7 +73,9 @@ class CFGDataset(Dataset):
     
     @property
     def processed_dir(self):
-        return os.path.join(self.root, 'cfg_semantics_preseving')
+        # return os.path.join(self.root, 'cfg_semantics_preseving')
+        return os.path.join(self.root, 'cfg_magic_attack')
+    
     
     @property
     def num_classes(self):

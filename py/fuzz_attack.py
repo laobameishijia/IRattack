@@ -163,7 +163,7 @@ def extract_cfg(fuzz_dir):
 
 def measure(fuzz_dir, model="dgcnn"):
     data_dir = fuzz_dir
-    result = run_measure.measure(data_dir=data_dir, model=model)
+    result = run_measure.measure(data_dir=data_dir, model_name=model)
     return result
 
 def add_random_asmIndex(functions, changes_log):
