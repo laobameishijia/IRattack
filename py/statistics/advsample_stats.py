@@ -61,18 +61,25 @@ def run_bash(script_path, args, max_retries=5, retry_delay=5):
     print("Max retries reached. Script failed to run successfully.")
     return -1  # 超过最大重试次数，仍然失败
 
-
+def get_model_names(folder_path: str):
+    # 定义正则表达式模式以匹配文件名并提取模型名称
+    pattern = re.compile(r'success_([^_]+_[0-9]+)_')
+    # 初始化结果列表
+    result = []
+    # 遍历文件夹中的文件
+    for filename in os.listdir(folder_path):
+        # 检查文件名是否以 success 开头
+        if filename.startswith('success'):
+            # 使用正则表达式匹配文件名并提取模型名称
+            match = pattern.search(filename)
+            if match:
+                model_name = match.group(1)
+                full_path = os.path.join(folder_path, filename)
+                result.append((full_path, model_name))
+    
+    return result
 
 if __name__ == "__main__":
-
-    # source_dir="/home/lebron/MalwareSourceCode-2/真正用C写的/Pass_Mirai-Iot-BotNet/IRattack/loader"
-    # fuzz_dir="/home/lebron/IRFuzz/Test"
-    # bash_sh = "/home/lebron/MalwareSourceCode-2/真正用C写的/Pass_Mirai-Iot-BotNet/IRattack/loader/fuzz_compile.sh"
-    # model = "semantics_dgcnn"   # dgcnn  semantics_dgcnn
-    # fuzz = Fuzz(source_dir,fuzz_dir,bash_sh,model)
-    # fuzz.run()
-    
-    model_list = ["DGCNN_9","GIN0_9","GIN0WithJK_9"]
     
     ATTACK_SUCCESS_MAP = {
         "DGCNN_9":[],
@@ -90,23 +97,23 @@ if __name__ == "__main__":
     
     malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
 
-    for model in model_list:
-        for malware_dir in malware_full_paths:
-            output_dir= advsample_store_path
-            fuzz_dir=  malware_dir
-            model = model
-            LDFLAGS, CFLAGS= read_bash_variables(f"{fuzz_dir}/compile.sh")
-            compiler = find_compilers(f"{fuzz_dir}/compile.sh")
+    for malware_dir in malware_full_paths:
+        output_dir= advsample_store_path
+        fuzz_dir=  malware_dir
+        LDFLAGS, CFLAGS= read_bash_variables(f"{fuzz_dir}/compile.sh")
+        compiler = find_compilers(f"{fuzz_dir}/compile.sh")
+        success_model_list = get_model_names(f"{fuzz_dir}/out")
+        # if os.path.exists(f"{fuzz_dir}/out/success_{model}.txt"):
+
             
-            # if os.path.exists(f"{fuzz_dir}/out/success_{model}.txt"):
+        for basicblockfilepath, model in success_model_list:
             if is_success_file_present(fuzz_dir,model):
                 print(colored(f"Already Attack Success! Next One!", "green"))
                 ATTACK_SUCCESS_MAP[model].append(fuzz_dir.split('/')[-1])
             if os.path.exists(f"{fuzz_dir}/out/failed_{model}.txt"):
                 print(colored(f"Already Failed!", "yellow"))
-            
-            run_bash(script_path=static_bash,args=[output_dir,fuzz_dir,basicblockfilepath,LDFLAGS,CFLAGS,compiler])
-    
+            run_bash(script_path=static_bash,args=[output_dir,fuzz_dir, basicblockfilepath, LDFLAGS,CFLAGS,compiler, model])
+
     for key in ATTACK_SUCCESS_MAP:
         ATTACK_SUCCESS_RATE[key] = len(ATTACK_SUCCESS_MAP[key]) / len(malware_full_paths)
     

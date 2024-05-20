@@ -131,7 +131,7 @@ def run_bash(script_path, args, max_retries=5, retry_delay=5):
     print("Max retries reached. Script failed to run successfully.")
     return -1  # 超过最大重试次数，仍然失败
 
-def build_fuzz_directories(fuzz_dir):
+def build_fuzz_directories(fuzz_dir, save_seedfile_before=False):
     # 要检查和创建的文件夹列表
     folders = ["in", "out","rawdata", "asm", "cfg","temp"]
 
@@ -148,6 +148,18 @@ def build_fuzz_directories(fuzz_dir):
             # 文件夹已存在
             print(f"Folder already exists: {folder_path}")
     
+    directory_path = os.path.join(fuzz_dir,"in")
+    if os.path.exists(directory_path) and not save_seedfile_before:
+        print(f"delete seedfile saved!\n")
+        for filename in os.listdir(directory_path):
+                file_path = os.path.join(directory_path, filename)
+                try:
+                    if os.path.isfile(file_path):
+                        os.unlink(file_path) # 删除文件
+
+                except Exception as e:
+                    print(f'Failed to delete {file_path}. Reason: {e}')
+
     # 复制 basicblockcount.sh 和 fuzz_compile.sh到fuzz_dir目录下面
     shutil.copy("/home/lebron/IRFuzz/bash/basicblockcount.sh", fuzz_dir)
     shutil.copy("/home/lebron/IRFuzz/bash/fuzz_compile.sh", fuzz_dir)
@@ -565,7 +577,8 @@ if __name__ == "__main__":
     # fuzz.run()
     
     # model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]
-    model_list = ["GIN0WithJK_20"]
+    model_list = ["DGCNN_9", "GIN0_9", "GIN0WithJK_9"]
+    # model_list = ["DGCNN_9"]
     
     ATTACK_SUCCESS_MAP = {
         "DGCNN_9":[],
