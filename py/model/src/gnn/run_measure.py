@@ -65,7 +65,11 @@ def measure(data_dir, model_name):
     labels = []
     for data in tqdm.tqdm(val_loader):
         data = data.to(device)
-        out,top_k_indices = model(data)
+        if model_type == "DGCNN":
+            out,top_k_indices = model(data)
+        else:
+            out = model(data)
+            top_k_indices = -1
         # print(out)
         result = torch.exp(out) # 将模型输出的logsoftmax转换为softmax
         formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)

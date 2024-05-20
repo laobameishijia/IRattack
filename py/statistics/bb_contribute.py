@@ -89,10 +89,9 @@ def collect_feature_impact_on_prediction(data, model, label, top_k=5):
     
     return impact_str+"\n", top_k_index_list
 
-def build_output_dir(dir):
-    
+def build_output_dir(dir, modelname):
     # 定义 bb_impact 文件夹及其子文件夹 0 和 1 的路径
-    folder_path = os.path.join(dir, "bb_impact")
+    folder_path = os.path.join(dir, "bb_impact", modelname)
     zero_folder_path = os.path.join(folder_path, "0")
     one_folder_path = os.path.join(folder_path, "1")
 
@@ -127,12 +126,13 @@ model.load_state_dict(
 model = model.to(device)
 model.eval()
 
-data_dir = "/home/lebron/IRFuzz/TEST/1"
+modelname="DGCNN_20"
+data_dir = "/home/lebron/IRFuzz/20维度变化比较小的/316"  #（53,20）  （293,9）
 cfg_dir = f"{data_dir}/cfg"
 dataset = CFGDataset(root=data_dir)
 data_loader = DataLoader(dataset, batch_size=1)
-build_output_dir(dir=data_dir)
-bb_impact_dir = f"{data_dir}/bb_impact"
+build_output_dir(dir=data_dir, modelname=modelname)
+bb_impact_dir = f"{data_dir}/bb_impact/{modelname}"
 
 idx = 0
 for data in tqdm.tqdm(data_loader):

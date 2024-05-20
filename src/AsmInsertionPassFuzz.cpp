@@ -195,11 +195,13 @@ public:
 
       // 启动 BogusControlFlow 或 FlatPlus
       if (funcInfo.flattenLevel != 0){
+        // std::cout <<  "FlatPlus" << std::endl;
         createFlatPlus(true, false, funcInfo.flattenLevel)->runOnFunction(F);
         return true;
       }
 
       if (funcInfo.bcfRate != 0){
+        // std::cout <<  "BogusControlFlow" << std::endl;
         createBogusControlFlow(true, funcInfo.bcfRate)->runOnFunction(F);
         return true;
       }

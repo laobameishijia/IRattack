@@ -67,9 +67,12 @@ bool BogusControlFlow::doBogusControlFlow(Function &F) {
 
     // expand IndirectBrInst to SwitchInst
     createLegacyIndirectBrExpandPass()->runOnFunction(F);
+    // std::cout <<  "createLegacyIndirectBrExpandPass" << std::endl;
 
     // lower switch
     createLegacyLowerSwitchPass()->runOnFunction(F);
+    // std::cout <<  "createLegacyLowerSwitchPass" << std::endl;
+
 
     // get blocks that has LandingPadInst inside or are successors of
     // the blocks who has LandingPadInst inside.
@@ -101,6 +104,7 @@ bool BogusControlFlow::doBogusControlFlow(Function &F) {
             }
         }
     }
+    // std::cout <<  "std::vector<BasicBlock *> excepts;" << std::endl;
 
     BasicBlock *prologue = &*F.begin();
 
@@ -140,6 +144,7 @@ bool BogusControlFlow::doBogusControlFlow(Function &F) {
         }
     }
 
+    // std::cout <<  "no block is obfuscatable" << std::endl;
     // no block is obfuscatable
     if (!useful.size()) {
         return false;
@@ -147,6 +152,7 @@ bool BogusControlFlow::doBogusControlFlow(Function &F) {
 
     // collect all usable variables
     collectUsableVars(useful);
+    // std::cout <<  "collectUsableVars(useful);" << std::endl;
     if (!usableVars.size()) {
         // no usable variables found
         return false;
@@ -172,6 +178,7 @@ bool BogusControlFlow::doBogusControlFlow(Function &F) {
             jumpTarget.emplace_back(bcfTrampoline);
             buildBCF(bcfTrampoline, normalSuccessor, jumpTarget, F);
         } else if (term->getNumSuccessors() == 1) {//无条件跳转
+            if (jumpTarget.size() == 1) continue;//如果只有一个跳转就先跳过，不作控制流虚假化
             BasicBlock *succ = term->getSuccessor(0);
             buildBCF(bb, succ, jumpTarget, F);
         } else if (term->getNumSuccessors() == 2) {//条件跳转
@@ -189,7 +196,7 @@ bool BogusControlFlow::doBogusControlFlow(Function &F) {
             firstObf = false;
         }
     }
-
+        
     fixStack(F);
     return true;
 }
@@ -243,6 +250,8 @@ void BogusControlFlow::buildBCF(
         usableIdx2 = rng() % usableVars.size();
     } while (usableIdx2 == usableIdx1);
 
+    // std::cout <<  "done-2!" << std::endl; ；这里可以运行
+
     BasicBlock *fakeDst = nullptr;
     do {
         fakeDst = jumpTarget[rng() % jumpTarget.size()];
@@ -253,6 +262,7 @@ void BogusControlFlow::buildBCF(
             fakeDst = junk;
         }
     }
+    // std::cout <<  "done-3!" << std::endl;
 
     Value *usable1 = usableVars[usableIdx1];
     Value *usable2 = usableVars[usableIdx2];

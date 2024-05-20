@@ -1057,14 +1057,42 @@ if __name__ == '__main__':
     #     root='/home/wubolun/data/malware/big2015/further',
     #     vocab_path='/home/wubolun/data/malware/big2015/further/set_0.5_pair_30/normal.vocab',
     #     seq_len=64)
-    dataset = CFGDataset_Semantics_Preseving(root=r'/home/lebron/disassemble')
+    dataset = CFGDataset_Semantics_Preseving(root=r'/home/lebron/IRFuzz/20维度变化比较小的/316')
+    dataset = CFGDataset_MAGIC_Attack(root=r'/home/lebron/IRFuzz/20维度变化比较小的/316')
+    # 为什么之前是53，20后面又变成294，20了
+    
+    """
+    
+1
+DataBatch(x=[53, 20], edge_index=[2, 62], y=[1], batch=[53], ptr=[2])
+tensor([[ 1.,  0.,  1.,  ...,  0.,  2., 17.],
+        [ 0.,  0.,  1.,  ...,  0.,  3.,  3.],
+        [ 0.,  0.,  0.,  ...,  0.,  2.,  1.],
+        ...,
+        [ 0.,  0.,  0.,  ...,  0.,  1.,  7.],
+        [ 1.,  0.,  1.,  ...,  1.,  3.,  1.],
+        [ 0.,  0.,  1.,  ...,  0.,  2.,  3.]])
+torch.Size([53, 20])
+lebron@lebron-virtual-    
+    
+    DataBatch(x=[294, 20], edge_index=[2, 386], y=[1], batch=[294], ptr=[2])
+tensor([[ 1.,  0.,  1.,  ...,  0.,  2., 17.],
+        [ 0.,  0.,  1.,  ...,  0.,  3.,  3.],
+        [ 0.,  0.,  0.,  ...,  0.,  2.,  1.],
+        ...,
+        [ 0.,  0.,  0.,  ...,  0.,  2., 17.],
+        [ 0.,  0.,  0.,  ...,  0.,  1., 24.],
+        [ 0.,  0.,  1.,  ...,  0.,  3., 37.]])
+torch.Size([294, 20])
+    
+    """
     print(len(dataset))
 
-    for k in range(5):
-        train_idx, val_idx = dataset.train_val_split(k)
-        print('{}: train_len {}, val_len {}'.format(k, len(train_idx), len(val_idx)))
+    # for k in range(5):
+    #     train_idx, val_idx = dataset.train_val_split(k)
+    #     print('{}: train_len {}, val_len {}'.format(k, len(train_idx), len(val_idx)))
 
-    dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=1, shuffle=True)
     for data in dataloader:
         print(data)
         print(data.x)
