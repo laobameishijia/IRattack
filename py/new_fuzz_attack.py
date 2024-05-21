@@ -1,3 +1,4 @@
+import datetime
 import glob
 import os
 import random
@@ -334,6 +335,15 @@ def check_in_folder(directory):
         # print(f"The folder '{in_folder}' does not exist.")
 
  
+class Log:
+    
+    def __init__(self, filename="log"):
+        self.log_file = open(f"/home/lebron/IRFuzz/{filename}", mode="a")
+    
+    def write(self, message):
+        self.log_file.write(f"{message}")
+        self.log_file.flush()
+    
 class FuzzLog:
     
     def __init__(self, fuzz_dir, filename="log"):
@@ -479,6 +489,8 @@ class Fuzz:
             with open(f"{fuzz_dir}/out/failed_{self.model}.txt", "w") as file:
                 file.write("1")
 
+        return attack_success
+    
     def get_probability(self):
         # 插入+链接
         res = run_bash(script_path= self.bash_sh,
@@ -503,7 +515,7 @@ class Fuzz:
 
     def mutate_random_block(self, functions):
         
-        if self.iteration > 24:
+        if self.iteration >= CHOOSE_FUNCTION_BASED_ON_PROBABILITY * MAX_ITERATIONS:
             self.fuzz_log.write(f"choose_function_based_on_probability\n")
             functionName = self.choose_function_based_on_probability(functions)
         else:
@@ -526,7 +538,7 @@ class Fuzz:
 
     def mutate_flatten(self, functions):
         # 随机选择函数并增加 flatten 次数
-        if self.iteration > 24:
+        if self.iteration >= CHOOSE_FUNCTION_BASED_ON_PROBABILITY * MAX_ITERATIONS:
             self.fuzz_log.write(f"choose_function_based_on_probability\n")
             functionName = self.choose_function_based_on_probability(functions)
         else:
@@ -540,7 +552,7 @@ class Fuzz:
     
     def mutate_bcf(self, functions):
         
-        if self.iteration > 24:
+        if self.iteration >= CHOOSE_FUNCTION_BASED_ON_PROBABILITY * MAX_ITERATIONS:
             self.fuzz_log.write(f"choose_function_based_on_probability\n")
             functionName = self.choose_function_based_on_probability(functions)
         else:
@@ -577,8 +589,8 @@ if __name__ == "__main__":
     # fuzz.run()
     
     # model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]
-    model_list = ["DGCNN_9", "GIN0_9", "GIN0WithJK_9"]
-    # model_list = ["DGCNN_9"]
+    # model_list = ["DGCNN_9", "GIN0_9", "GIN0WithJK_9"]
+    model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]
     
     ATTACK_SUCCESS_MAP = {
         "DGCNN_9":[],
@@ -589,11 +601,15 @@ if __name__ == "__main__":
         "GIN0WithJK_20":[]
     }
     ATTACK_SUCCESS_RATE = dict()
-    MAX_ITERATIONS=30 # 最大迭代次数
+    MAX_ITERATIONS = 30                         # 最大迭代次数
+    CHOOSE_FUNCTION_BASED_ON_PROBABILITY = 0.8  # 在最后的20%阶段,按照概率变化来选择函数
+    LOGFILE = Log()                             # 全局的日志文件
     
     malware_store_path = "/home/lebron/IRFuzz/ELF"
     # malware_store_path = "/home/lebron/IRFuzz/TEST"
     malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
+    
+    
 
     for model in model_list:
         for malware_dir in malware_full_paths:
@@ -609,8 +625,17 @@ if __name__ == "__main__":
                 print(colored(f"Already Failed!", "yellow"))
                 continue
             
+            startime =  datetime.datetime.now()
+            
             fuzz = Fuzz(source_dir,fuzz_dir,model)
-            fuzz.run()
+            attack_success = fuzz.run()
+            
+            endtime =  datetime.datetime.now()
+            if attack_success:
+                LOGFILE.write(f"{model}-{source_dir.split('/')[-1]}\n")
+                ATTACK_SUCCESS_MAP[model].append(source_dir.split('/')[-1])
+                LOGFILE.write(f"Use {(endtime - startime).total_seconds()/60} mins\n\n")
+  
     
     for key in ATTACK_SUCCESS_MAP:
         ATTACK_SUCCESS_RATE[key] = len(ATTACK_SUCCESS_MAP[key]) / len(malware_full_paths)
