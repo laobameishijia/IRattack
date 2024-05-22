@@ -34,7 +34,8 @@ def split_pred_label(predictions, labels):
 
 
 def measure(data_dir, model_name):
-    device = torch.device("cpu")
+    # device = torch.device("cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     feature_size = model_name.split("_")[1]
     model_type = model_name.split("_")[0]
     if feature_size == '9':
@@ -55,7 +56,7 @@ def measure(data_dir, model_name):
         raise NotImplementedError
     
     model.load_state_dict(
-        torch.load(f"/home/lebron/IRattack/py/model/record/{model_name}.pth", map_location=device))
+        torch.load(f"/root/IRattack/py/model/record/{model_name}.pth", map_location=device))
     
     val_loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=5)
     model = model.to(device)
