@@ -3,7 +3,7 @@ import os
 import subprocess
 
 ida64_path = r"wine C:\\IDA\\ida64.exe"
-script_path = r"/root/MCFG_GNN/src/dataset_construct/disassemble.py"
+script_path = r"/root/IRattack/py/model/src/dataset_construct/disassemble.py"
 
 
 import tqdm
