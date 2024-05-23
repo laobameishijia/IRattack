@@ -605,8 +605,8 @@ if __name__ == "__main__":
     CHOOSE_FUNCTION_BASED_ON_PROBABILITY = 0.8  # 在最后的20%阶段,按照概率变化来选择函数
     LOGFILE = Log()                             # 全局的日志文件
     
-    # malware_store_path = "/home/lebron/IRFuzz/ELF"
-    malware_store_path = "/home/lebron/IRFuzz/TEST"
+    malware_store_path = "/home/lebron/IRFuzz/ELF_old"
+    # malware_store_path = "/home/lebron/IRFuzz/TEST"
     malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
     
     

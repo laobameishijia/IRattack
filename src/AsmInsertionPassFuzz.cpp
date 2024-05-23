@@ -172,18 +172,35 @@ public:
             if (!BB.empty()) {
               // 找到插入位置，即最后一个PHINode之后的第一个位置
               Instruction *insertionPoint = &BB.front();
-              while (isa<PHINode>(insertionPoint))
-                  insertionPoint = insertionPoint->getNextNode();
+              bool foundInsertionPoint = false;
+              while (insertionPoint){
+                if ( ! isa<PHINode>(insertionPoint) && ! isa<InvokeInst>(insertionPoint)){
+                  // 确保不是 landingpad 指令
+                  if (auto *LP = dyn_cast<LandingPadInst>(insertionPoint)) {
+                    // 如果是 landingpad 指令，插入到其后面
+                    insertionPoint = LP->getNextNode();
+                  }
+                  foundInsertionPoint = true;
+                  break;
+                }
+                insertionPoint = insertionPoint->getNextNode();
 
-              LLVMContext &Ctx = F.getContext();
-              InlineAsm *customAsm = InlineAsm::get(
-                FunctionType::get(Type::getVoidTy(Ctx), false),
-                asm_instruction_array[asmIndex], // 使用 asmIndex 选择指令
-                "",
-                true, // HasSideEffects
-                false // IsAlignStack
-              );
-              CallInst::Create(customAsm, "", insertionPoint);
+              }
+              if (foundInsertionPoint){
+                LLVMContext &Ctx = F.getContext();
+                InlineAsm *customAsm = InlineAsm::get(
+                  FunctionType::get(Type::getVoidTy(Ctx), false),
+                  asm_instruction_array[asmIndex], // 使用 asmIndex 选择指令
+                  "",
+                  true, // HasSideEffects
+                  false // IsAlignStack
+                );
+                // 插入自定义汇编指令，使用 insertBefore 确保位置正确
+                CallInst *callInst = CallInst::Create(customAsm, "");
+                callInst->insertBefore(insertionPoint);
+              }else{
+                //没找到合适的插入位置
+              }
             }
             // std::cout <<  "成功插入\n" << std::endl;
           }
