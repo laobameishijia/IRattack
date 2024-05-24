@@ -340,6 +340,8 @@ class Log:
     
     def __init__(self, filename="log"):
         self.log_file = open(f"/root/IRFuzz/{filename}", mode="a")
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.log_file.write(f"Log file created at: {current_time}\n")
     
     def write(self, message):
         self.log_file.write(f"{message}")
@@ -467,7 +469,7 @@ class Fuzz:
                             self.fuzz_log.write(f"Now running seedfile: {seed_file.path}\n")
                             self.fuzz_log.write(f"attack susccess mutate_file is {self.seed_count}.txt \n\n")
                             self.fuzz_log.write(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
-                            ATTACK_SUCCESS_MAP[self.model].append(self.source_dir.split('/')[-1])
+                            # ATTACK_SUCCESS_MAP[self.model].append(self.source_dir.split('/')[-1])
                             break
                     else:
                         self.fuzz_log.write(f"Restoring a copy of functions\n", "red")
@@ -591,7 +593,7 @@ if __name__ == "__main__":
                         help='Maximum number of iterations')
     parser.add_argument('--choose_function_based_on_probability', type=float, default=0.8,
                         help='Probability for choosing function in the last 20% phase')
-    parser.add_argument('--malware_store_path', type=str, default="/root/IRFuzz/TEST",
+    parser.add_argument('--malware_store_path', type=str, default="/root/IRFuzz/ELF",
                         help='Path to the malware store')
 
     args = parser.parse_args()
@@ -604,10 +606,7 @@ if __name__ == "__main__":
     ATTACK_SUCCESS_RATE = dict()    
     LOGFILE = Log()                                                                     # 全局的日志文件
     
-    LOGFILE.write(f"MAX_ITERATIONS:{MAX_ITERATIONS},  \
-                    CHOOSE_FUNCTION_BASED_ON_PROBABILITY:{CHOOSE_FUNCTION_BASED_ON_PROBABILITY},\
-                    model_list:{model_list} \
-                    \n")
+    LOGFILE.write(f"MAX_ITERATIONS:{MAX_ITERATIONS}\n CHOOSE_FUNCTION_BASED_ON_PROBABILITY:{CHOOSE_FUNCTION_BASED_ON_PROBABILITY}\n model_list:{model_list}\n\n")
     malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
     
     
