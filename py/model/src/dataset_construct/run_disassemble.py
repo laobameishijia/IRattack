@@ -1,6 +1,7 @@
 import argparse
 import os
 import subprocess
+import time
 
 ida64_path = r"wine C:\\IDA\\ida64.exe"
 script_path = r"/root/IRattack/py/model/src/dataset_construct/disassemble.py"
@@ -30,7 +31,20 @@ def run(dir_path, output_dir, log_path):
         print(file_path)
         cmd = '{0} -L{1} -c -A -S"{2} {3} {4}" {5}'\
             .format(ida64_path, log_path, script_path, output_dir, file_name, file_path)
-        result = subprocess.run(cmd, shell=True, capture_output=True,text=True)
+        retry_count = 0
+        max_retries = 5
+        while retry_count < max_retries:
+            try:
+                result = subprocess.run(cmd, shell=True, capture_output=True,text=True, timeout=30)
+                if result.returncode == 0:
+                    return 0  # 成功运行
+                else:
+                    print(f"Script failed with return code {result.returncode}. Retrying...")                
+            except subprocess.TimeoutExpired:
+                print("Disassemble timed out! Retrying...")
+            retry_count += 1
+            time.sleep(5)  # 等待一段时间后重试
+            
         # print("STDOUT", result.stdout)
         # print("STDERR", result.stderr)
         # p = subprocess.Popen(cmd)
