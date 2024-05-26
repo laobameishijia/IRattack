@@ -339,6 +339,8 @@ class Log:
     
     def __init__(self, filename="log"):
         self.log_file = open(f"/home/lebron/IRFuzz/{filename}", mode="a")
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.log_file.write(f"Log file created at: {current_time}\n")
     
     def write(self, message):
         self.log_file.write(f"{message}")
@@ -466,7 +468,7 @@ class Fuzz:
                             self.fuzz_log.write(f"Now running seedfile: {seed_file.path}\n")
                             self.fuzz_log.write(f"attack susccess mutate_file is {self.seed_count}.txt \n\n")
                             self.fuzz_log.write(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
-                            ATTACK_SUCCESS_MAP[self.model].append(self.source_dir.split('/')[-1])
+                            # ATTACK_SUCCESS_MAP[self.model].append(self.source_dir.split('/')[-1])
                             break
                     else:
                         self.fuzz_log.write(f"Restoring a copy of functions\n", "red")
@@ -601,12 +603,12 @@ if __name__ == "__main__":
         "GIN0WithJK_20":[]
     }
     ATTACK_SUCCESS_RATE = dict()
-    MAX_ITERATIONS = 30                         # 最大迭代次数
+    MAX_ITERATIONS = 10                         # 最大迭代次数
     CHOOSE_FUNCTION_BASED_ON_PROBABILITY = 0.8  # 在最后的20%阶段,按照概率变化来选择函数
     LOGFILE = Log()                             # 全局的日志文件
     
-    malware_store_path = "/home/lebron/IRFuzz/ELF_old"
-    # malware_store_path = "/home/lebron/IRFuzz/TEST"
+    # malware_store_path = "/home/lebron/IRFuzz/可以跑的剩下的"
+    malware_store_path = "/home/lebron/IRFuzz/Test"
     malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
     
     
