@@ -39,6 +39,17 @@ def print_summaries(summaries):
         print(f"{model}:\n  Min: {summary[0]} s\n  Q1: {summary[1]} s\n  Median: {summary[2]} s\n  Q3: {summary[3]} s\n  Max: {summary[4]} s\n")
 
 # Example usage
-filename = 'log.txt'
+
+iteration_list = [10,20,30,40]
+model_list = ["DGCNN","GIN0","GIN0WithJK"]
+for iteration in iteration_list:
+    print(f"Iteration: {iteration}")
+    for model in model_list:
+        filename=f"/home/lebron/IRFuzz/done_result/{iteration}/{model}/IRFuzz/log"
+        summaries = extract_model_times(filename)
+        print_summaries(summaries)
+exit()
+# Test
+filename = '/home/lebron/IRFuzz/done_result/10/DGCNN/IRFuzz/log'
 summaries = extract_model_times(filename)
 print_summaries(summaries)

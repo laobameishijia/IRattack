@@ -82,11 +82,10 @@ def calculate_success_rate(base_folder: str, categories: dict):
     """
     success_rates = defaultdict(lambda: defaultdict(int))
     total_counts = defaultdict(lambda: defaultdict(int))
-    model_list = ["DGCNN_9", "GIN0_9", "GIN0WithJK_9"]
+
     for category, folders in categories.items(): 
         
-        for model in model_list:
-            total_counts[category][model] += len(folders)
+        total_counts_file =  len(folders)
             
         for folder_name, _ in folders:
             out_folder_path = os.path.join(base_folder, folder_name, 'out')
@@ -101,8 +100,7 @@ def calculate_success_rate(base_folder: str, categories: dict):
     # 计算成功率
     for category in success_rates:
         for model_name in success_rates[category]:
-            if total_counts[category][model_name] > 0:
-                success_rates[category][model_name] = (success_rates[category][model_name] / total_counts[category][model_name]) * 100
+            success_rates[category][model_name] = (success_rates[category][model_name] / len(categories[category])) * 100
 
     return success_rates
 
@@ -113,13 +111,33 @@ def print_success_rates(success_rates: dict):
     参数:
     success_rates (dict): 每个分类范围内的不同模型的攻击成功率。
     """
+    model_order = ["DGCNN_9", "DGCNN_20", "GIN0_9", "GIN0_20", "GIN0WithJK_9", "GIN0WithJK_20"]
+    
     for category, models in success_rates.items():
         print(f"{category}:")
-        for model_name, rate in models.items():
-            print(f"  Model: {model_name}, Success Rate: {rate:.2f}%")
+        for model_name in model_order:
+            if model_name in models:
+                rate = models[model_name]
+                print(f"  Model: {model_name}, Success Rate: {rate:.2f}%")
+
+            
+
+
+iteration_list = [10,20,30,40]
+model_list = ["DGCNN","GIN0","GIN0WithJK"]
+for iteration in iteration_list:
+    for model in model_list:
+        print(f"Iteration: {iteration}  Model: {model}")
+        base_folder=f"/home/lebron/IRFuzz/done_result/{iteration}/{model}/IRFuzz/ELF"
+        categories = categorize_folders(base_folder)
+        # print_categories(categories)
+        success_rates = calculate_success_rate(base_folder, categories)
+        print_success_rates(success_rates)
+    print("\n")
+exit()
 # 示例用法
-base_folder = '/home/lebron/IRFuzz/ELF'  # 替换为你的主文件夹路径
+base_folder = '/home/lebron/IRFuzz/done_result/10/DGCNN/IRFuzz/ELF'
 categories = categorize_folders(base_folder)
-print_categories(categories)
+# print_categories(categories)
 success_rates = calculate_success_rate(base_folder, categories)
 print_success_rates(success_rates)

@@ -114,8 +114,8 @@ public:
 
   std::vector<std::string> asm_instruction_array = {
     "nop\n",
-    "subq 0, %rax\n",
-    "addq 0, %rax\n",
+    "subq $$0, %rax\n",
+    "addq $$0, %rax\n",
     "leaq (%rax), %rax\n",
     "movq %rax, %rax\n",
     "xchgq %rax, %rax\n",
@@ -128,8 +128,8 @@ public:
     "pushfq\n cmpq %rax, %rax\n cmovns %eax, %eax\n popfq\n",                          // 在符号标志未设置时移动数据
     "pushfq\n pushq %rax\n xorl %eax, %eax\n cmovnp %ecx, %eax\n popq %rax\n popfq\n", // 在奇偶校验标志未设置时移动数据
     "pushfq\n cmpq %rax, %rax\n cmovno %ecx, %eax\n popfq\n",                          // 溢出标志被设置时移动数据
-    "addq 1, %rax\n subq 1, %rax\n",
-    "subq -2, %rax\n addq 2, %rax\n",
+    "addq $$1, %rax\n subq $$1, %rax\n",
+    "subq $$-2, %rax\n addq $$2, %rax\n",
     "pushq %rax\n negq %rax\n negq %rax\n popq %rax\n", // 求补码操作
     "notq %rax\n notq %rax\n",                          // 取反操作
     "pushq %rax\n popq %rax\n",
