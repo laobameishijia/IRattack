@@ -609,19 +609,23 @@ if __name__ == "__main__":
     LOGFILE.write(f"MAX_ITERATIONS:{MAX_ITERATIONS}\n CHOOSE_FUNCTION_BASED_ON_PROBABILITY:{CHOOSE_FUNCTION_BASED_ON_PROBABILITY}\n model_list:{model_list}\n\n")
     malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
     
-    
+    total_iterations = len(model_list) * len(malware_full_paths)
+    progressed = 0    
 
     for model in model_list:
         for malware_dir in malware_full_paths:
             source_dir= malware_dir
             fuzz_dir=  malware_dir
             model = model
+            print("Now is process {:.2f}%".format( (progressed/total_iterations)*100 ))
             if is_success_file_present(fuzz_dir,model):
                 print(colored(f"Already Attack Success! Next One!", "green"))
                 ATTACK_SUCCESS_MAP[model].append(source_dir.split('/')[-1])
+                progressed += 1
                 continue
             if os.path.exists(f"{fuzz_dir}/out/failed_{model}.txt"):
                 print(colored(f"Already Failed!", "yellow"))
+                progressed += 1
                 continue
             
             startime =  datetime.datetime.now()
@@ -634,7 +638,8 @@ if __name__ == "__main__":
                 LOGFILE.write(f"{model}-{source_dir.split('/')[-1]}\n")
                 ATTACK_SUCCESS_MAP[model].append(source_dir.split('/')[-1])
                 LOGFILE.write(f"Use {(endtime - startime).total_seconds()} s\n\n")
-  
+
+            progressed += 1
     
     for key in ATTACK_SUCCESS_MAP:
         ATTACK_SUCCESS_RATE[key] = len(ATTACK_SUCCESS_MAP[key]) / len(malware_full_paths)
