@@ -123,14 +123,16 @@ def print_success_rates(success_rates: dict):
             
 
 
-iteration_list = [10,20,30,40]
-model_list = ["DGCNN","GIN0","GIN0WithJK"]
+# iteration_list = [10,20,30,40]
+# model_list = ["DGCNN","GIN0","GIN0WithJK"]
+iteration_list = [10]
+model_list = ["DGCNN"]
 for iteration in iteration_list:
     for model in model_list:
         print(f"Iteration: {iteration}  Model: {model}")
         base_folder=f"/home/lebron/IRFuzz/done_result/{iteration}/{model}/IRFuzz/ELF"
         categories = categorize_folders(base_folder)
-        # print_categories(categories)
+        print_categories(categories)
         success_rates = calculate_success_rate(base_folder, categories)
         print_success_rates(success_rates)
     print("\n")

@@ -612,20 +612,23 @@ if __name__ == "__main__":
     # malware_store_path = "/home/lebron/IRFuzz/Test"
     malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
     
-    
+    total_iterations = len(model_list) * len(malware_full_paths)
+    progressed = 0
 
     for model in model_list:
         for malware_dir in malware_full_paths:
             source_dir= malware_dir
             fuzz_dir=  malware_dir
             model = model
-            # if os.path.exists(f"{fuzz_dir}/out/success_{model}.txt"):
+            print("Now is process {:.2f}%".format( (progressed/total_iterations)*100 ))
             if is_success_file_present(fuzz_dir,model):
                 print(colored(f"Already Attack Success! Next One!", "green"))
                 ATTACK_SUCCESS_MAP[model].append(source_dir.split('/')[-1])
+                progressed += 1
                 continue
             if os.path.exists(f"{fuzz_dir}/out/failed_{model}.txt"):
                 print(colored(f"Already Failed!", "yellow"))
+                progressed += 1
                 continue
             
             startime =  datetime.datetime.now()
@@ -639,7 +642,8 @@ if __name__ == "__main__":
                 ATTACK_SUCCESS_MAP[model].append(source_dir.split('/')[-1])
                 LOGFILE.write(f"Use {(endtime - startime).total_seconds()} s\n\n")
   
-    
+            progressed += 1
+            
     for key in ATTACK_SUCCESS_MAP:
         ATTACK_SUCCESS_RATE[key] = len(ATTACK_SUCCESS_MAP[key]) / len(malware_full_paths)
     
@@ -652,213 +656,3 @@ if __name__ == "__main__":
             file.write(f'{key}: {value:.4f}\n')  # 输出格式化的浮点数
     exit()
     # /home/lebron/MalwareSourceCode-2/真正用C写的/Pass_Mirai-Iot-BotNet/IRattack/loader
-
-"""
-
-
-def init_model(model_name_list):
-    
-    model_list = []
-    device = torch.device("cpu")
-    for model_name in model_name_list:
-        feature_size = model_name.split("_")[1]
-        model_type = model_name.split("_")[0]
-        
-        if model_type == "DGCNN":
-            model = DGCNN(num_features=int(feature_size), num_classes=2)
-        elif model_type == "GIN0":
-            model = GIN0(num_features=int(feature_size), num_layers=4, hidden=64,num_classes=2)
-        elif model_type == "GIN0WithJK":
-            model = GIN0WithJK(num_features=int(feature_size), num_layers=4, hidden=64,num_classes=2)
-        else:
-            print(f"Model: {model_type} is not exist!")
-            raise NotImplementedError
-        
-        model.load_state_dict(
-            torch.load(f"/home/lebron/IRattack/py/model/record/{model_name}.pth", map_location=device))
-        
-        model = model.to(device)
-        model.eval()   
-
-        model_list.append(model)
-    
-    return model_list
-
-
-class FuzzParallel:
-    
-    def __init__(self, source_dir, fuzz_dir, model_name_list):
-        
-        self.source_dir = source_dir
-        self.fuzz_dir = fuzz_dir
-        self.bash_sh = f"{source_dir}/fuzz_compile.sh"
-        self.temp_bb_file_path = f"{fuzz_dir}/temp/.basicblock"
-        self.LDFLAGS, self.CFLAGS= read_bash_variables(f"{source_dir}/compile.sh")
-        self.compiler = find_compilers(f"{source_dir}/compile.sh")
-        
-        self.fuzz_log = FuzzLog(fuzz_dir,filename="parallellog")
-        self.model_list = init_model(model_name_list)
-        self.attack_success_model_map = {}
-        self.fuzz_log.write(f"Model:{model_name_list}\n", "blue")
-        
-        build_fuzz_directories(self.fuzz_dir)
-        
-        self.bb_file_path =  f"{source_dir}/BasicBlock.txt"
-        self.functions = parse_file(self.bb_file_path)
-        
-        # 示例输出,获取初始概率
-        self.fuzz_log.write(f"初始概率为:", "green")
-        self.temp_functions = self.functions
-        # 将temp输出到temp目录中
-        output_file(self.temp_functions, self.temp_bb_file_path)
-        self.construct_cfg()
-        self.probability_map = self.get_probability()
-        self.adversarial_label = 0 # 0良性为对抗标签
-        self.fuzz_log.write(f"对抗样本label标签为:{self.adversarial_label}\n", "green")
-        print(self.probability_map)
-        print_functions(self.temp_functions)
-    
-    def run(self):
-
-        # 随机选择变异器
-        mutators = ["random_block", "all_block", "flatten", "bcf"]
-        
-        copy_file_to_folder(source_file=f"{self.source_dir}/BasicBlock.txt",target_folder=f"{self.fuzz_dir}/in")
-        self.file_hashes = parse_hash_file(f"{self.fuzz_dir}/in")
-        self.seed_list = [SeedFile(f) for f in list_seed_files(directory=f"{self.fuzz_dir}/in")]
-        self.seed_count = len(self.seed_list) - 1
-        self.fuzz_log.write(f"there is {self.seed_count} seed files\n","green")
-        
-        attack_success = False
-        iteration = 0
-        
-        while not attack_success and iteration < MAX_ITERATIONS:
-            # 顺序执行种子
-            for seed_file in self.seed_list:
-                
-                if iteration >= MAX_ITERATIONS or attack_success:
-                    break   
-                
-                self.fuzz_log.write(f"Selected seed file: {seed_file.path} with energy {seed_file.energy}\n", "blue")
-                # 计算变异次数，基于能量值，能量越高变异次数越多
-                num_mutations = max(1, int(seed_file.energy))       # 基础能量就代表变异的次数，至少一次
-                functions = parse_file(seed_file.path)              # 解析原函数文件
-                copy_functions = copy.deepcopy(functions)           # 保存原有副本
-                
-                i = 0
-                while i <  num_mutations and iteration < MAX_ITERATIONS and not attack_success:
-                    
-                    chosen_mutator = random.choice(mutators)
-                    self.fuzz_log.write(f"Chosen mutator: {chosen_mutator}\n", "yellow")
-                    functions_copy = copy.deepcopy(functions)       # 保存原有副本
-                    
-                    if chosen_mutator == "random_block":
-                        self.mutate_random_block(functions)
-                    elif chosen_mutator == "all_block":
-                        self.mutate_all_block(functions)
-                    elif chosen_mutator == "flatten":
-                        self.mutate_flatten(functions)
-                    elif chosen_mutator == "bcf":
-                        self.mutate_bcf(functions)
-
-                    
-                    self.temp_functions = functions                    
-                    output_file(self.temp_functions, self.temp_bb_file_path)    # 将temp输出到temp目录中
-                    probability_map = self.get_probability()                    # 模型预测概率变化
-                    self.attack_success_model_map = self.check_probability_map(probability_map)
-                    
-                    # 如果 probability_map == 0 那么说明六个模型都被攻击成功
-                    if len(probability_map) == 0 : 
-                        attack_success = True
-                        break
-                    
-                    for model in probability_map:
-                        # 判断是否攻击成功，结束循环 当对抗标签的概率超过0.5即攻击成功
-                        if probability_map[model][0] > 0.5:
-                            attack_success = True # 攻击成功
-                            # 把当前攻击成功的种子文件保存起来，后面还要分析
-                            seed_out_path = f"{fuzz_dir}/out/success_{model}.txt"
-                            output_file(functions, seed_out_path)
-                            self.fuzz_log.write(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
-                            self.fuzz_log.write(f"Now running seedfile: {seed_file.path}\n")
-                            self.fuzz_log.write(f"attack susccess mutate_file is {self.seed_count}.txt \n\n")
-                            self.fuzz_log.write(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
-                            ATTACK_SUCCESS_MAP[model].append(self.source_dir.split('/')[-1])
-         
-                    iteration += 1              
-     
-    def check_probability_map(self, probability_map):
-        result_dict = {key: pro_0 > pro_1 for key, (pro_0, pro_1) in probability_map.items()}
-        return result_dict
-        
-    def construct_cfg(self):
-        # 插入+链接
-        run_bash(script_path= self.bash_sh,
-                args=[self.source_dir, self.fuzz_dir, self.temp_bb_file_path, self.LDFLAGS, self.CFLAGS, self.compiler])
-        # 返汇编
-        disassemble(fuzz_dir=self.fuzz_dir)
-        # 提取cfg
-        extract_cfg(fuzz_dir=self.fuzz_dir)
-               
-    def get_probability(self):
-        
-        model_probability = dict()
-        dataset_9 = CFGDataset_Semantics_Preseving(root=self.source_dir)
-        dataset_20 = CFGDataset_MAGIC_Attack(root= self.source_dir)
-        
-        for model in self.model_list:
-            if self.attack_success_model_map[model]:
-                continue
-            if model.feature_size == 9:
-                dataset = dataset_9
-            elif model.feature_size == 20:
-                dataset = dataset_20
-            else: 
-                raise NotImplementedError
-            
-            val_loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=5)
-            
-            for data in tqdm.tqdm(val_loader):
-                data = data.to('cpu')
-                out,top_k_indices = model(data)
-                # print(out)
-                result = torch.exp(out) # 将模型输出的logsoftmax转换为softmax
-                formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
-                probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
-                probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本                
-                model_probability[f"{model.__class__.__name__}_{model.feature_size}"] = (probability_0, probability_1)
-
-        return model_probability
-                
-
-    def mutate_random_block(self, functions):
-        # 选择一个随机块进行操作
-        functionName = random.choice(list(functions.keys()))
-        blockNum = random.choice(list(functions[functionName].blocks.keys()))
-        asmIndex = random.randint(0, 26)
-        functions[functionName].blocks[blockNum].asm_indices.append(asmIndex)
-        self.fuzz_log.write(f"Mutated {functionName} at block {blockNum} with new asmIndex {asmIndex} \n", "magenta")
-
-    def mutate_all_block(self, functions):
-        # 对所有块添加同一随机 asmIndex
-        asmIndex = random.randint(0, 26)
-        for functionName, function in functions.items():
-            for blockNum in function.blocks:
-                functions[functionName].blocks[blockNum].asm_indices.append(asmIndex)
-        self.fuzz_log.write(f"Mutated all blocks with asmIndex {str(asmIndex)} \n", "magenta")
-
-    def mutate_flatten(self, functions):
-        # 随机选择函数并增加 flatten 次数
-        functionName = random.choice(list(functions.keys()))
-        if functions[functionName].flatten_level == 3:
-            pass
-        else:
-            functions[functionName].flatten_level += 1
-        self.fuzz_log.write(f"Increased flatten level for {functionName} to {functions[functionName].flatten_level}\n", "magenta")
-
-    def mutate_bcf(self, functions):
-        # 随机选择函数并增加 bcf 概率
-        functionName = random.choice(list(functions.keys()))
-        functions[functionName].bcf_rate += 10
-        self.fuzz_log.write(f"Increased bcf rate for {functionName} to {functions[functionName].bcf_rate}", "magenta")
-"""
