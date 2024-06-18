@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import glob
+import json
 import os
 import random
 import re
@@ -361,7 +362,7 @@ class FuzzLog:
 
 class Fuzz:
     
-    def __init__(self, source_dir, fuzz_dir, model):
+    def __init__(self, source_dir, fuzz_dir, model, mutator_counts):
         
         self.source_dir = source_dir
         self.fuzz_dir = fuzz_dir
@@ -372,6 +373,7 @@ class Fuzz:
         self.compiler = find_compilers(f"{source_dir}/compile.sh")
         self.function_probabilities = {}  # 添加字典以记录函数的概率
         self.iteration = 0
+        self.mutator_counts = mutator_counts
         
         self.fuzz_log = FuzzLog(fuzz_dir)
         self.fuzz_log.write(f"Model:{self.model}\n", "blue")
@@ -405,6 +407,7 @@ class Fuzz:
         
         attack_success = False
         iteration = 0
+        mutator_counts = { "random_block": 0, "all_block": 0, "flatten": 0, "bcf": 0 }
         
         while not attack_success and iteration < MAX_ITERATIONS:
             # 顺序执行种子
@@ -423,7 +426,10 @@ class Fuzz:
                 i = 0
                 while i <  num_mutations and iteration < MAX_ITERATIONS and not attack_success:
                     mutation_queued = self.seed_count                # 暂时拥有的种子数
-                    chosen_mutator = random.choice(mutators)
+                    # chosen_mutator = random.choice(mutators)
+                    chosen_mutator = self.choose_mutator_based_on_count()
+                    mutator_counts[chosen_mutator] += 1
+                    
                     self.fuzz_log.write(f"Chosen mutator: {chosen_mutator}\n", "yellow")
                     functions_copy = copy.deepcopy(functions)       # 保存原有副本
                     
@@ -448,6 +454,8 @@ class Fuzz:
                         
                     # 判断是否保存变异结果
                     if adversarial_probability - previous_adv_probability > 0:  # 概率变化大于5%
+                        if adversarial_probability - previous_adv_probability > 0.10:
+                            self.mutator_counts[chosen_mutator] += 1
                         previous_adv_probability = adversarial_probability
                         if not is_file_duplicate(seed_order=self.seed_count, fuzz_dir=self.fuzz_dir, file_hashes=self.file_hashes):
                             seed_out_path = f"{self.fuzz_dir}/in/{self.seed_count}_{chosen_mutator}.txt"
@@ -462,6 +470,9 @@ class Fuzz:
                         # 判断是否攻击成功，结束循环 当对抗标签的概率超过0.5即攻击成功
                         if adversarial_probability > 0.5:
                             attack_success = True # 攻击成功
+                            # 将当前样本的变异策略添加到全局中
+                            print("update_mutator_probability_success!")
+                            self.update_mutator_probability(mutator_counts)
                             # 把当前攻击成功的种子文件保存起来，后面还要分析
                             seed_out_path = f"{fuzz_dir}/out/success_{self.model}_{self.iteration}.txt"
                             output_file(functions, seed_out_path)
@@ -577,11 +588,38 @@ class Fuzz:
         total = sum(probabilities)
         probabilities = [p / total for p in probabilities]
         return random.choices(function_names, probabilities)[0]
-
+    
+    def update_mutator_probability(self, mutator_counts):
+        for key in mutator_counts.keys():
+            self.mutator_counts[key] += mutator_counts[key]
+            
+    def update_mutator_probability_fail(self, mutator_counts):
+        for key in mutator_counts.keys():
+            self.mutator_counts[key] -= mutator_counts[key]
+            if self.mutator_counts[key] < 0: 
+                self.mutator_counts[key] = 0
+            
+    def choose_mutator_based_on_count(self):
+        probabilities = [(self.mutator_counts.get(mutator, 0) + 1) for mutator in self.mutator_counts]
+        total = sum(probabilities)
+        probabilities = [prob / total for prob in probabilities]
+        return random.choices(list(self.mutator_counts.keys()), probabilities)[0]
+    
 def is_success_file_present(fuzz_dir, model):
     success_files = glob.glob(f"{fuzz_dir}/out/success_{model}*")
-    return len(success_files) > 0         
-
+    return len(success_files) > 0     
+    
+def load_mutator_counts(filepath):
+    try:
+        with open(filepath, 'r') as file:
+            mutator_counts = json.load(file)
+            return mutator_counts
+    except FileNotFoundError:
+        mutator_counts = { "random_block": 0, "all_block": 0, "flatten": 0, "bcf": 0 }
+        return mutator_counts
+    except json.JSONDecodeError:
+        print(f"Error decoding JSON from {filepath}. Using default mutator counts.")
+        
 if __name__ == "__main__":
 
     # 设置命令行参数解析
@@ -613,10 +651,14 @@ if __name__ == "__main__":
     progressed = 0    
 
     for model in model_list:
+        
+        mutator_counts = load_mutator_counts("/root/IRFuzz/attack_success_mutation.json")
+                
         for malware_dir in malware_full_paths:
             source_dir= malware_dir
             fuzz_dir=  malware_dir
             model = model
+            print(f"{mutator_counts}")
             print("Now is process {:.2f}%".format( (progressed/total_iterations)*100 ))
             if is_success_file_present(fuzz_dir,model):
                 print(colored(f"Already Attack Success! Next One!", "green"))
@@ -630,9 +672,11 @@ if __name__ == "__main__":
             
             startime =  datetime.datetime.now()
             
-            fuzz = Fuzz(source_dir,fuzz_dir,model)
+            fuzz = Fuzz(source_dir,fuzz_dir,model,mutator_counts)
             attack_success = fuzz.run()
-            
+            mutator_counts = fuzz.mutator_counts
+            with open('/root/IRFuzz/attack_success_mutation.json', 'w') as file:
+                json.dump(mutator_counts, file)
             endtime =  datetime.datetime.now()
             if attack_success:
                 LOGFILE.write(f"{model}-{source_dir.split('/')[-1]}\n")
@@ -651,4 +695,5 @@ if __name__ == "__main__":
     with open('/root/IRFuzz/attack_success_rate.txt', 'w') as file:
         for key, value in ATTACK_SUCCESS_RATE.items():
             file.write(f'{key}: {value:.4f}\n')  # 输出格式化的浮点数
+    
     exit()
