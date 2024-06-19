@@ -1,0 +1,1024 @@
+{
+    "1000": {
+        "start_addr": 1000,
+        "end_addr": 1001,
+        "insn_list": [
+            {
+                "address": 1000,
+                "opcode": "nop",
+                "operands": [],
+                "next_addr": 1001
+            }
+        ],
+        "in_edge_list": [], 
+        "out_edge_list": [
+            2000
+        ]
+    },
+    "2000": {
+        "start_addr": 2000,
+        "end_addr": 2001,
+        "insn_list": [
+            {
+                "address": 2000,
+                "opcode": "subq",
+                "operands": [
+                    "$$0x0,",
+                    "%rax"
+                ],
+                "next_addr": 2001
+            }
+        ],
+        "in_edge_list": [
+            1000
+        ],
+        "out_edge_list": [
+            3000
+        ]
+    },
+    "3000": {
+        "start_addr": 3000,
+        "end_addr": 3001,
+        "insn_list": [
+            {
+                "address": 3000,
+                "opcode": "addq",
+                "operands": [
+                    "$$0x0,",
+                    "%rax"
+                ],
+                "next_addr": 3001
+            }
+        ],
+        "in_edge_list": [
+            2000
+        ],
+        "out_edge_list": [
+            4000
+        ]
+    },
+    "4000": {
+        "start_addr": 4000,
+        "end_addr": 4001,
+        "insn_list": [
+            {
+                "address": 4000,
+                "opcode": "leaq",
+                "operands": [
+                    "(%rax),",
+                    "%rax"
+                ],
+                "next_addr": 4001
+            }
+        ],
+        "in_edge_list": [
+            3000
+        ],
+        "out_edge_list": [
+            5000
+        ]
+    },
+    "5000": {
+        "start_addr": 5000,
+        "end_addr": 5001,
+        "insn_list": [
+            {
+                "address": 5000,
+                "opcode": "movq",
+                "operands": [
+                    "%rax,",
+                    "%rax"
+                ],
+                "next_addr": 5001
+            }
+        ],
+        "in_edge_list": [
+            4000
+        ],
+        "out_edge_list": [
+            6000
+        ]
+    },
+    "6000": {
+        "start_addr": 6000,
+        "end_addr": 6001,
+        "insn_list": [
+            {
+                "address": 6000,
+                "opcode": "xchgq",
+                "operands": [
+                    "%rax,",
+                    "%rax"
+                ],
+                "next_addr": 6001
+            }
+        ],
+        "in_edge_list": [
+            5000
+        ],
+        "out_edge_list": [
+            7000
+        ]
+    },
+    "7000": {
+        "start_addr": 7000,
+        "end_addr": 7006,
+        "insn_list": [
+            {
+                "address": 7000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 7001
+            },
+            {
+                "address": 7001,
+                "opcode": "pushq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 7002
+            },
+            {
+                "address": 7002,
+                "opcode": "xorl",
+                "operands": [
+                    "%eax,",
+                    "%eax"
+                ],
+                "next_addr": 7003
+            },
+            {
+                "address": 7003,
+                "opcode": "cmovol",
+                "operands": [
+                    "%ecx,",
+                    "%eax"
+                ],
+                "next_addr": 7004
+            },
+            {
+                "address": 7004,
+                "opcode": "popq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 7005
+            },
+            {
+                "address": 7005,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 7006
+            }
+        ],
+        "in_edge_list": [
+            6000
+        ],
+        "out_edge_list": [
+            8000
+        ]
+    },
+    "8000": {
+        "start_addr": 8000,
+        "end_addr": 8006,
+        "insn_list": [
+            {
+                "address": 8000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 8001
+            },
+            {
+                "address": 8001,
+                "opcode": "pushq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 8002
+            },
+            {
+                "address": 8002,
+                "opcode": "xorl",
+                "operands": [
+                    "%eax,",
+                    "%eax"
+                ],
+                "next_addr": 8003
+            },
+            {
+                "address": 8003,
+                "opcode": "cmovpl",
+                "operands": [
+                    "%eax,",
+                    "%eax"
+                ],
+                "next_addr": 8004
+            },
+            {
+                "address": 8004,
+                "opcode": "popq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 8005
+            },
+            {
+                "address": 8005,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 8006
+            }
+        ],
+        "in_edge_list": [
+            7000
+        ],
+        "out_edge_list": [
+            9000
+        ]
+    },
+    "9000": {
+        "start_addr": 9000,
+        "end_addr": 9004,
+        "insn_list": [
+            {
+                "address": 9000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 9001
+            },
+            {
+                "address": 9001,
+                "opcode": "cmpq",
+                "operands": [
+                    "%rax,",
+                    "%rax"
+                ],
+                "next_addr": 9002
+            },
+            {
+                "address": 9002,
+                "opcode": "cmovb",
+                "operands": [
+                    "%eax,",
+                    "%eax"
+                ],
+                "next_addr": 9003
+            },
+            {
+                "address": 9003,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 9004
+            }
+        ],
+        "in_edge_list": [
+            8000
+        ],
+        "out_edge_list": [
+            10000
+        ]
+    },
+    "10000": {
+        "start_addr": 10000,
+        "end_addr": 10004,
+        "insn_list": [
+            {
+                "address": 10000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 10001
+            },
+            {
+                "address": 10001,
+                "opcode": "cmpq",
+                "operands": [
+                    "%rax,",
+                    "%rax"
+                ],
+                "next_addr": 10002
+            },
+            {
+                "address": 10002,
+                "opcode": "cmovg",
+                "operands": [
+                    "%ecx,",
+                    "%eax"
+                ],
+                "next_addr": 10003
+            },
+            {
+                "address": 10003,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 10004
+            }
+        ],
+        "in_edge_list": [
+            9000
+        ],
+        "out_edge_list": [
+            11000
+        ]
+    },
+    "11000": {
+        "start_addr": 11000,
+        "end_addr": 11004,
+        "insn_list": [
+            {
+                "address": 11000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 11001
+            },
+            {
+                "address": 11001,
+                "opcode": "cmpq",
+                "operands": [
+                    "%rax,",
+                    "%rax"
+                ],
+                "next_addr": 11002
+            },
+            {
+                "address": 11002,
+                "opcode": "cmovs",
+                "operands": [
+                    "%ecx,",
+                    "%eax"
+                ],
+                "next_addr": 11003
+            },
+            {
+                "address": 11003,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 11004
+            }
+        ],
+        "in_edge_list": [
+            10000
+        ],
+        "out_edge_list": [
+            12000
+        ]
+    },
+    "12000": {
+        "start_addr": 12000,
+        "end_addr": 12004,
+        "insn_list": [
+            {
+                "address": 12000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 12001
+            },
+            {
+                "address": 12001,
+                "opcode": "cmpq",
+                "operands": [
+                    "%rax,",
+                    "%rax"
+                ],
+                "next_addr": 12002
+            },
+            {
+                "address": 12002,
+                "opcode": "cmovl",
+                "operands": [
+                    "%ecx,",
+                    "%eax"
+                ],
+                "next_addr": 12003
+            },
+            {
+                "address": 12003,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 12004
+            }
+        ],
+        "in_edge_list": [
+            11000
+        ],
+        "out_edge_list": [
+            13000
+        ]
+    },
+    "13000": {
+        "start_addr": 13000,
+        "end_addr": 13004,
+        "insn_list": [
+            {
+                "address": 13000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 13001
+            },
+            {
+                "address": 13001,
+                "opcode": "cmpq",
+                "operands": [
+                    "%rax,",
+                    "%rax"
+                ],
+                "next_addr": 13002
+            },
+            {
+                "address": 13002,
+                "opcode": "cmovns",
+                "operands": [
+                    "%eax,",
+                    "%eax"
+                ],
+                "next_addr": 13003
+            },
+            {
+                "address": 13003,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 13004
+            }
+        ],
+        "in_edge_list": [
+            12000
+        ],
+        "out_edge_list": [
+            14000
+        ]
+    },
+    "14000": {
+        "start_addr": 14000,
+        "end_addr": 14006,
+        "insn_list": [
+            {
+                "address": 14000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 14001
+            },
+            {
+                "address": 14001,
+                "opcode": "pushq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 14002
+            },
+            {
+                "address": 14002,
+                "opcode": "xorl",
+                "operands": [
+                    "%eax,",
+                    "%eax"
+                ],
+                "next_addr": 14003
+            },
+            {
+                "address": 14003,
+                "opcode": "cmovnp",
+                "operands": [
+                    "%ecx,",
+                    "%eax"
+                ],
+                "next_addr": 14004
+            },
+            {
+                "address": 14004,
+                "opcode": "popq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 14005
+            },
+            {
+                "address": 14005,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 14006
+            }
+        ],
+        "in_edge_list": [
+            13000
+        ],
+        "out_edge_list": [
+            15000
+        ]
+    },
+    "15000": {
+        "start_addr": 15000,
+        "end_addr": 15004,
+        "insn_list": [
+            {
+                "address": 15000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 15001
+            },
+            {
+                "address": 15001,
+                "opcode": "cmpq",
+                "operands": [
+                    "%rax,",
+                    "%rax"
+                ],
+                "next_addr": 15002
+            },
+            {
+                "address": 15002,
+                "opcode": "cmovno",
+                "operands": [
+                    "%ecx,",
+                    "%eax"
+                ],
+                "next_addr": 15003
+            },
+            {
+                "address": 15003,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 15004
+            }
+        ],
+        "in_edge_list": [
+            14000
+        ],
+        "out_edge_list": [
+            16000
+        ]
+    },
+    "16000": {
+        "start_addr": 16000,
+        "end_addr": 16002,
+        "insn_list": [
+            {
+                "address": 16000,
+                "opcode": "addq",
+                "operands": [
+                    "$$0x1,",
+                    "%rax"
+                ],
+                "next_addr": 16001
+            },
+            {
+                "address": 16001,
+                "opcode": "subq",
+                "operands": [
+                    "$$0x1,",
+                    "%rax"
+                ],
+                "next_addr": 16002
+            }
+        ],
+        "in_edge_list": [
+            15000
+        ],
+        "out_edge_list": [
+            17000
+        ]
+    },
+    "17000": {
+        "start_addr": 17000,
+        "end_addr": 17002,
+        "insn_list": [
+            {
+                "address": 17000,
+                "opcode": "subq",
+                "operands": [
+                    "$$-2,",
+                    "%rax"
+                ],
+                "next_addr": 17001
+            },
+            {
+                "address": 17001,
+                "opcode": "addq",
+                "operands": [
+                    "$$0x2,",
+                    "%rax"
+                ],
+                "next_addr": 17002
+            }
+        ],
+        "in_edge_list": [
+            16000
+        ],
+        "out_edge_list": [
+            18000
+        ]
+    },
+    "18000": {
+        "start_addr": 18000,
+        "end_addr": 18004,
+        "insn_list": [
+            {
+                "address": 18000,
+                "opcode": "pushq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 18001
+            },
+            {
+                "address": 18001,
+                "opcode": "negq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 18002
+            },
+            {
+                "address": 18002,
+                "opcode": "negq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 18003
+            },
+            {
+                "address": 18003,
+                "opcode": "popq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 18004
+            }
+        ],
+        "in_edge_list": [
+            17000
+        ],
+        "out_edge_list": [
+            19000
+        ]
+    },
+    "19000": {
+        "start_addr": 19000,
+        "end_addr": 19002,
+        "insn_list": [
+            {
+                "address": 19000,
+                "opcode": "notq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 19001
+            },
+            {
+                "address": 19001,
+                "opcode": "notq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 19002
+            }
+        ],
+        "in_edge_list": [
+            18000
+        ],
+        "out_edge_list": [
+            20000
+        ]
+    },
+    "20000": {
+        "start_addr": 20000,
+        "end_addr": 20002,
+        "insn_list": [
+            {
+                "address": 20000,
+                "opcode": "pushq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 20001
+            },
+            {
+                "address": 20001,
+                "opcode": "popq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 20002
+            }
+        ],
+        "in_edge_list": [
+            19000
+        ],
+        "out_edge_list": [
+            21000
+        ]
+    },
+    "21000": {
+        "start_addr": 21000,
+        "end_addr": 21002,
+        "insn_list": [
+            {
+                "address": 21000,
+                "opcode": "pushfq",
+                "operands": [],
+                "next_addr": 21001
+            },
+            {
+                "address": 21001,
+                "opcode": "popfq",
+                "operands": [],
+                "next_addr": 21002
+            }
+        ],
+        "in_edge_list": [
+            20000
+        ],
+        "out_edge_list": [
+            22000
+        ]
+    },
+    "22000": {
+        "start_addr": 22000,
+        "end_addr": 22002,
+        "insn_list": [
+            {
+                "address": 22000,
+                "opcode": "xchgq",
+                "operands": [
+                    "%rax,",
+                    "%rcx"
+                ],
+                "next_addr": 22001
+            },
+            {
+                "address": 22001,
+                "opcode": "xchgq",
+                "operands": [
+                    "%rcx,",
+                    "%rax"
+                ],
+                "next_addr": 22002
+            }
+        ],
+        "in_edge_list": [
+            21000
+        ],
+        "out_edge_list": [
+            23000
+        ]
+    },
+    "23000": {
+        "start_addr": 23000,
+        "end_addr": 23003,
+        "insn_list": [
+            {
+                "address": 23000,
+                "opcode": "pushq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 23001
+            },
+            {
+                "address": 23001,
+                "opcode": "notq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 23002
+            },
+            {
+                "address": 23002,
+                "opcode": "popq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 23003
+            }
+        ],
+        "in_edge_list": [
+            22000
+        ],
+        "out_edge_list": [
+            24000
+        ]
+    },
+    "24000": {
+        "start_addr": 24000,
+        "end_addr": 24004,
+        "insn_list": [
+            {
+                "address": 24000,
+                "opcode": "xorq",
+                "operands": [
+                    "%rbx,",
+                    "%rax"
+                ],
+                "next_addr": 24001
+            },
+            {
+                "address": 24001,
+                "opcode": "xorq",
+                "operands": [
+                    "%rax,",
+                    "%rbx"
+                ],
+                "next_addr": 24002
+            },
+            {
+                "address": 24002,
+                "opcode": "xorq",
+                "operands": [
+                    "%rax,",
+                    "%rbx"
+                ],
+                "next_addr": 24003
+            },
+            {
+                "address": 24003,
+                "opcode": "xorq",
+                "operands": [
+                    "%rbx,",
+                    "%rax"
+                ],
+                "next_addr": 24004
+            }
+        ],
+        "in_edge_list": [
+            23000
+        ],
+        "out_edge_list": [
+            25000
+        ]
+    },
+    "25000": {
+        "start_addr": 25000,
+        "end_addr": 25005,
+        "insn_list": [
+            {
+                "address": 25000,
+                "opcode": "pushq",
+                "operands": [
+                    "%rbx"
+                ],
+                "next_addr": 25001
+            },
+            {
+                "address": 25001,
+                "opcode": "movq",
+                "operands": [
+                    "%rax,",
+                    "%rbx"
+                ],
+                "next_addr": 25002
+            },
+            {
+                "address": 25002,
+                "opcode": "addq",
+                "operands": [
+                    "$$0x1,",
+                    "%rax"
+                ],
+                "next_addr": 25003
+            },
+            {
+                "address": 25003,
+                "opcode": "movq",
+                "operands": [
+                    "%rbx,",
+                    "%rax"
+                ],
+                "next_addr": 25004
+            },
+            {
+                "address": 25004,
+                "opcode": "popq",
+                "operands": [
+                    "%rbx"
+                ],
+                "next_addr": 25005
+            }
+        ],
+        "in_edge_list": [
+            24000
+        ],
+        "out_edge_list": [
+            26000
+        ]
+    },
+    "26000": {
+        "start_addr": 26000,
+        "end_addr": 26005,
+        "insn_list": [
+            {
+                "address": 26000,
+                "opcode": "pushq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 26001
+            },
+            {
+                "address": 26001,
+                "opcode": "incq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 26002
+            },
+            {
+                "address": 26002,
+                "opcode": "decq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 26003
+            },
+            {
+                "address": 26003,
+                "opcode": "decq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 26004
+            },
+            {
+                "address": 26004,
+                "opcode": "popq",
+                "operands": [
+                    "%rax"
+                ],
+                "next_addr": 26005
+            }
+        ],
+        "in_edge_list": [
+            25000
+        ],
+        "out_edge_list": [
+            27000
+        ]
+    },
+    "27000": {
+        "start_addr": 27000,
+        "end_addr": 27007,
+        "insn_list": [
+            {
+                "address": 27000,
+                "opcode": "pushq",
+                "operands": [
+                    "%rbx"
+                ],
+                "next_addr": 27001
+            },
+            {
+                "address": 27001,
+                "opcode": "movq",
+                "operands": [
+                    "%rax,",
+                    "%rbx"
+                ],
+                "next_addr": 27002
+            },
+            {
+                "address": 27002,
+                "opcode": "cmpq",
+                "operands": [
+                    "%rax,",
+                    "%rax"
+                ],
+                "next_addr": 27003
+            },
+            {
+                "address": 27003,
+                "opcode": "setg",
+                "operands": [
+                    "%al"
+                ],
+                "next_addr": 27004
+            },
+            {
+                "address": 27004,
+                "opcode": "movzbq",
+                "operands": [
+                    "%al,",
+                    "%rax"
+                ],
+                "next_addr": 27005
+            },
+            {
+                "address": 27005,
+                "opcode": "movq",
+                "operands": [
+                    "%rbx,",
+                    "%rax"
+                ],
+                "next_addr": 27006
+            },
+            {
+                "address": 27006,
+                "opcode": "popq",
+                "operands": [
+                    "%rbx"
+                ],
+                "next_addr": 27007
+            }
+        ],
+        "in_edge_list": [
+            26000
+        ],
+        "out_edge_list": []
+    }
+}

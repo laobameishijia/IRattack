@@ -56,6 +56,9 @@ class DGCNN(nn.Module):
         x = self.pool(x) # (1,16,32)
         x = self.relu(self.conv6(x)) #(1,32,28)
         x = x.view(x.size(0), -1) #（1,896）
+        
+        before_classifier_output = x # 返回分类层之前的输出
+        
         out = self.relu(self.classifier_1(x))
         out = self.drop_out(out)
         classes = F.log_softmax(self.classifier_2(out), dim=-1)
@@ -68,7 +71,7 @@ class DGCNN(nn.Module):
         # After max pool : torch.Size([20, 16, 32])
         # After conv1d 2: torch.Size([20, 32, 28])
         # before linear: torch.Size([20, 896])
-        return classes,top_k_indices
+        return classes,before_classifier_output
 
 
 class GIN0(torch.nn.Module):
@@ -109,10 +112,13 @@ class GIN0(torch.nn.Module):
         for conv in self.convs:
             x = conv(x, edge_index)
         x = global_mean_pool(x, batch)
+        
+        before_classifier_output = x # 返回分类层之前的输出
+        
         x = F.relu(self.lin1(x))
         x = F.dropout(x, p=0.5, training=self.training)
         x = self.lin2(x)
-        return F.log_softmax(x, dim=-1)
+        return F.log_softmax(x, dim=-1), before_classifier_output
 
     def __repr__(self):
         return self.__class__.__name__
@@ -166,10 +172,13 @@ class GIN0WithJK(torch.nn.Module):
             xs += [global_mean_pool(x, batch)]
         x = self.jump(xs)
         # x = global_mean_pool(x, batch)
+        
+        before_classifier_output = x
+        
         x = F.relu(self.lin1(x))
         x = F.dropout(x, p=0.5, training=self.training)
         x = self.lin2(x)
-        return F.log_softmax(x, dim=-1)
+        return F.log_softmax(x, dim=-1), before_classifier_output
 
     def __repr__(self):
         return self.__class__.__name__

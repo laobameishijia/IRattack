@@ -518,7 +518,7 @@ class Fuzz:
         # 提取cfg
         extract_cfg(fuzz_dir=self.fuzz_dir)
         # 模型预测
-        next_state, result, prediction, top_k_indices = measure(self.fuzz_dir, model=self.model) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
+        next_state, result, prediction, before_classifier_output = measure(self.fuzz_dir, model=self.model) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
         result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
         formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
         probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
@@ -635,7 +635,7 @@ if __name__ == "__main__":
     # model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]
     # model_list = ["DGCNN_9", "GIN0_9", "GIN0WithJK_9"]
     # model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]
-    model_list = ["GIN0_20"]    
+    model_list = ["DGCNN_9"]    
     
     ATTACK_SUCCESS_MAP = {
         "DGCNN_9":[],
@@ -651,7 +651,7 @@ if __name__ == "__main__":
     LOGFILE = Log()                             # 全局的日志文件
     
     # malware_store_path = "/home/lebron/IRFuzz/ELF"
-    malware_store_path = "/home/lebron/papper"
+    malware_store_path = "/home/lebron/IRFuzz/Test"
     malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
     
     total_iterations = len(model_list) * len(malware_full_paths)
@@ -696,8 +696,6 @@ if __name__ == "__main__":
     for key in ATTACK_SUCCESS_MAP:
         ATTACK_SUCCESS_RATE[key] = len(ATTACK_SUCCESS_MAP[key]) / len(malware_full_paths)
     
-    exit()
-    
     with open('/home/lebron/IRFuzz/attack_success_object.txt', 'w') as file:
         for key, object in ATTACK_SUCCESS_MAP.items():
             file.write(f'{key}: {str(object)}\n')  # 输出格式化的浮点数   
@@ -706,4 +704,3 @@ if __name__ == "__main__":
         for key, value in ATTACK_SUCCESS_RATE.items():
             file.write(f'{key}: {value:.4f}\n')  # 输出格式化的浮点数
     exit()
-    # /home/lebron/MalwareSourceCode-2/真正用C写的/Pass_Mirai-Iot-BotNet/IRattack/loader

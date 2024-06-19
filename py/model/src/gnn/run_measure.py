@@ -65,11 +65,7 @@ def measure(data_dir, model_name):
     labels = []
     for data in tqdm.tqdm(val_loader):
         data = data.to(device)
-        if model_type == "DGCNN":
-            out,top_k_indices = model(data)
-        else:
-            out = model(data)
-            top_k_indices = -1
+        out, before_classifier_output = model(data)
         # print(out)
         result = torch.exp(out) # 将模型输出的logsoftmax转换为softmax
         formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
@@ -82,7 +78,7 @@ def measure(data_dir, model_name):
         print(f"predictions: {predictions}")
         print(f"label: {labels}")
 
-    return data,out,predictions,top_k_indices
+    return data, out, predictions, before_classifier_output
 
 if __name__ == '__main__':
     data_dir="/home/lebron/disassemble/attack/"
