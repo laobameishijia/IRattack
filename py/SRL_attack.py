@@ -11,10 +11,13 @@ import time
 from termcolor import colored
 import torch
 import torch.nn as nn
+from torch.nn import Conv1d, MaxPool1d
 import torch.optim as optim
 from torch_geometric.data import Data, Batch
 import numpy as np
 from collections import deque
+
+import tqdm
 
 
 from model.src.dataset_construct import run_disassemble
@@ -36,22 +39,45 @@ class FunctionInfo:
         self.bcf_rate = bcf_rate # 基本块作虚拟控制流的概率
         self.blocks = {}
 
+from torch_geometric.nn import GCNConv
+from model.src.gnn.sortaggregation.CustomSortAggregation import SortAggregation
 
-# 定义Q网络
+# 定义Q网络---使用DGCNN来进行
 class QNetwork(nn.Module):
-    def __init__(self, input_dim, output_dim):
+    def __init__(self, input_dim, output_dim=27, k=32):
         super(QNetwork, self).__init__()
-        self.fc1 = nn.Linear(input_dim, 128)
-        self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, output_dim)
-        self.sigmoid = nn.Sigmoid()
-    
-    def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = self.fc3(x)
-        x = self.sigmoid(x)
-        return x
+        self.k = k 
+        
+        self.conv1 = GCNConv(input_dim, 128)
+        self.conv2 = GCNConv(128, 64)
+        self.conv3 = GCNConv(64, 32)
+        self.conv4 = GCNConv(32, 32)
+        
+        self.conv5 = Conv1d(1, 16, 256, 256)
+        self.conv6 = Conv1d(16, 32, 5, 1)
+        self.pool = MaxPool1d(2, 2)
+        self.dense = nn.Linear(384, output_dim)
+        self.pool = MaxPool1d(2, 2)
+        self.relu = nn.ReLU(inplace=True)
+        self.sigmoid = nn.Sigmoid()  # 添加sigmoid激活函数
+
+    def forward(self, data):
+        x, edge_index, batch =  data.x, data.edge_index, data.batch
+        
+        x_1 = torch.tanh(self.conv1(x, edge_index))
+        x_2 = torch.tanh(self.conv2(x_1, edge_index))
+        x_3 = torch.tanh(self.conv3(x_2, edge_index))
+        x_4 = torch.tanh(self.conv4(x_3, edge_index))
+        x = torch.cat([x_1, x_2, x_3, x_4], dim=-1) # (99, 256)
+        x, top_k_indices = SortAggregation(k=self.k)(x, batch) # (1,8192)
+        x = x.view(x.size(0), 1, x.size(-1)) # (1,1,16384)
+        x = self.relu(self.conv5(x)) # (1,16,32)
+        x = self.pool(x) # (1,16,16)
+        x = self.relu(self.conv6(x)) #(1,32,12)
+        x = x.view(x.size(0), -1) #（1,384)
+        x = self.dense(x)
+        x = self.sigmoid(x)  # 应用sigmoid激活函数
+        return x, top_k_indices # x为(0,1)之间的值，用于计算语义nop指令编号。top_k_indices是排序在前topK的节点序号，如果节点数目不足32,用-1填充了。
 
 # 定义经验回放缓冲区
 class ReplayBuffer:
@@ -67,20 +93,17 @@ class ReplayBuffer:
     def size(self):
         return len(self.buffer)
 
-
-
 class Log:
     
-    def __init__(self, fuzz_dir="/home/lebron/IRFuzz" , filename="SRL"):
+    def __init__(self, fuzz_dir="/home/lebron/IRFuzz/SRL" , filename="SRL"):
         self.log_file = open(f"{fuzz_dir}/{filename}", mode="a")
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.log_file.write(f"Log file created at: {current_time}\n")
     
     def write(self, message, color="white"):
-        self.log_file.write(f"{message}")
+        self.log_file.write(f"{message}\n")
         print(colored(message, color))
         self.log_file.flush()
-
 
 # 计算状态差异
 def Diff(s1, s2):
@@ -249,168 +272,176 @@ def select_random_blocks(basic_block_count, num_select=30):
         return blocks
     else:
         return random.sample(blocks, num_select)
-    
-class SRL():
-    
-    def __init__(self, fuzz_dir, model):
 
-        self.fuzz_dir = fuzz_dir
+def is_success_file_present(fuzz_dir, model):
+    success_files = glob.glob(f"{fuzz_dir}/out/success_{model}*")
+    return len(success_files) > 0         
+
+class SRLAttack():
+    
+    def __init__(self, model, data_dir):
+
         # self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.device = torch.device("cpu")
-        self.temp_bb_file_path = f"{fuzz_dir}/temp/.basicblock"
-        self.bash_sh = f"{fuzz_dir}/fuzz_compile.sh"
         self.model_name = model
         self.model = self.init_model(model)
         self.log = Log(filename="SRL")
-        self.LDFLAGS, self.CFLAGS= read_bash_variables(f"{fuzz_dir}/compile.sh")
-        self.compiler = find_compilers(f"{source_dir}/compile.sh")
         self.nop_feature = self.get_nop_feature()
-        
-        build_fuzz_directories(self.fuzz_dir)
-        
-        self.bb_file_path =  f"{fuzz_dir}/BasicBlock.txt"
-        self.functions = parse_file(self.bb_file_path)
-        
-        
-        # 示例输出,获取初始概率
-        self.log.write(f"初始概率为:", "green")
-        self.temp_functions = self.functions
-        # 将temp输出到temp目录中
-        output_file(self.temp_functions, self.temp_bb_file_path)
-        self.init_probability_0, self.init_probability_1 = self.get_probability()
-        self.adversarial_label = 0 if self.init_probability_0 < self.init_probability_1 else 1 # 哪个概率小，哪个就是对抗样本标签
-        self.log.write(f"对抗样本label标签为:{self.adversarial_label}\n", "green")
-        print(self.init_probability_0, self.init_probability_1)
-    
+        feature_size = self.model_name.split("_")[1]
+        self.init_Qnetwork(input_dim=int(feature_size))
+        self.init_dataset(data_dir)
+
     def run(self):
-        graph_data = self.get_graph_data()
-        out, before_classifier_output = self.model(graph_data)
-        basic_block_count = graph_data.num_nodes
-        if len(before_classifier_output.shape) != 2:
-            print(f"before_classifier_output's shape is not 2 !")
-            exit(1)
-        input_dim = before_classifier_output.shape[1]
-        output_dim = basic_block_count + 1 
-        self.init_Qnetwork(input_dim,output_dim)
         
-        action_nop_list = []
-        attack_success = False
-        t = 0
-        state = graph_data 
-        while self.get_label(state) != self.adversarial_label and t < self.iteration:
-            if random.random() < self.epsilon:
-                # 随机选择动作
-                action_basicblock = select_random_blocks(basic_block_count)
-                action_nop = random.choice(range(self.semantic_nops))
-                
-            else:
-                # 使用Q网络选择动作
-                out, before_classifier_output = self.model(state)
-                q_values = self.q_network(torch.FloatTensor(before_classifier_output))
-                
-                # 获取基本块重要性
-                bb_important_values = q_values[0, :-1]
-                # 进行排序，并获取排序后的索引  # 从大到小排序
-                sorted_indices = np.argsort(bb_important_values.detach().numpy())[::-1]
-                # 获取排名在前topk的索引
-                rank_topk_index = sorted_indices[:self.topk]  # 索引从0开始
-                action_basicblock = rank_topk_index
-                # 语义NOP指令的编号 让其取整数, 从0开始
-                action_nop = int(q_values[0, -1].detach().numpy().item() * (self.semantic_nops-1))
-                
+        while self.train_iteration > 0:
+            self.train_iteration -= 1
             
-            # 执行动作并得到新状态  
-            action_nop_list.append(action_nop)              
-            new_state = copy.deepcopy(state)  # 使用深拷贝
-            for index in action_basicblock:
-                new_state.x[index] += self.nop_feature.x[action_nop]
-            # 计算奖励
-            reward = 1 if self.get_probability_new(new_state)[self.adversarial_label] \
-                        > self.get_probability_new(state)[self.adversarial_label] else 0
-            # 将reward变成与q_values形状一致的张量
-            reward = torch.tensor([reward], dtype=torch.float32).expand(self.output_dim)
+            data_index = 0 # 特征数据的编号
+            self.success_data_num = [] # 攻击成功的样本数量-列表
             
-            # 检查状态差异
-            # if Diff(state.x, new_state.x) > self.delta:
-            #     t = self.iteration
-            #     reward = 0
+            for data in tqdm.tqdm(self.data_loader):
+                
+                _, _, label,_, = self.get_output(data)
+                self.adversarial_label = 0 if label == 1 else 1
+                
+                basic_block_count = data.num_nodes
             
-            # 存储经验
-            self.replay_buffer.add((state, action_nop, action_basicblock, reward, new_state))
+                action_nop_list = [] # 保留选择的变异策略
+                t = 0
+                state = data 
             
-            # 更新状态
-            state = new_state
-            t += 1
-            
-            # 定期更新Q网络参数
-            if self.replay_buffer.size() > self.batch_size and t % self.T == 0:
-                batch = self.replay_buffer.sample(self.batch_size)
-                states, action_nop, action_basicblock, rewards, next_states =  zip(*batch)
+                while self.get_label(state) != self.adversarial_label and t < self.iteration:
+                    
+                    epsilon = max(self.epsilon_end, \
+                        self.epsilon_start - (self.step / self.epsilon_decay_steps) * (self.epsilon_start - self.epsilon_end))
+
+                    if random.random() < epsilon:
+                        # 随机选择动作
+                        action_basicblock = select_random_blocks(basic_block_count)
+                        action_nop = random.choice(range(self.semantic_nops))
+                        
+                    else:
+                        # 使用Q网络选择动作
+                        q_values,top_k_indices = self.q_network(state)
+                        # 获取排名在前topk的索引
+                        action_basicblock = top_k_indices.tolist()[0]
+                        # 语义NOP指令的编号 取q_values最大值的编号
+                        action_nop = torch.argmax(q_values).detach().item()
+                        
+                    # 执行动作并得到新状态  
+                    action_nop_list.append(action_nop)              
+                    new_state = copy.deepcopy(state)  # 使用深拷贝
+                    for index in action_basicblock:
+                        new_state.x[index] += self.nop_feature.x[action_nop]
+                    # 计算奖励  将reward扩展为27维
+                    reward = 1 if  self.probality_adversarial_rise(new_state,state) else 0
+                    reward = torch.tensor([reward], dtype=torch.float32).expand(self.output_dim)
+                    
+                    # 检查状态差异
+                    # if Diff(state.x, new_state.x) > self.delta:
+                    #     t = self.iteration
+                    #     reward = 0
+                    
+                    # 存储经验
+                    self.replay_buffer.add((state, action_nop, action_basicblock, reward, new_state))
+                    
+                    # 更新状态
+                    state = new_state
+                    t += 1
+                    self.step += 1
+                    
+                    # 定期更新Q网络参数
+                    if  t % self.T == 0:
+                        batch = self.replay_buffer.sample(self.batch_size)
+                        states, action_nop, action_basicblock, rewards, next_states =  zip(*batch)
+                        
+                        states = Batch.from_data_list(states)
+                        # action_nop = torch.LongTensor(action_nop)
+                        # action_basicblock = torch.LongTensor(action_basicblock)
+                        rewards = torch.cat(rewards)
+                        rewards = rewards.view(len(next_states),self.output_dim)
+                        next_states = Batch.from_data_list(next_states)
+                        
+                        
+                        q_values, _ = self.q_network(states)
+                        next_q_values, _ = self.target_q_network(next_states)
+                        
+                        # 确保奖励和下一个Q值的形状一致
+                        rewards = rewards.view(next_q_values.shape)
+                        target_values = rewards + self.gamma * next_q_values
+                        
+                        loss = nn.MSELoss()(q_values, target_values)
+                        self.optimizer.zero_grad()
+                        loss.backward()
+                        self.optimizer.step()
+                    
+                    # 定期更新目标Q网络
+                    if t % self.C_update_freq == 0:
+                        self.target_q_network.load_state_dict(self.q_network.state_dict())
                 
-                states = Batch.from_data_list(states)
-                action_nop = torch.LongTensor(action_nop)
-                action_basicblock = torch.LongTensor(np.array(action_basicblock))
-                rewards = torch.FloatTensor(np.array(rewards))
-                next_states = Batch.from_data_list(next_states)
+                if self.get_label(state) == self.adversarial_label:
+                    self.log.write(f"{data_index}-success!")
+                    self.log.write(f"{action_nop_list}")
+                    
+                    print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+                    print("attack susccess")
+                    print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+                    
+                    self.success_data_num.append(data_index)
+                    
+                data_index += 1
                 
-                out, before_classifier_output = self.model(states)
-                out, next_before_classifier_output = self.model(next_states)
-                
-                q_values = self.q_network(before_classifier_output)
-                next_q_values = self.target_q_network(next_before_classifier_output)
-                
-                # 确保奖励和下一个Q值的形状一致
-                rewards = rewards.view(next_q_values.shape)
-                target_values = rewards + self.gamma * next_q_values
-                
-                loss = nn.MSELoss()(q_values, target_values)
-                self.optimizer.zero_grad()
-                loss.backward()
-                self.optimizer.step()
-            
-            # 定期更新目标Q网络
-            if t % self.C_update_freq == 0:
-                self.target_q_network.load_state_dict(self.q_network.state_dict())
+            self.log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+            self.log.write(f"attack success rate {(len(self.success_data_num)/ len(self.data_loader))*100:.2f}%\n")  
+            self.log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")  
         
-        if self.get_label(state) != self.adversarial_label:
-            attack_success = True # 攻击成功
-            # 将动作序列输出到文件中
-            seed_out_path = f"{fuzz_dir}/out/success_{self.model_name}_{t}.txt"
-            with open(seed_out_path, 'w') as f:
-                f.write(f"{action_nop_list}\n")
-            
-            self.log.write(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
-            self.log.write(f"attack susccess \n\n")
-            self.log.write(f"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
+        return 1
+    
+    def init_dataset(self, data_dir):
+        feature_size = self.model_name.split("_")[1]
+        if feature_size == '9':
+            self.dataset = CFGDataset_Semantics_Preseving(root= data_dir)
+        elif feature_size == '20':
+            self.dataset = CFGDataset_MAGIC_Attack(root= data_dir)
+        else: 
+            raise NotImplementedError
         
-        else:
-            seed_out_path = f"{fuzz_dir}/out/failed_{self.model_name}_{t}.txt"
-            with open(seed_out_path, 'w') as f:
-                f.write(f"{action_nop_list}\n")
-            
-        return attack_success
-            
-    def init_Qnetwork(self,input_dim, output_dim):
-        self.input_dim = input_dim # before_classifier_output.shape[0] 是bachsize
-        self.output_dim = output_dim # 输出维度，节点重要性 +语义NOP指令编号
-        self.epsilon = 0.1
-        self.gamma = 0.99
-        self.learning_rate = 0.001
-        self.capacity = 1000 #缓冲区的容量
-        self.batch_size = 3
-        self.topk = 30
-        self.iteration = 50
-        self.delta = 0.1
-        self.T = 3
-        self.C_update_freq = 3
-        self.semantic_nops = 27
+        self.data_loader = DataLoader(self.dataset, batch_size=1, shuffle=False, num_workers=5)
+        
+    def init_Qnetwork(self,input_dim):
+        self.train_iteration = 4    # 要在整个样本集上训练多少轮
+        self.input_dim = input_dim  # before_classifier_output.shape[0] 是bachsize
+        self.output_dim = 27        # 输出维度语义NOP指令编号，节点重要性不包含在输出里面
+        # self.epsilon = 1            # 使用 随机选择action的概率
+        self.gamma = 0.99           # 未来期望的比重
+        self.learning_rate = 0.001  # 学习率
+        self.capacity = 3000        # 缓冲区的容量
+        self.batch_size = 5         # 取多少个缓冲区的样本来更新数据
+        self.topk = 30              # topk节点的数量
+        self.iteration = 30         # 迭代次数
+        self.delta = 0.1            # 暂时无用
+        self.T = 10                 # 更新Q网络的频率
+        self.C_update_freq = 10     # 更新目标网络的频率
+        self.semantic_nops = 27     # 语义NOP指令的数量
+        
+        
+        self.epsilon_start = 1      # 随机选择action的概率，从1-0.1进行衰减
+        self.epsilon_end = 0.1
+        self.epsilon_decay_steps = 30000
+        self.step = 0
         
         # 初始化Q网络和目标Q网络
-        self.q_network = QNetwork(self.input_dim, self.output_dim)
-        self.target_q_network = QNetwork(self.input_dim, self.output_dim)
+        self.q_network = QNetwork(self.input_dim)
+        self.target_q_network = QNetwork(self.input_dim)
         self.target_q_network.load_state_dict(self.q_network.state_dict())
-        self.optimizer = optim.Adam(self.q_network.parameters(), lr=self.learning_rate)
+        self.optimizer = optim.RMSprop(self.q_network.parameters(), lr=self.learning_rate)
         self.replay_buffer = ReplayBuffer(self.capacity)
+    
+    def probality_adversarial_rise(self,new_state,state):
+        new = self.get_probability_new(new_state)[self.adversarial_label]
+        old = self.get_probability_new(state)[self.adversarial_label]
+        print(f"probality_adversarial: new_state-->{new}, state-->{old}")
+        return  new > old  
     
     def get_nop_feature(self):
         feature_size = self.model_name.split("_")[1]
@@ -428,44 +459,6 @@ class SRL():
         #     print(row)
         return data
             
-    def get_graph_data(self):
-        feature_size = self.model_name.split("_")[1]
-        model_type = self.model_name.split("_")[0]
-        if feature_size == '9':
-            dataset = CFGDataset_Semantics_Preseving(root= self.fuzz_dir)
-        elif feature_size == '20':
-            dataset = CFGDataset_MAGIC_Attack(root= self.fuzz_dir)
-        else: 
-            raise NotImplementedError
-        
-        # 因为这里只有一个样本，所以一次循环就结束了
-        data_loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=5)
-        for data in data_loader:
-            data = data.to(self.device)
-        return data
-    
-    def get_probability(self):
-        # 插入+链接
-        res = run_bash(script_path= self.bash_sh,
-                args=[self.fuzz_dir, self.fuzz_dir, self.temp_bb_file_path, self.LDFLAGS, self.CFLAGS, self.compiler])
-        if res == -1:
-            print("run fuzz_compile.sh failed! Please check carefully!\n")
-            exit()
-            
-        # 返汇编
-        disassemble(fuzz_dir=self.fuzz_dir)
-        # 提取cfg
-        extract_cfg(fuzz_dir=self.fuzz_dir)
-        # 模型预测
-        data, result, prediction, before_classifier_output = measure(self.fuzz_dir, model=self.model_name) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
-        result = torch.exp(result) # 将模型输出的logsoftmax转换为softmax
-        formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
-        probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
-        probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本
-        self.log.write(f"probability_0 is {probability_0} probability_1:{probability_1} \n\n", "green")
-
-        return probability_0,  probability_1
-    
     def get_probability_new(self,data):
 
         data, result, prediction, before_classifier_output = self.get_output(data) # prediction 0是良性 1是恶意  目前要把恶意转为良性。 result是模型输出的logsoftmax概率
@@ -473,7 +466,6 @@ class SRL():
         formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
         probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
         probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本
-        self.log.write(f"probability_0 is {probability_0} probability_1:{probability_1} \n\n", "green")
         return probability_0,  probability_1
         
     def init_model(self, model_name):
@@ -500,23 +492,13 @@ class SRL():
     def get_output(self, data):
         data = data.to(self.device)
         out, before_classifier_output = self.model(data)
-        # print(out)
-        result = torch.exp(out) # 将模型输出的logsoftmax转换为softmax
-        formatted_tensor = torch.tensor([[float("{:f}".format(result[0][0])), float("{:f}".format(result[0][1]))]], requires_grad=True)
-        probability_0 = formatted_tensor.tolist()[0][0] # 暂时先是一个样本
-        probability_1 = formatted_tensor.tolist()[0][1] # 暂时先是一个样本
-        # print(f"probability_0: {probability_0}, probability_1: {probability_1}")
-        # print(f"predictions: {out.argmax(dim=1).tolist()[0]}")
-
+        # out.argmax(dim=1).tolist()[0] 是 prediction
         return data, out, out.argmax(dim=1).tolist()[0], before_classifier_output
     
     def get_label(self, data):
         _,_,label,_ = self.get_output(data)
         return label
 
-def is_success_file_present(fuzz_dir, model):
-    success_files = glob.glob(f"{fuzz_dir}/out/success_{model}*")
-    return len(success_files) > 0         
 
 if __name__ == "__main__":
     
@@ -533,53 +515,12 @@ if __name__ == "__main__":
     ATTACK_SUCCESS_RATE = dict()
     MAX_ITERATIONS = 30                       # 最大迭代次数
     LOGFILE = Log(filename="SRL_Time")   # 全局的日志文件
+    data_dir = "/home/lebron/IRFuzz/SRL"
     
-    malware_store_path = "/home/lebron/IRFuzz/ELF"
-    malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
-    
-    total_iterations = len(model_list) * len(malware_full_paths)
-    progressed = 0
-
     for model in model_list:
-        
-        for malware_dir in malware_full_paths:
-            source_dir= malware_dir
-            fuzz_dir=  malware_dir
-            model = model
-            print("Now is process {:.2f}%".format( (progressed/total_iterations)*100 ))
-            if is_success_file_present(fuzz_dir,model):
-                print(colored(f"Already Attack Success! Next One!", "green"))
-                ATTACK_SUCCESS_MAP[model].append(source_dir.split('/')[-1])
-                progressed += 1
-                continue
-            if os.path.exists(f"{fuzz_dir}/out/failed_{model}.txt"):
-                print(colored(f"Already Failed!", "yellow"))
-                progressed += 1
-                continue
-            
-            startime =  datetime.datetime.now()
-            srl = SRL(fuzz_dir,model="DGCNN_9")
-            attack_success = srl.run()                
-            endtime =  datetime.datetime.now()
-            
-            if attack_success:
-                LOGFILE.write(f"{model}-{source_dir.split('/')[-1]}\n")
-                ATTACK_SUCCESS_MAP[model].append(source_dir.split('/')[-1])
-                LOGFILE.write(f"Use {(endtime - startime).total_seconds()} s\n\n")
-  
-            progressed += 1
-            
-    for key in ATTACK_SUCCESS_MAP:
-        ATTACK_SUCCESS_RATE[key] = len(ATTACK_SUCCESS_MAP[key]) / len(malware_full_paths)
-    
-    with open('/home/lebron/IRFuzz/attack_success_object.txt', 'w') as file:
-        for key, object in ATTACK_SUCCESS_MAP.items():
-            file.write(f'{key}: {str(object)}\n')  # 输出格式化的浮点数   
-    
-    with open('/home/lebron/IRFuzz/attack_success_rate.txt', 'w') as file:
-        for key, value in ATTACK_SUCCESS_RATE.items():
-            file.write(f'{key}: {value:.4f}\n')  # 输出格式化的浮点数
-    exit()
+        srl = SRLAttack(model=model, data_dir=data_dir)
+        srl.run()
+
     
     
     
