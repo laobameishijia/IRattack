@@ -676,7 +676,7 @@ if __name__ == "__main__":
             fuzz = Fuzz(source_dir,fuzz_dir,model,mutator_counts)
             attack_success = fuzz.run()
             mutator_counts = fuzz.mutator_counts
-            with open('/root/IRFuzz/attack_success_mutation.json', 'w') as file:
+            with open(f"/root/IRFuzz/attack_success_mutation_{model}.json", 'w') as file:
                 json.dump(mutator_counts, file)
             endtime =  datetime.datetime.now()
             if attack_success:
