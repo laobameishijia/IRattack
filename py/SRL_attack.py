@@ -57,9 +57,8 @@ class QNetwork(nn.Module):
         self.conv6 = Conv1d(16, 32, 5, 1)
         self.pool = MaxPool1d(2, 2)
         self.dense = nn.Linear(384, output_dim)
-        self.pool = MaxPool1d(2, 2)
         self.relu = nn.ReLU(inplace=True)
-        self.sigmoid = nn.Sigmoid()  # 添加sigmoid激活函数
+        # self.sigmoid = nn.Sigmoid()  # 添加sigmoid激活函数
 
     def forward(self, data):
         x, edge_index, batch =  data.x, data.edge_index, data.batch
@@ -76,7 +75,7 @@ class QNetwork(nn.Module):
         x = self.relu(self.conv6(x)) #(1,32,12)
         x = x.view(x.size(0), -1) #（1,384)
         x = self.dense(x)
-        x = self.sigmoid(x)  # 应用sigmoid激活函数
+        # x = self.sigmoid(x)  # 应用sigmoid激活函数
         return x, top_k_indices # x为(0,1)之间的值，用于计算语义nop指令编号。top_k_indices是排序在前topK的节点序号，如果节点数目不足32,用-1填充了。
 
 # 定义经验回放缓冲区
@@ -319,7 +318,7 @@ class SRLAttack():
                         # 随机选择动作
                         action_basicblock = select_random_blocks(basic_block_count)
                         action_nop = random.choice(range(self.semantic_nops))
-                        
+                        print(f"random select action_nop is {action_nop}")
                     else:
                         # 使用Q网络选择动作
                         q_values,top_k_indices = self.q_network(state)
@@ -327,6 +326,7 @@ class SRLAttack():
                         action_basicblock = top_k_indices.tolist()[0]
                         # 语义NOP指令的编号 取q_values最大值的编号
                         action_nop = torch.argmax(q_values).detach().item()
+                        print(f"Q-network select action_nop is {action_nop}")
                         
                     # 执行动作并得到新状态  
                     action_nop_list.append(action_nop)              
@@ -335,6 +335,7 @@ class SRLAttack():
                         new_state.x[index] += self.nop_feature.x[action_nop]
                     # 计算奖励  将reward扩展为27维
                     reward = 1 if  self.probality_adversarial_rise(new_state,state) else 0
+                    print(f"reward is {reward}")
                     reward = torch.tensor([reward], dtype=torch.float32).expand(self.output_dim)
                     
                     # 检查状态差异
@@ -409,7 +410,7 @@ class SRLAttack():
         self.data_loader = DataLoader(self.dataset, batch_size=1, shuffle=False, num_workers=5)
         
     def init_Qnetwork(self,input_dim):
-        self.train_iteration = 4    # 要在整个样本集上训练多少轮
+        self.train_iteration = 100    # 要在整个样本集上训练多少轮
         self.input_dim = input_dim  # before_classifier_output.shape[0] 是bachsize
         self.output_dim = 27        # 输出维度语义NOP指令编号，节点重要性不包含在输出里面
         # self.epsilon = 1            # 使用 随机选择action的概率
@@ -421,7 +422,7 @@ class SRLAttack():
         self.iteration = 30         # 迭代次数
         self.delta = 0.1            # 暂时无用
         self.T = 10                 # 更新Q网络的频率
-        self.C_update_freq = 10     # 更新目标网络的频率
+        self.C_update_freq = 30     # 更新目标网络的频率
         self.semantic_nops = 27     # 语义NOP指令的数量
         
         
