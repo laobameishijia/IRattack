@@ -646,7 +646,7 @@ if __name__ == "__main__":
         "GIN0WithJK_20":[]
     }
     ATTACK_SUCCESS_RATE = dict()
-    MAX_ITERATIONS = 30                       # 最大迭代次数
+    MAX_ITERATIONS = 2                       # 最大迭代次数
     CHOOSE_FUNCTION_BASED_ON_PROBABILITY = 0.8  # 在最后的20%阶段,按照概率变化来选择函数
     LOGFILE = Log()                             # 全局的日志文件
     

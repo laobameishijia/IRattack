@@ -284,19 +284,25 @@ class SRLAttack():
         self.device = torch.device("cpu")
         self.model_name = model
         self.model = self.init_model(model)
-        self.log = Log(filename="SRL")
+        
+        self.mutation_log = Log(filename=f"SRL_mutation_{self.model_name}")
+        self.result_log = Log(filename=f"SRL_result_{self.model_name}")
+        self.best_result = 0
+        
         self.nop_feature = self.get_nop_feature()
         feature_size = self.model_name.split("_")[1]
         self.init_Qnetwork(input_dim=int(feature_size))
         self.init_dataset(data_dir)
+        self.data_dir = data_dir
 
     def run(self):
         
         while self.train_iteration > 0:
             self.train_iteration -= 1
             
-            data_index = 0 # 特征数据的编号
-            self.success_data_num = [] # 攻击成功的样本数量-列表
+            data_index = 0              # 特征数据的编号
+            self.success_data_num = []  # 攻击成功的样本数量-列表
+            self.load_best_model()      # 加载之前最好的模型，从最好的出发开始训练
             
             for data in tqdm.tqdm(self.data_loader):
                 
@@ -381,8 +387,8 @@ class SRLAttack():
                         self.target_q_network.load_state_dict(self.q_network.state_dict())
                 
                 if self.get_label(state) == self.adversarial_label:
-                    self.log.write(f"{data_index}-success!")
-                    self.log.write(f"{action_nop_list}")
+                    self.mutation_log.write(f"{data_index}-success!")
+                    self.mutation_log.write(f"{action_nop_list}")
                     
                     print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
                     print("attack susccess")
@@ -391,13 +397,20 @@ class SRLAttack():
                     self.success_data_num.append(data_index)
                     
                 data_index += 1
-                
-            self.log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-            self.log.write(f"attack success rate {(len(self.success_data_num)/ len(self.data_loader))*100:.2f}%\n")  
-            self.log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")  
+            
+            attack_success_rate = (len(self.success_data_num)/ len(self.data_loader))*100
+            if attack_success_rate > self.best_result:
+                self.best_result = attack_success_rate
+                self.save_model()
+            self.mutation_log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+            self.mutation_log.write(f"attack success rate {attack_success_rate:.2f}%\n")  
+            self.mutation_log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")  
         
         return 1
     
+    def save_model(self):
+        torch.save(self.q_network.state_dict(), f"{self.data_dir}/model_{self.model_name}")
+ 
     def init_dataset(self, data_dir):
         feature_size = self.model_name.split("_")[1]
         if feature_size == '9':
@@ -410,7 +423,7 @@ class SRLAttack():
         self.data_loader = DataLoader(self.dataset, batch_size=1, shuffle=False, num_workers=5)
         
     def init_Qnetwork(self,input_dim):
-        self.train_iteration = 100    # 要在整个样本集上训练多少轮
+        self.train_iteration = 4    # 要在整个样本集上训练多少轮
         self.input_dim = input_dim  # before_classifier_output.shape[0] 是bachsize
         self.output_dim = 27        # 输出维度语义NOP指令编号，节点重要性不包含在输出里面
         # self.epsilon = 1            # 使用 随机选择action的概率
@@ -437,6 +450,12 @@ class SRLAttack():
         self.target_q_network.load_state_dict(self.q_network.state_dict())
         self.optimizer = optim.RMSprop(self.q_network.parameters(), lr=self.learning_rate)
         self.replay_buffer = ReplayBuffer(self.capacity)
+    
+    def load_best_model(self):
+        file_path = f"{self.data_dir}/model_{self.model_name}"
+        if os.path.exists(file_path):
+            self.q_network.load_state_dict(torch.load(file_path))
+            self.target_q_network.load_state_dict(self.q_network.state_dict())
     
     def probality_adversarial_rise(self,new_state,state):
         new = self.get_probability_new(new_state)[self.adversarial_label]
@@ -514,8 +533,8 @@ if __name__ == "__main__":
         "GIN0WithJK_20":[]
     }
     ATTACK_SUCCESS_RATE = dict()
-    MAX_ITERATIONS = 30                       # 最大迭代次数
-    LOGFILE = Log(filename="SRL_Time")   # 全局的日志文件
+    MAX_ITERATIONS = 30                         # 最大迭代次数
+    LOGFILE = Log(filename="SRL_Time")          # 全局的日志文件--统计时间
     data_dir = "/home/lebron/IRFuzz/SRL"
     
     for model in model_list:
