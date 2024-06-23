@@ -659,7 +659,7 @@ if __name__ == "__main__":
 
     for model in model_list:
         
-        mutator_counts = load_mutator_counts(f"{malware_store_path}/attack_success_mutation.json")
+        mutator_counts = load_mutator_counts(f'/home/lebron/IRFuzz/attack_success_mutation_{model}.json')
         
         for malware_dir in malware_full_paths:
             source_dir= malware_dir
@@ -682,7 +682,7 @@ if __name__ == "__main__":
             fuzz = Fuzz(source_dir,fuzz_dir,model,mutator_counts)
             attack_success = fuzz.run()
             mutator_counts = fuzz.mutator_counts
-            with open('/home/lebron/IRFuzz/attack_success_mutation.json', 'w') as file:
+            with open(f'/home/lebron/IRFuzz/attack_success_mutation_{model}.json', 'w') as file:
                 json.dump(mutator_counts, file)
                 
             endtime =  datetime.datetime.now()
