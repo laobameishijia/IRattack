@@ -611,6 +611,7 @@ def is_success_file_present(fuzz_dir, model):
     
 def load_mutator_counts(filepath):
     try:
+        print(f"try open file {filepath}")
         with open(filepath, 'r') as file:
             mutator_counts = json.load(file)
             return mutator_counts
@@ -652,7 +653,7 @@ if __name__ == "__main__":
 
     for model in model_list:
         
-        mutator_counts = load_mutator_counts("/root/IRFuzz/attack_success_mutation.json")
+        mutator_counts = load_mutator_counts(f"/root/IRFuzz/attack_success_mutation_{model}.json")
                 
         for malware_dir in malware_full_paths:
             source_dir= malware_dir
