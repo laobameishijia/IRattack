@@ -302,7 +302,7 @@ class SRLAttack():
             
             data_index = 0              # 特征数据的编号
             self.success_data_num = []  # 攻击成功的样本数量-列表
-            self.load_best_model()      # 加载之前最好的模型，从最好的出发开始训练
+            # self.load_best_model()      # 加载之前最好的模型，从最好的出发开始训练
             
             for data in tqdm.tqdm(self.data_loader):
                 
@@ -401,6 +401,7 @@ class SRLAttack():
             attack_success_rate = (len(self.success_data_num)/ len(self.data_loader))*100
             if attack_success_rate > self.best_result:
                 self.best_result = attack_success_rate
+                self.result_log.write(f"{attack_success_rate:.2f}")
                 self.save_model()
             self.mutation_log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
             self.mutation_log.write(f"attack success rate {attack_success_rate:.2f}%\n")  
@@ -408,8 +409,67 @@ class SRLAttack():
         
         return 1
     
+    def evaluate(self):
+    
+        self.load_best_model()      # 加载之前最好的模型
+        self.q_network.eval()
+        self.target_q_network.eval()
+        iteration_list = [10, 20, 30, 40, 50, 60]
+        for iteration in iteration_list:
+            data_index = 0              # 特征数据的编号
+            self.success_data_num = []  # 攻击成功的样本数量-列表
+            for data in tqdm.tqdm(self.data_loader):
+                
+                _, _, label,_, = self.get_output(data)
+                self.adversarial_label = 0 if label == 1 else 1
+                
+                action_nop_list = [] # 保留选择的变异策略
+                t = 0
+                state = data 
+            
+                while self.get_label(state) != self.adversarial_label and t < iteration:
+
+                    # 使用Q网络选择动作
+                    q_values,top_k_indices = self.q_network(state)
+                    # 获取排名在前topk的索引
+                    action_basicblock = top_k_indices.tolist()[0]
+                    # 语义NOP指令的编号 取q_values最大值的编号
+                    action_nop = torch.argmax(q_values).detach().item()
+                    print(f"Q-network select action_nop is {action_nop}")
+                    
+                    # 执行动作并得到新状态  
+                    action_nop_list.append(action_nop)              
+                    new_state = copy.deepcopy(state)  # 使用深拷贝
+                    for index in action_basicblock:
+                        new_state.x[index] += self.nop_feature.x[action_nop]
+
+                    
+                    # 检查状态差异
+                    # if Diff(state.x, new_state.x) > self.delta:
+                    #     t = self.iteration
+                    #     reward = 0
+                    
+                    # 更新状态
+                    state = new_state
+                    t += 1
+                    self.step += 1
+                
+                if self.get_label(state) == self.adversarial_label:
+                    self.mutation_log.write(f"{data_index}-success!")
+                    self.mutation_log.write(f"{action_nop_list}")
+                    print("attack susccess")
+                    self.success_data_num.append(data_index)
+                    
+                data_index += 1
+        
+            attack_success_rate = (len(self.success_data_num)/ len(self.data_loader))*100
+            self.result_log.write(f"{iteration}----attack success rate {attack_success_rate:.2f}%\n")  
+        
+        return 1
+
+    
     def save_model(self):
-        torch.save(self.q_network.state_dict(), f"{self.data_dir}/model_{self.model_name}")
+        torch.save(self.q_network.state_dict(), f"{self.data_dir}/train/model_{self.model_name}")
  
     def init_dataset(self, data_dir):
         feature_size = self.model_name.split("_")[1]
@@ -423,10 +483,9 @@ class SRLAttack():
         self.data_loader = DataLoader(self.dataset, batch_size=1, shuffle=False, num_workers=5)
         
     def init_Qnetwork(self,input_dim):
-        self.train_iteration = 4    # 要在整个样本集上训练多少轮
+        self.train_iteration = 100    # 要在整个样本集上训练多少轮
         self.input_dim = input_dim  # before_classifier_output.shape[0] 是bachsize
         self.output_dim = 27        # 输出维度语义NOP指令编号，节点重要性不包含在输出里面
-        # self.epsilon = 1            # 使用 随机选择action的概率
         self.gamma = 0.99           # 未来期望的比重
         self.learning_rate = 0.001  # 学习率
         self.capacity = 3000        # 缓冲区的容量
@@ -441,7 +500,7 @@ class SRLAttack():
         
         self.epsilon_start = 1      # 随机选择action的概率，从1-0.1进行衰减
         self.epsilon_end = 0.1
-        self.epsilon_decay_steps = 30000
+        self.epsilon_decay_steps = 3000
         self.step = 0
         
         # 初始化Q网络和目标Q网络
@@ -452,7 +511,7 @@ class SRLAttack():
         self.replay_buffer = ReplayBuffer(self.capacity)
     
     def load_best_model(self):
-        file_path = f"{self.data_dir}/model_{self.model_name}"
+        file_path = f"{self.data_dir}/train/model_{self.model_name}"
         if os.path.exists(file_path):
             self.q_network.load_state_dict(torch.load(file_path))
             self.target_q_network.load_state_dict(self.q_network.state_dict())
@@ -522,8 +581,7 @@ class SRLAttack():
 
 if __name__ == "__main__":
     
-    model_list = ["DGCNN_9"]    
-    
+    model_list = ["DGCNN_9","DGCNN_20","GIN0_9"]    
     ATTACK_SUCCESS_MAP = {
         "DGCNN_9":[],
         "DGCNN_20":[],
@@ -533,13 +591,11 @@ if __name__ == "__main__":
         "GIN0WithJK_20":[]
     }
     ATTACK_SUCCESS_RATE = dict()
-    MAX_ITERATIONS = 30                         # 最大迭代次数
-    LOGFILE = Log(filename="SRL_Time")          # 全局的日志文件--统计时间
     data_dir = "/home/lebron/IRFuzz/SRL"
     
     for model in model_list:
         srl = SRLAttack(model=model, data_dir=data_dir)
-        srl.run()
+        srl.evaluate()
 
     
     
