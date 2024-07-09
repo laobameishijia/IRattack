@@ -444,11 +444,9 @@ class SRLAttack():
                         new_state.x[index] += self.nop_feature.x[action_nop]
 
                     
-                    # 检查状态差异
+                    # # 检查状态差异
                     # if Diff(state.x, new_state.x) > self.delta:
-                    #     t = self.iteration
-                    #     reward = 0
-                    
+                    #     break
                     # 更新状态
                     state = new_state
                     t += 1
@@ -492,7 +490,7 @@ class SRLAttack():
         self.batch_size = 5         # 取多少个缓冲区的样本来更新数据
         self.topk = 30              # topk节点的数量
         self.iteration = 30         # 迭代次数
-        self.delta = 0.1            # 暂时无用
+        self.delta = 0.05            # 暂时无用
         self.T = 10                 # 更新Q网络的频率
         self.C_update_freq = 30     # 更新目标网络的频率
         self.semantic_nops = 27     # 语义NOP指令的数量
@@ -581,16 +579,7 @@ class SRLAttack():
 
 if __name__ == "__main__":
     
-    model_list = ["DGCNN_9","DGCNN_20","GIN0_9"]    
-    ATTACK_SUCCESS_MAP = {
-        "DGCNN_9":[],
-        "DGCNN_20":[],
-        "GIN0_9":[],
-        "GIN0_20":[],
-        "GIN0WithJK_9":[],
-        "GIN0WithJK_20":[]
-    }
-    ATTACK_SUCCESS_RATE = dict()
+    model_list = ["GIN0_20"]    
     data_dir = "/home/lebron/IRFuzz/SRL"
     
     for model in model_list:

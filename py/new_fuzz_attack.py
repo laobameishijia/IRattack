@@ -471,8 +471,6 @@ class Fuzz:
                         # 判断是否攻击成功，结束循环 当对抗标签的概率超过0.5即攻击成功
                         if adversarial_probability > 0.5:
                             attack_success = True # 攻击成功
-                            # 将当前样本的变异策略添加到全局中
-                            self.update_mutator_probability(mutator_counts)
                             # 把当前攻击成功的种子文件保存起来，后面还要分析
                             seed_out_path = f"{fuzz_dir}/out/success_{self.model}_{self.iteration}.txt"
                             output_file(functions, seed_out_path)
@@ -588,17 +586,6 @@ class Fuzz:
         total = sum(probabilities)
         probabilities = [p / total for p in probabilities]
         return random.choices(function_names, probabilities)[0]
-
-    def update_mutator_probability(self, mutator_counts):
-        for key in mutator_counts.keys():
-            self.mutator_counts[key] += mutator_counts[key]
-
-    def update_mutator_probability_fail(self, mutator_counts):
-        for key in mutator_counts.keys():
-            self.mutator_counts[key] -= mutator_counts[key]
-            if self.mutator_counts[key] < 0: 
-                self.mutator_counts[key] = 0
-       
 
     def choose_mutator_based_on_count(self):
         probabilities = [(self.mutator_counts.get(mutator, 0) + 1) for mutator in self.mutator_counts]
