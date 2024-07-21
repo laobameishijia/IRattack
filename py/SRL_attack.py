@@ -285,7 +285,6 @@ class SRLAttack():
         self.model_name = model
         self.model = self.init_model(model)
         
-        self.mutation_log = Log(filename=f"SRL_mutation_{self.model_name}")
         self.result_log = Log(filename=f"SRL_result_{self.model_name}")
         self.best_result = 0
         
@@ -415,9 +414,12 @@ class SRLAttack():
         self.q_network.eval()
         self.target_q_network.eval()
         iteration_list = [10, 20, 30, 40, 50, 60]
+        # iteration_list = [10]
+        
         for iteration in iteration_list:
             data_index = 0              # 特征数据的编号
             self.success_data_num = []  # 攻击成功的样本数量-列表
+            self.mutation_log = Log(filename=f"SRL_mutation_{self.model_name}_{iteration}")
             for data in tqdm.tqdm(self.data_loader):
                 
                 _, _, label,_, = self.get_output(data)
@@ -426,7 +428,7 @@ class SRLAttack():
                 action_nop_list = [] # 保留选择的变异策略
                 t = 0
                 state = data 
-            
+                startime =  datetime.datetime.now()
                 while self.get_label(state) != self.adversarial_label and t < iteration:
 
                     # 使用Q网络选择动作
@@ -453,8 +455,10 @@ class SRLAttack():
                     self.step += 1
                 
                 if self.get_label(state) == self.adversarial_label:
+                    endtime =  datetime.datetime.now()
                     self.mutation_log.write(f"{data_index}-success!")
                     self.mutation_log.write(f"{action_nop_list}")
+                    self.mutation_log.write(f"Use {(endtime - startime).total_seconds()} s\n\n")
                     print("attack susccess")
                     self.success_data_num.append(data_index)
                     
@@ -579,7 +583,7 @@ class SRLAttack():
 
 if __name__ == "__main__":
     
-    model_list = ["GIN0_20"]    
+    model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]    
     data_dir = "/home/lebron/IRFuzz/SRL"
     
     for model in model_list:
