@@ -385,57 +385,59 @@ class MalerAttack():
         new_state = copy.deepcopy(state)  # 使用深拷贝
         node_count = state.num_nodes
         
-        max_index = torch.argmax(action).detach().item()
-        part = max_index // k
+        edge_part = action[0, :k]         # 第1部分（前32个元素）
+        node_part = action[0, k:2*k]      # 第2部分（中间32个元素）
+        feature_part = action[0, 2*k:3*k] # 第3部分（最后32个元素）
+
+        # 找到每个部分的最大值的索引
+        max_edge_index = torch.argmax(edge_part).detach().item()         # 第1部分中的最大值索引
+        max_node_index = torch.argmax(node_part).detach().item()         # 第2部分中的最大值索引
+        max_feature_index = torch.argmax(feature_part).detach().item()   # 第3部分中的最大值索引
+
         # 定义函数处理 edge 动作
-        if part == 0: 
-            print(f"Q-network select edge action")
-            node_index = top_k_index[0][max_index].item()
-            if node_index == -1: # 如果index超过了节点数量，那就随机挑选一个节点
-                random_choice = random.randint(0, node_count-1)
-                node_index = top_k_index[0][random_choice].item()
-                
+        print(f"Q-network select edge action")
+        node_index = top_k_index[0][max_edge_index].item()
+        if node_index == -1: # 如果index超过了节点数量，那就随机挑选一个节点
+            random_choice = random.randint(0, node_count-1)
+            node_index = top_k_index[0][random_choice].item()
+            
+        random_choice_node_index = random.randint(0, node_count-1)
+        while random_choice_node_index == node_index:
             random_choice_node_index = random.randint(0, node_count-1)
-            while random_choice_node_index == node_index:
-                random_choice_node_index = random.randint(0, node_count-1)
-            # 增加topk中第i个节点与 CFG中随机节点之间的边关系
-            new_edge = torch.tensor([[node_index],[random_choice_node_index]], dtype=torch.int64)
-            new_state.edge_index = torch.cat([new_state.edge_index, new_edge], dim=1)  # 更新 edge_index
-            
-            new_state = Data(x=new_state.x, edge_index=new_state.edge_index, y=new_state.y) # 重新创建一个新的graph
-            
+        # 增加topk中第i个节点与 CFG中随机节点之间的边关系
+        new_edge = torch.tensor([[node_index],[random_choice_node_index]], dtype=torch.int64)
+        new_state.edge_index = torch.cat([new_state.edge_index, new_edge], dim=1)  # 更新 edge_index
+        new_state = Data(x=new_state.x, edge_index=new_state.edge_index, y=new_state.y) # 重新创建一个新的graph
+        
         # 定义函数处理 node 动作
-        elif part == 1:
-            print(f"Q-network select node action")
-            node_index = max_index % k
-            if node_index > node_count - 1: # 如果index超过了节点数量，那就随机挑选一个节点
-                random_choice = random.randint(0, node_count-1)
-                node_index = top_k_index[0][random_choice].item()
-            # 从 语义NOP指令集中随机抽取一个节点特征，作为创建的新节点
-            random_index = torch.randint(0, self.nop_feature.x.size(0), (1,)).item()  # 随机生成一个索引
-            random_node_feature = self.nop_feature.x[random_index]  # 获取对应的节点特征
-            new_state.x = torch.cat([new_state.x, random_node_feature.unsqueeze(0)], dim=0)  # 添加到 x
-            new_state.num_nodes = new_state.x.size(0)
-            # 添加node_index 到新节点之间的边
-            new_edge = torch.tensor([[node_index],[len(new_state.x) - 1]], dtype=torch.int64)
-            new_state.edge_index = torch.cat([new_state.edge_index, new_edge], dim=1)  # 更新 edge_index
-            new_state.num_edges= new_state.edge_index.size(1)
-            
-            new_state = Data(x=new_state.x, edge_index=new_state.edge_index, y=new_state.y) # 重新创建一个新的graph
-            
+        print(f"Q-network select node action")
+        node_index = max_node_index % k
+        if node_index > node_count - 1: # 如果index超过了节点数量，那就随机挑选一个节点
+            random_choice = random.randint(0, node_count-1)
+            node_index = top_k_index[0][random_choice].item()
+        # 从 语义NOP指令集中随机抽取一个节点特征，作为创建的新节点
+        random_index = torch.randint(0, self.nop_feature.x.size(0), (1,)).item()  # 随机生成一个索引
+        random_node_feature = self.nop_feature.x[random_index]  # 获取对应的节点特征
+        new_state.x = torch.cat([new_state.x, random_node_feature.unsqueeze(0)], dim=0)  # 添加到 x
+        new_state.num_nodes = new_state.x.size(0)
+        # 添加node_index 到新节点之间的边
+        new_edge = torch.tensor([[node_index],[len(new_state.x) - 1]], dtype=torch.int64)
+        new_state.edge_index = torch.cat([new_state.edge_index, new_edge], dim=1)  # 更新 edge_index
+        new_state.num_edges= new_state.edge_index.size(1)
+        new_state = Data(x=new_state.x, edge_index=new_state.edge_index, y=new_state.y) # 重新创建一个新的graph
+        
         # 定义函数处理 feature 动作
-        else:
-            print(f"Q-network select feature action")
-            node_index = max_index % k
-            if node_index > node_count - 1:# 如果index超过了节点数量，那就随机挑选一个节点
-                random_choice = random.randint(0, node_count-1)
-                node_index = top_k_index[0][random_choice].item()
-                
-            random_index = torch.randint(0, self.nop_feature.x.size(0), (1,)).item()  # 随机生成一个索引
-            random_node_feature = self.nop_feature.x[random_index]  # 获取对应的节点特征
-            new_state.x[node_index] += random_node_feature
+        print(f"Q-network select feature action")
+        node_index = max_feature_index % k
+        if node_index > node_count - 1:# 如果index超过了节点数量，那就随机挑选一个节点
+            random_choice = random.randint(0, node_count-1)
+            node_index = top_k_index[0][random_choice].item()
             
-            new_state = Data(x=new_state.x, edge_index=new_state.edge_index, y=new_state.y) # 重新创建一个新的graph
+        random_index = torch.randint(0, self.nop_feature.x.size(0), (1,)).item()  # 随机生成一个索引
+        random_node_feature = self.nop_feature.x[random_index]  # 获取对应的节点特征
+        new_state.x[node_index] += random_node_feature
+        
+        new_state = Data(x=new_state.x, edge_index=new_state.edge_index, y=new_state.y) # 重新创建一个新的graph
 
         return new_state        
 
