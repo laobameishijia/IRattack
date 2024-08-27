@@ -600,7 +600,8 @@ class Fuzz:
                 self.mutator_counts[key] = 0
             
     def choose_mutator_based_on_count(self):
-        probabilities = [(self.mutator_counts.get(mutator, 0) + 1) for mutator in self.mutator_counts]
+        init_value = 30
+        probabilities = [(self.mutator_counts.get(mutator, 0) + init_value) for mutator in self.mutator_counts]
         total = sum(probabilities)
         probabilities = [prob / total for prob in probabilities]
         return random.choices(list(self.mutator_counts.keys()), probabilities)[0]

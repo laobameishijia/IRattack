@@ -1,10 +1,17 @@
-DGCNN_9: val acc:0.9860990443092963, train acc:0.9789488966318235 
-GIN0_9: val acc:1.0, train acc:0.9952111449717023 
-GIN0WithJK_9: val acc:1.0, train acc:0.9943379790940766 
-DGCNN_20: val acc:0.9947735191637631, train acc:0.9867943694674213 
-DGCNN_9: val acc:0.9663784822286263, train acc:0.9534474484082547 
-GIN0_9: val acc:0.9903938520653218, train acc:0.9784034554471285 
-GIN0WithJK_9: val acc:0.9721421709894332, train acc:0.9784034554471285 
-DGCNN_20: val acc:0.98565965583174, train acc:0.9721421709894332 
-GIN0_20: val acc:0.988527724665392, train acc:0.9819084213896894 
-GIN0WithJK_20: val acc:0.9903938520653218, train acc:0.9808030715085586 
+DGCNN_9: val acc:0.9634581105169341, train acc:0.9547209026128266 
+Best val acc: 0.9635, train acc: 0.9547 test acc: 0.9557, fpr: 0.0327, fnr: 0.0485
+
+GIN0_9: val acc:0.9741532976827094, train acc:0.9661520190023754 
+Best val acc: 0.9742, train acc: 0.9662 test acc: 0.9689, fpr: 0.0140, fnr: 0.0453
+
+GIN0WithJK_9: val acc:0.9857904085257548, train acc:0.9726678550207962 
+Best val acc: 0.9858, train acc: 0.9727 test acc: 0.9684, fpr: 0.0229, fnr: 0.0257
+
+DGCNN_20: val acc:0.9724689165186501, train acc:0.9668746286393345
+Best val acc: 0.9725, train acc: 0.9669 test acc: 0.9654, fpr: 0.0184, fnr: 0.0443
+ 
+GIN0_20: val acc:0.9857397504456328, train acc:0.9692695961995249 
+Best val acc: 0.9857, train acc: 0.9693 test acc: 0.9638, fpr: 0.0258, fnr: 0.0178
+
+GIN0WithJK_20: val acc:0.9803921568627451, train acc:0.9688242280285035 
+Best val acc: 0.9804, train acc: 0.9688test acc: 0.9644, fpr: 0.0134, fnr: 0.0335
