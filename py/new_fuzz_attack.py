@@ -588,7 +588,8 @@ class Fuzz:
         return random.choices(function_names, probabilities)[0]
 
     def choose_mutator_based_on_count(self):
-        probabilities = [(self.mutator_counts.get(mutator, 0) + 1) for mutator in self.mutator_counts]
+        init_value = 30 # 为了减弱初期变化带来的影响
+        probabilities = [(self.mutator_counts.get(mutator, 0) + init_value) for mutator in self.mutator_counts]
         total = sum(probabilities)
         probabilities = [prob / total for prob in probabilities]
         return random.choices(list(self.mutator_counts.keys()), probabilities)[0]
@@ -604,8 +605,8 @@ def load_mutator_counts(filepath):
             mutator_counts = json.load(file)
             return mutator_counts
     except FileNotFoundError:
-        # mutator_counts = { "random_block": 0, "all_block": 0, "flatten": 0, "bcf": 0 }
-        mutator_counts = { "random_block": 0, "all_block": 0}
+        mutator_counts = { "random_block": 0, "all_block": 0, "flatten": 0, "bcf": 0 }
+        # mutator_counts = { "random_block": 0, "all_block": 0}
         return mutator_counts
     except json.JSONDecodeError:
         print(f"Error decoding JSON from {filepath}. Using default mutator counts.")

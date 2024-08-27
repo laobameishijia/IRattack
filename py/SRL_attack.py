@@ -111,7 +111,7 @@ class SRLAttack():
         self.device = torch.device("cpu")
         self.model_name = model
         self.model = self.init_model(model)
-        
+        self.train_log = Log(filename=f"SRL_train_")
         self.result_log = Log(filename=f"SRL_result_{self.model_name}")
         self.best_result = 0
         
@@ -213,8 +213,8 @@ class SRLAttack():
                         self.target_q_network.load_state_dict(self.q_network.state_dict())
                 
                 if self.get_label(state) == self.adversarial_label:
-                    self.mutation_log.write(f"{data_index}-success!")
-                    self.mutation_log.write(f"{action_nop_list}")
+                    self.train_log.write(f"{data_index}-success!")
+                    self.train_log.write(f"{action_nop_list}")
                     
                     print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
                     print("attack susccess")
@@ -229,9 +229,9 @@ class SRLAttack():
                 self.best_result = attack_success_rate
                 self.result_log.write(f"{attack_success_rate:.2f}")
                 self.save_model()
-            self.mutation_log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-            self.mutation_log.write(f"attack success rate {attack_success_rate:.2f}%\n")  
-            self.mutation_log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")  
+            self.train_log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+            self.train_log.write(f"attack success rate {attack_success_rate:.2f}%\n")  
+            self.train_log.write("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")  
         
         return 1
     
