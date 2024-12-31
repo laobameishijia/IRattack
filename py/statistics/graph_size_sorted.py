@@ -69,7 +69,7 @@ def print_categories(categories: dict):
         for folder_name, count in folders:
             print(f"  Folder: {folder_name}, Basic Block Count: {count}")
 
-def calculate_success_rate(base_folder: str, categories: dict):
+def calculate_success_rate(base_folder: str, categories: dict, model):
     """
     统计每个分类范围内的不同模型的攻击成功率。
 
@@ -91,7 +91,7 @@ def calculate_success_rate(base_folder: str, categories: dict):
             out_folder_path = os.path.join(base_folder, folder_name, 'out')
             if os.path.exists(out_folder_path):
                 for filename in os.listdir(out_folder_path):
-                    if filename.startswith('success') and filename.endswith('.txt'):
+                    if filename.startswith(f'success_{model}') and filename.endswith('.txt'):
                         parts = filename.split('_')
                         if len(parts) >= 3:
                             model_name = parts[1] + '_' + parts[2]
@@ -112,6 +112,7 @@ def print_success_rates(success_rates: dict):
     success_rates (dict): 每个分类范围内的不同模型的攻击成功率。
     """
     model_order = ["DGCNN_9", "DGCNN_20", "GIN0_9", "GIN0_20", "GIN0WithJK_9", "GIN0WithJK_20"]
+    model_order = ["DGCNN_20", "GIN0_9", "GIN0_20", "GIN0WithJK_9"]
     
     for category, models in success_rates.items():
         print(f"{category}:")
@@ -121,19 +122,33 @@ def print_success_rates(success_rates: dict):
                 print(f"  Model: {model_name}, Success Rate: {rate:.2f}%")
 
             
-
-
-# iteration_list = [10,20,30,40]
-# model_list = ["DGCNN","GIN0","GIN0WithJK"]
-iteration_list = [10]
-model_list = ["DGCNN"]
+iteration_list = [10,20,30,40,50,60]
+model_list = ["DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9"]
 for iteration in iteration_list:
     for model in model_list:
         print(f"Iteration: {iteration}  Model: {model}")
-        base_folder=f"/home/lebron/IRFuzz/done_result/{iteration}/{model}/IRFuzz/ELF"
+        model_name = model.split("_")[0]
+        base_folder=fr"F:\研二下\论文\备份\退修\result_2\{iteration}\{model_name}\IRFuzz\ELF"
         categories = categorize_folders(base_folder)
-        print_categories(categories)
-        success_rates = calculate_success_rate(base_folder, categories)
+        success_rates = calculate_success_rate(base_folder, categories, model)
+        print_success_rates(success_rates)
+    print("\n")
+exit()
+
+iteration_list = [10,20,30,40,50,60]
+model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]
+rerun_list = [40,50,60]
+rerun_model = ["GIN0_20"]
+for iteration in iteration_list:
+    for model in model_list:
+        print(f"Iteration: {iteration}  Model: {model}")
+        model_name = model.split("_")[0]
+        if model in rerun_model and iteration in rerun_list:
+            base_folder=fr"F:\研二下\论文\备份\\125_done_result_new\done_result_new\{iteration}\{model_name}\IRFuzz\ELF"
+        else:
+            base_folder=fr"F:\研二下\论文\备份\\126_done_result_new\done_result_new\{iteration}\{model_name}\IRFuzz\ELF"
+        categories = categorize_folders(base_folder)
+        success_rates = calculate_success_rate(base_folder, categories, model)
         print_success_rates(success_rates)
     print("\n")
 exit()

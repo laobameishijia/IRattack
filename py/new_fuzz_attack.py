@@ -604,8 +604,8 @@ def load_mutator_counts(filepath):
             mutator_counts = json.load(file)
             return mutator_counts
     except FileNotFoundError:
-        # mutator_counts = { "random_block": 0, "all_block": 0, "flatten": 0, "bcf": 0 }
-        mutator_counts = { "random_block": 0, "all_block": 0}
+        mutator_counts = { "random_block": 0, "all_block": 0, "flatten": 0, "bcf": 0 }
+        # mutator_counts = { "random_block": 0, "all_block": 0}
         return mutator_counts
     except json.JSONDecodeError:
         print(f"Error decoding JSON from {filepath}. Using default mutator counts.")
