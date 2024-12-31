@@ -28,7 +28,7 @@ from model.src.gnn.sortaggregation.CustomSortAggregation import SortAggregation
 
 # 定义Q网络---使用DGCNN来进行
 class QNetwork(nn.Module):
-    def __init__(self, input_dim, output_dim=27, k=32):
+    def __init__(self, input_dim, output_dim=32*3, k=32): # 这个输出的是32*3维度, 包含 A = {edge, node, feature}
         super(QNetwork, self).__init__()
         self.k = k 
         
@@ -60,7 +60,7 @@ class QNetwork(nn.Module):
         x = x.view(x.size(0), -1) #（1,384)
         x = self.dense(x)
         # x = self.sigmoid(x)  # 应用sigmoid激活函数
-        return x, top_k_indices # x为(0,1)之间的值，用于计算语义nop指令编号。top_k_indices是排序在前topK的节点序号，如果节点数目不足32,用-1填充了。
+        return x, top_k_indices # x为 32*3, 包含{edge, node, feature}。top_k_indices是排序在前topK的节点序号，如果节点数目不足32,用-1填充了。
 
 # 定义经验回放缓冲区
 class ReplayBuffer:
@@ -78,7 +78,7 @@ class ReplayBuffer:
 
 class Log:
     
-    def __init__(self, fuzz_dir="/home/lebron/IRFuzz/SRL" , filename="SRL"):
+    def __init__(self, fuzz_dir="/home/lebron/IRFuzz/IMaler" , filename="IMaler"):
         self.log_file = open(f"{fuzz_dir}/{filename}", mode="a")
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.log_file.write(f"Log file created at: {current_time}\n")
@@ -103,7 +103,7 @@ def is_success_file_present(fuzz_dir, model):
     success_files = glob.glob(f"{fuzz_dir}/out/success_{model}*")
     return len(success_files) > 0         
 
-class SRLAttack():
+class MalerAttack():
     
     def __init__(self, model, data_dir):
 
@@ -111,10 +111,10 @@ class SRLAttack():
         self.device = torch.device("cpu")
         self.model_name = model
         self.model = self.init_model(model)
-        self.train_log = Log(filename=f"SRL_train_")
-        self.result_log = Log(filename=f"SRL_result_{self.model_name}")
-        self.best_result = 0
         
+        self.result_log = Log(filename=f"IMaler_result_{self.model_name}")
+        self.best_result = 0
+        self.train_log = Log(filename=f"IMaler_train_")
         self.nop_feature = self.get_nop_feature()
         feature_size = self.model_name.split("_")[1]
         self.init_Qnetwork(input_dim=int(feature_size))
@@ -128,7 +128,7 @@ class SRLAttack():
             
             data_index = 0              # 特征数据的编号
             self.success_data_num = []  # 攻击成功的样本数量-列表
-            # self.load_best_model()      # 加载之前最好的模型，从最好的出发开始训练
+            self.load_best_model()      # 加载之前最好的模型，从最好的出发开始训练
             
             for data in tqdm.tqdm(self.data_loader):
                 
@@ -137,9 +137,8 @@ class SRLAttack():
                 
                 basic_block_count = data.num_nodes
             
-                action_nop_list = [] # 保留选择的变异策略
                 t = 0
-                state = data 
+                state = Data(x=data.x, y=data.y, edge_index=data.edge_index) 
             
                 while self.get_label(state) != self.adversarial_label and t < self.iteration:
                     
@@ -148,23 +147,13 @@ class SRLAttack():
 
                     if random.random() < epsilon:
                         # 随机选择动作
-                        action_basicblock = select_random_blocks(basic_block_count)
-                        action_nop = random.choice(range(self.semantic_nops))
-                        print(f"random select action_nop is {action_nop}")
+                        q_values,top_k_indices = self.q_network(state)
+                        q_values = torch.rand(1, 3 * self.q_network.k)
                     else:
                         # 使用Q网络选择动作
                         q_values,top_k_indices = self.q_network(state)
-                        # 获取排名在前topk的索引
-                        action_basicblock = top_k_indices.tolist()[0]
-                        # 语义NOP指令的编号 取q_values最大值的编号
-                        action_nop = torch.argmax(q_values).detach().item()
-                        print(f"Q-network select action_nop is {action_nop}")
-                        
                     # 执行动作并得到新状态  
-                    action_nop_list.append(action_nop)              
-                    new_state = copy.deepcopy(state)  # 使用深拷贝
-                    for index in action_basicblock:
-                        new_state.x[index] += self.nop_feature.x[action_nop]
+                    new_state = self.process_action(action=q_values, top_k_index=top_k_indices, state=state)           
                     # 计算奖励  将reward扩展为27维
                     reward = 1 if  self.probality_adversarial_rise(new_state,state) else 0
                     print(f"reward is {reward}")
@@ -176,7 +165,7 @@ class SRLAttack():
                     #     reward = 0
                     
                     # 存储经验
-                    self.replay_buffer.add((state, action_nop, action_basicblock, reward, new_state))
+                    self.replay_buffer.add((state, reward, new_state))
                     
                     # 更新状态
                     state = new_state
@@ -186,11 +175,9 @@ class SRLAttack():
                     # 定期更新Q网络参数
                     if  t % self.T == 0:
                         batch = self.replay_buffer.sample(self.batch_size)
-                        states, action_nop, action_basicblock, rewards, next_states =  zip(*batch)
+                        states, rewards, next_states =  zip(*batch)
                         
                         states = Batch.from_data_list(states)
-                        # action_nop = torch.LongTensor(action_nop)
-                        # action_basicblock = torch.LongTensor(action_basicblock)
                         rewards = torch.cat(rewards)
                         rewards = rewards.view(len(next_states),self.output_dim)
                         next_states = Batch.from_data_list(next_states)
@@ -214,7 +201,6 @@ class SRLAttack():
                 
                 if self.get_label(state) == self.adversarial_label:
                     self.train_log.write(f"{data_index}-success!")
-                    self.train_log.write(f"{action_nop_list}")
                     
                     print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
                     print("attack susccess")
@@ -237,7 +223,7 @@ class SRLAttack():
     
     def evaluate(self):
     
-        self.load_best_model()      # 加载之前最好的模型
+        # self.load_best_model()      # 加载之前最好的模型
         self.q_network.eval()
         self.target_q_network.eval()
         iteration_list = [10, 20, 30, 40, 50, 60]
@@ -246,7 +232,7 @@ class SRLAttack():
         for iteration in iteration_list:
             data_index = 0              # 特征数据的编号
             self.success_data_num = []  # 攻击成功的样本数量-列表
-            self.mutation_log = Log(filename=f"SRL_mutation_{self.model_name}_{iteration}")
+            self.mutation_log = Log(filename=f"IMaler_mutation_{self.model_name}_{iteration}")
             for data in tqdm.tqdm(self.data_loader):
                 
                 _, _, label,_, = self.get_output(data)
@@ -260,22 +246,9 @@ class SRLAttack():
 
                     # 使用Q网络选择动作
                     q_values,top_k_indices = self.q_network(state)
-                    # 获取排名在前topk的索引
-                    action_basicblock = top_k_indices.tolist()[0]
-                    # 语义NOP指令的编号 取q_values最大值的编号
-                    action_nop = torch.argmax(q_values).detach().item()
-                    print(f"Q-network select action_nop is {action_nop}")
+                    # 应用action
+                    new_state = self.process_action(action=q_values, top_k_index=top_k_indices, state=state)           
                     
-                    # 执行动作并得到新状态  
-                    action_nop_list.append(action_nop)              
-                    new_state = copy.deepcopy(state)  # 使用深拷贝
-                    for index in action_basicblock:
-                        new_state.x[index] += self.nop_feature.x[action_nop]
-
-                    
-                    # # 检查状态差异
-                    # if Diff(state.x, new_state.x) > self.delta:
-                    #     break
                     # 更新状态
                     state = new_state
                     t += 1
@@ -296,7 +269,6 @@ class SRLAttack():
         
         return 1
 
-    
     def save_model(self):
         torch.save(self.q_network.state_dict(), f"{self.data_dir}/train/model_{self.model_name}")
  
@@ -314,7 +286,7 @@ class SRLAttack():
     def init_Qnetwork(self,input_dim):
         self.train_iteration = 100    # 要在整个样本集上训练多少轮
         self.input_dim = input_dim  # before_classifier_output.shape[0] 是bachsize
-        self.output_dim = 27        # 输出维度语义NOP指令编号，节点重要性不包含在输出里面
+        self.output_dim = 3*32        # 输出维度
         self.gamma = 0.99           # 未来期望的比重
         self.learning_rate = 0.001  # 学习率
         self.capacity = 3000        # 缓冲区的容量
@@ -407,15 +379,77 @@ class SRLAttack():
         _,_,label,_ = self.get_output(data)
         return label
 
+    def process_action(self, state, top_k_index, action):
+        # 定义 k
+        k = self.q_network.k
+        new_state = copy.deepcopy(state)  # 使用深拷贝
+        node_count = state.num_nodes
+        
+        edge_part = action[0, :k]         # 第1部分（前32个元素）
+        node_part = action[0, k:2*k]      # 第2部分（中间32个元素）
+        feature_part = action[0, 2*k:3*k] # 第3部分（最后32个元素）
 
+        # 找到每个部分的最大值的索引
+        max_edge_index = torch.argmax(edge_part).detach().item()         # 第1部分中的最大值索引
+        max_node_index = torch.argmax(node_part).detach().item()         # 第2部分中的最大值索引
+        max_feature_index = torch.argmax(feature_part).detach().item()   # 第3部分中的最大值索引
+
+        # 定义函数处理 edge 动作
+        print(f"Q-network select edge action")
+        node_index = top_k_index[0][max_edge_index].item()
+        if node_index == -1: # 如果index超过了节点数量，那就随机挑选一个节点
+            random_choice = random.randint(0, node_count-1)
+            node_index = top_k_index[0][random_choice].item()
+            
+        random_choice_node_index = random.randint(0, node_count-1)
+        while random_choice_node_index == node_index:
+            random_choice_node_index = random.randint(0, node_count-1)
+        # 增加topk中第i个节点与 CFG中随机节点之间的边关系
+        new_edge = torch.tensor([[node_index],[random_choice_node_index]], dtype=torch.int64)
+        new_state.edge_index = torch.cat([new_state.edge_index, new_edge], dim=1)  # 更新 edge_index
+        new_state = Data(x=new_state.x, edge_index=new_state.edge_index, y=new_state.y) # 重新创建一个新的graph
+        
+        # 定义函数处理 node 动作
+        print(f"Q-network select node action")
+        node_index = max_node_index % k
+        if node_index > node_count - 1: # 如果index超过了节点数量，那就随机挑选一个节点
+            random_choice = random.randint(0, node_count-1)
+            node_index = top_k_index[0][random_choice].item()
+        # 从 语义NOP指令集中随机抽取一个节点特征，作为创建的新节点
+        random_index = torch.randint(0, self.nop_feature.x.size(0), (1,)).item()  # 随机生成一个索引
+        random_node_feature = self.nop_feature.x[random_index]  # 获取对应的节点特征
+        new_state.x = torch.cat([new_state.x, random_node_feature.unsqueeze(0)], dim=0)  # 添加到 x
+        new_state.num_nodes = new_state.x.size(0)
+        # 添加node_index 到新节点之间的边
+        new_edge = torch.tensor([[node_index],[len(new_state.x) - 1]], dtype=torch.int64)
+        new_state.edge_index = torch.cat([new_state.edge_index, new_edge], dim=1)  # 更新 edge_index
+        new_state.num_edges= new_state.edge_index.size(1)
+        new_state = Data(x=new_state.x, edge_index=new_state.edge_index, y=new_state.y) # 重新创建一个新的graph
+        
+        # 定义函数处理 feature 动作
+        print(f"Q-network select feature action")
+        node_index = max_feature_index % k
+        if node_index > node_count - 1:# 如果index超过了节点数量，那就随机挑选一个节点
+            random_choice = random.randint(0, node_count-1)
+            node_index = top_k_index[0][random_choice].item()
+            
+        random_index = torch.randint(0, self.nop_feature.x.size(0), (1,)).item()  # 随机生成一个索引
+        random_node_feature = self.nop_feature.x[random_index]  # 获取对应的节点特征
+        new_state.x[node_index] += random_node_feature
+        
+        new_state = Data(x=new_state.x, edge_index=new_state.edge_index, y=new_state.y) # 重新创建一个新的graph
+
+        return new_state        
+
+        
 if __name__ == "__main__":
     
     model_list = ["DGCNN_9","DGCNN_20","GIN0_9","GIN0_20","GIN0WithJK_9","GIN0WithJK_20"]    
-    data_dir = "/home/lebron/IRFuzz/SRL"
+    data_dir = "/home/lebron/IRFuzz/IMaler"
     
     for model in model_list:
-        srl = SRLAttack(model=model, data_dir=data_dir)
-        srl.evaluate()
+        srl = MalerAttack(model=model, data_dir=data_dir)
+        srl.run()
 
     
     
