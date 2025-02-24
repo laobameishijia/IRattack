@@ -164,8 +164,8 @@ def build_fuzz_directories(fuzz_dir, save_seedfile_before=False):
                     print(f'Failed to delete {file_path}. Reason: {e}')
 
     # 复制 basicblockcount.sh 和 fuzz_compile.sh到fuzz_dir目录下面
-    shutil.copy("/root/IRFuzz/bash/basicblockcount.sh", fuzz_dir)
-    shutil.copy("/root/IRFuzz/bash/fuzz_compile.sh", fuzz_dir)
+    shutil.copy("/home/lebron/IRFuzz/bash/basicblockcount.sh", fuzz_dir)
+    shutil.copy("/home/lebron/IRFuzz/bash/fuzz_compile.sh", fuzz_dir)
     # 运行basicblockcount.sh 输出basicblock.txt
     run_bash(f"{fuzz_dir}/basicblockcount.sh", args=[])
     
@@ -340,7 +340,7 @@ def check_in_folder(directory):
 class Log:
     
     def __init__(self, filename="log"):
-        self.log_file = open(f"/root/IRFuzz/{filename}", mode="a")
+        self.log_file = open(f"/home/lebron/IRFuzz/{filename}", mode="a")
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.log_file.write(f"Log file created at: {current_time}\n")
     
@@ -633,7 +633,7 @@ if __name__ == "__main__":
                         help='Maximum number of iterations')
     parser.add_argument('--choose_function_based_on_probability', type=float, default=0.8,
                         help='Probability for choosing function in the last 20% phase')
-    parser.add_argument('--malware_store_path', type=str, default="/root/IRFuzz/ELF",
+    parser.add_argument('--malware_store_path', type=str, default="/home/lebron/IRFuzz/ELF",
                         help='Path to the malware store')
 
     args = parser.parse_args()
@@ -654,7 +654,7 @@ if __name__ == "__main__":
 
     for model in model_list:
         
-        mutator_counts = load_mutator_counts(f"/root/IRFuzz/attack_success_mutation_{model}.json")
+        mutator_counts = load_mutator_counts(f"/home/lebron/IRFuzz/attack_success_mutation_{model}.json")
                 
         for malware_dir in malware_full_paths:
             source_dir= malware_dir
@@ -677,7 +677,7 @@ if __name__ == "__main__":
             fuzz = Fuzz(source_dir,fuzz_dir,model,mutator_counts)
             attack_success = fuzz.run()
             mutator_counts = fuzz.mutator_counts
-            with open(f"/root/IRFuzz/attack_success_mutation_{model}.json", 'w') as file:
+            with open(f"/home/lebron/IRFuzz/attack_success_mutation_{model}.json", 'w') as file:
                 json.dump(mutator_counts, file)
             endtime =  datetime.datetime.now()
             if attack_success:
@@ -690,11 +690,11 @@ if __name__ == "__main__":
     for key in ATTACK_SUCCESS_MAP:
         ATTACK_SUCCESS_RATE[key] = len(ATTACK_SUCCESS_MAP[key]) / len(malware_full_paths)
     
-    with open('/root/IRFuzz/attack_success_object.txt', 'w') as file:
+    with open('/home/lebron/IRFuzz/attack_success_object.txt', 'w') as file:
         for key, object in ATTACK_SUCCESS_MAP.items():
             file.write(f'{key}: {str(object)}\n')  # 输出格式化的浮点数   
     
-    with open('/root/IRFuzz/attack_success_rate.txt', 'w') as file:
+    with open('/home/lebron/IRFuzz/attack_success_rate.txt', 'w') as file:
         for key, value in ATTACK_SUCCESS_RATE.items():
             file.write(f'{key}: {value:.4f}\n')  # 输出格式化的浮点数
     

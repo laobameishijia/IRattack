@@ -56,7 +56,7 @@ def measure(data_dir, model_name):
         raise NotImplementedError
     
     model.load_state_dict(
-        torch.load(f"/root/IRattack/py/model/record/{model_name}.pth", map_location=device))
+        torch.load(f"/home/lebron/IRattack/py/model/record/{model_name}.pth", map_location=device))
     
     val_loader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=5)
     model = model.to(device)

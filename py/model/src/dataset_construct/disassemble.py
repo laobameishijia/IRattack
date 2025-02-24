@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # file_name = os.path.splitext(os.path.basename(file_name))[0]
     file_name = file_name
     output_file_path = output_dir + "\\" + file_name + ".asm"
-    log_file = open("/root/log","a")
+    log_file = open("/home/lebron/log","a")
     save_disassembly(output_file_path, file_name, log_file)
     log_file.close()
     exit()

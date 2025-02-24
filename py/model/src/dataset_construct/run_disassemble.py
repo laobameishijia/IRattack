@@ -3,8 +3,8 @@ import os
 import subprocess
 import time
 
-ida64_path = r"wine C:\\IDA\\ida64.exe"
-script_path = r"/root/IRattack/py/model/src/dataset_construct/disassemble.py"
+ida64_path = r"wine /home/lebron/.wine/drive_c/Program\ Files/IDA_Pro_7.7/ida64.exe"
+script_path = r"/home/lebron/IRattack/py/model/src/dataset_construct/disassemble.py"
 
 
 import tqdm
