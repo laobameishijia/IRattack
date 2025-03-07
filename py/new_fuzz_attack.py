@@ -134,7 +134,7 @@ def run_bash(script_path, args, max_retries=5, retry_delay=5):
     print("Max retries reached. Script failed to run successfully.")
     return -1  # 超过最大重试次数，仍然失败
 
-def build_fuzz_directories(fuzz_dir, save_seedfile_before=False):
+def build_fuzz_directories(fuzz_dir, target_model,save_seedfile_before=False):
     # 要检查和创建的文件夹列表
     folders = ["in", "out","rawdata", "asm", "cfg","temp"]
 
@@ -162,7 +162,19 @@ def build_fuzz_directories(fuzz_dir, save_seedfile_before=False):
 
                 except Exception as e:
                     print(f'Failed to delete {file_path}. Reason: {e}')
-
+    
+    directory_path = os.path.join(fuzz_dir,"out",target_model)
+    if os.path.exists(directory_path) and not save_seedfile_before:
+        print(f"delete output seed and binary file saved!\n")
+        for filename in os.listdir(directory_path):
+                file_path = os.path.join(directory_path, filename)
+                try:
+                    if os.path.isfile(file_path):
+                        os.unlink(file_path) # 删除文件
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)  # 删除子目录及其内容
+                except Exception as e:
+                    print(f'Failed to delete {file_path}. Reason: {e}')
     # 复制 basicblockcount.sh 和 fuzz_compile.sh到fuzz_dir目录下面
     shutil.copy("/home/lebron/IRFuzz/bash/basicblockcount.sh", fuzz_dir)
     shutil.copy("/home/lebron/IRFuzz/bash/fuzz_compile.sh", fuzz_dir)
@@ -336,7 +348,37 @@ def check_in_folder(directory):
         return 0
         # print(f"The folder '{in_folder}' does not exist.")
 
- 
+def save_seed_and_binary(functions, fuzz_dir, output_dir, iteration, advconfidence):
+    # 检查目录是否存在
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+        print(f"目标文件夹不存在，已创建：{output_dir}")
+    # 保存种子
+    seed_out_path = f"{output_dir}/{iteration}_{advconfidence}.txt"
+    output_file(functions, seed_out_path)
+    # 保存二进制
+    copy_elf_files(f"{fuzz_dir}/temp",output_dir, iteration)
+
+def is_elf(file_path):
+    """检查文件是否为 ELF 文件"""
+    with open(file_path, 'rb') as f:
+        magic_number = f.read(4)
+        return magic_number == b'\x7fELF' or magic_number == b'\x42\x43\xc0\xde'
+
+def copy_elf_files(src_folder, dest_folder, iteration):
+    # 创建目标文件夹（如果不存在的话）
+    if not os.path.exists(dest_folder):
+        os.makedirs(dest_folder)
+
+    # 遍历源文件夹中的所有文件
+    for root, dirs, files in os.walk(src_folder):
+        for file in files:
+            src_file = os.path.join(root, file)
+            if is_elf(src_file):
+                dest_file = os.path.join(dest_folder, f"{iteration}_{file}")
+                shutil.copy(src_file, dest_file)
+                print(f'Copied: {src_file} to {dest_file}')
+
 class Log:
     
     def __init__(self, filename="log"):
@@ -378,7 +420,7 @@ class Fuzz:
         self.fuzz_log = FuzzLog(fuzz_dir)
         self.fuzz_log.write(f"Model:{self.model}\n", "blue")
         
-        build_fuzz_directories(self.fuzz_dir)
+        build_fuzz_directories(self.fuzz_dir, self.model)
         
         self.bb_file_path =  f"{source_dir}/BasicBlock.txt"
         self.functions = parse_file(self.bb_file_path)
@@ -451,7 +493,14 @@ class Fuzz:
                     if mutated_function_name != "all" and adversarial_probability - previous_adv_probability_copy > 0:
                         change_in_probability = adversarial_probability - previous_adv_probability_copy
                         self.update_function_probability(mutated_function_name, change_in_probability)
-                        
+                    
+                    # 保存种子文件和二进制
+                    save_seed_and_binary(functions, self.fuzz_dir, f"{self.fuzz_dir}/out/{self.model}/{self.iteration+1}", self.iteration+1 ,"{:.6f}".format(adversarial_probability))
+                    # 输出ui需要的数据
+                    ui_output.data["current_iteration"] += 1
+                    ui_output.data["confidence"][self.model].append(round(adversarial_probability, 6))
+                    ui_output.ouput_files(file_path=f"{self.fuzz_dir}/uidata.json")   
+                    
                     # 判断是否保存变异结果
                     if adversarial_probability - previous_adv_probability > 0:  # 概率变化大于5%
                         if adversarial_probability - previous_adv_probability > 0.10:
@@ -462,7 +511,7 @@ class Fuzz:
                             output_file(functions, seed_out_path)
                             self.fuzz_log.write(f"save functions to {seed_out_path} \n\n")
                             self.seed_count += 1  
-                                        
+                                                                    
                             new_seed_file = SeedFile(seed_out_path)
                             new_seed_file.update_energy(adversarial_probability)
                             self.seed_list.append(new_seed_file)
@@ -490,12 +539,7 @@ class Fuzz:
                         seed_file.energy = seed_file.energy * 1.5   # 将种子能量变大1.5倍
                         num_mutations = int(seed_file.energy)       # 重新设置变异次数
                         self.fuzz_log.write(f"Updated seed file energy: {seed_file.energy}\n", "red")
-                    # else:
-                    #     self.fuzz_log.write(f"Restoring a copy of functions\n", "red")
-                    #     functions = functions_copy # 恢复到这次变异之前
-                    # 因为有的样本会最终停留向在大概40%左右，所以想着后面能不能多给这样的样本一些时间
-                    # if adversarial_probability > 0.4:
-                    #     continue
+
                     iteration += 1
                     self.iteration = iteration
 
@@ -605,7 +649,22 @@ class Fuzz:
         total = sum(probabilities)
         probabilities = [prob / total for prob in probabilities]
         return random.choices(list(self.mutator_counts.keys()), probabilities)[0]
+
+class UiOutput:
+    def __init__(self, args):
+        self.data = {
+            "current_iteration":0,
+            "all_iteration":len(args.model_list) * args.max_iterations,
+            "confidence":{}
+        }
+        for model in args.model_list:
+            self.data["confidence"][model] = []
     
+    def ouput_files(self, file_path):
+        with open(file_path, 'w') as f:
+            json.dump(self.data, f, indent=4)
+        print(f'Data saved to {file_path}')
+
 def is_success_file_present(fuzz_dir, model):
     success_files = glob.glob(f"{fuzz_dir}/out/success_{model}*")
     return len(success_files) > 0     
@@ -633,7 +692,7 @@ if __name__ == "__main__":
                         help='Maximum number of iterations')
     parser.add_argument('--choose_function_based_on_probability', type=float, default=0.8,
                         help='Probability for choosing function in the last 20% phase')
-    parser.add_argument('--malware_store_path', type=str, default="/home/lebron/IRFuzz/ELF",
+    parser.add_argument('--malware_store_path', type=str, default="/home/lebron/IRFuzz/Test",
                         help='Path to the malware store')
 
     args = parser.parse_args()
@@ -652,11 +711,10 @@ if __name__ == "__main__":
     total_iterations = len(model_list) * len(malware_full_paths)
     progressed = 0    
 
-    for model in model_list:
-        
-        mutator_counts = load_mutator_counts(f"/home/lebron/IRFuzz/attack_success_mutation_{model}.json")
-                
-        for malware_dir in malware_full_paths:
+    for malware_dir in malware_full_paths:
+        ui_output = UiOutput(args)
+        for model in model_list:
+            mutator_counts = load_mutator_counts(f"/home/lebron/IRFuzz/attack_success_mutation_{model}.json")
             source_dir= malware_dir
             fuzz_dir=  malware_dir
             model = model
