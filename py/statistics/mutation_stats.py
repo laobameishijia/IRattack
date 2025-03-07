@@ -97,8 +97,10 @@ def sort_dict_by_value(data: dict, reverse: bool = True) -> dict:
 
 if __name__ == '__main__':
     
-    iteration_list = [10,20,30,40]
+    iteration_list = [10,20,30,40,50,60]
     model_list = ["DGCNN","GIN0","GIN0WithJK"]
+    rerun_list = [40,50,60]
+    rerun_model = ["GIN0_20"]
     for model in model_list:
         
         mutation = {
@@ -117,10 +119,13 @@ if __name__ == '__main__':
         
         for sub_model in sub_model_list:
             for iteration in iteration_list:
-                malware_store_path = f"/home/lebron/IRFuzz/done_result/{iteration}/{model}/IRFuzz/ELF"
-                malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
+                if sub_model in rerun_model and iteration in rerun_list:
+                    malware_store_path = fr"F:\研二下\论文\备份\\125_done_result_new\done_result_new\{iteration}\{model}\IRFuzz\ELF"
+                    malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
+                else:
+                    malware_store_path = fr"F:\研二下\论文\备份\\126_done_result_new\done_result_new\{iteration}\{model}\IRFuzz\ELF"
+                    malware_full_paths = [os.path.join(malware_store_path, entry) for entry in os.listdir(malware_store_path)]
                 success_model_list = []
-                
                 for malware_dir in malware_full_paths:
                     res = get_attack_success(f"{malware_dir}/out", sub_model)
                     if res != None:
@@ -134,7 +139,7 @@ if __name__ == '__main__':
                 mutation = {k: sort_dict_by_value(v) for k, v in mutation.items()}    
                 
             # 将字典写入 JSON 文件
-            with open(f'/home/lebron/IRFuzz/stats/{sub_model}.json', 'w') as file:
+            with open(fr'C:\Users\Administrator\Desktop\实验数据汇总\mutation_stats\{sub_model}.json', 'w') as file:
                 json.dump(mutation, file)
 
 
