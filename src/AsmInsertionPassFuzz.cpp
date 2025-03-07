@@ -174,7 +174,11 @@ public:
               Instruction *insertionPoint = &BB.front();
               bool foundInsertionPoint = false;
               while (insertionPoint){
-                if ( ! isa<PHINode>(insertionPoint) && ! isa<InvokeInst>(insertionPoint)){
+                if (isa<PHINode>(insertionPoint)){
+                  foundInsertionPoint = false;
+                  break;
+                }
+                if ( !isa<InvokeInst>(insertionPoint)){
                   // 确保不是 landingpad 指令
                   if (auto *LP = dyn_cast<LandingPadInst>(insertionPoint)) {
                     // 如果是 landingpad 指令，插入到其后面
