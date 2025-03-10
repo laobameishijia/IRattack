@@ -13,6 +13,7 @@
 实验脚本详见 [experiment_script.md](https://github.com/laobameishijia/IRattack/blob/main/experiment_script.md)
 
 docker镜像的文件结构：
+[下载地址](https://hub.docker.com/r/meishijia/irattack "https://hub.docker.com/r/meishijia/irattack"):https://hub.docker.com/r/meishijia/irattack
 
 ```
 .
@@ -54,3 +55,5 @@ docker镜像的文件结构：
 [2] [https://github.com/veritas501/ToyObfuscator]([https://github.com/veritas501/ToyObfuscator]())
 
 [3] Rokon M O F， Islam R， Darki A， et al. [SourceFinder: Finding malware Source-Code from publicly available repositories in GitHub](https://www.usenix.org/conference/raid2020/presentation/omar)[C]//USENIX. 23rd International Symposium on Research in Attacks， Intrusions and Defenses (RAID 2020)， October 14-16， Donostia/San Sebastian， Spain. NewYork: USENIX Association 2020: 149-163.
+
+[4] hacrot3000/docker-wine-ida - Docker Image | Docker Hub[EB/OL]. [2024-05-30]. https://hub.docker.com/r/hacrot3000/docker-wine-ida.
